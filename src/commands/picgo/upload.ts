@@ -27,7 +27,7 @@ export const uploadCommand: Command = {
     
     const batch = flags.batch as boolean;
     const isJson = flags.json as boolean;
-    const isQuiet = flags.quiet as boolean || config.output.quiet;
+    const isQuiet = flags.quiet as boolean || config.display.quiet;
     
     try {
       if (!isQuiet) {

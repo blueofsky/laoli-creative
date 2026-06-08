@@ -52,9 +52,9 @@
       "$ref": "#/definitions/picgoConfig",
       "description": "图片上传模块配置"
     },
-    "output": {
-      "$ref": "#/definitions/outputConfig",
-      "description": "输出配置"
+    "display": {
+      "$ref": "#/definitions/displayConfig",
+      "description": "显示输出配置"
     },
     "proxy": {
       "type": "string",
@@ -236,7 +236,7 @@
       },
       "additionalProperties": false
     },
-    "outputConfig": {
+    "displayConfig": {
       "type": "object",
       "properties": {
         "defaultFormat": {

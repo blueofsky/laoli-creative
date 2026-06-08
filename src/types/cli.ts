@@ -43,7 +43,7 @@ export interface Config {
   video: VideoConfig;
   bgm: ModuleConfig;
   picgo: PicgoConfig;
-  output: OutputConfig;
+  display: DisplayConfig;
   proxy?: string;
 }
 
@@ -78,7 +78,7 @@ export interface PicgoConfig {
   customUrl?: string;
 }
 
-export interface OutputConfig {
+export interface DisplayConfig {
   defaultFormat?: 'text' | 'json';
   quiet?: boolean;
   noColor?: boolean;

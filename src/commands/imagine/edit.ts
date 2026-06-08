@@ -38,7 +38,7 @@ export const editCommand: Command = {
     const provider = (flags.provider as string) || config.imagine.defaultProvider || config.defaultProvider;
     const model = (flags.model as string) || config.imagine.defaultModel;
     const isJson = flags.json as boolean;
-    const isQuiet = flags.quiet as boolean || config.output.quiet;
+    const isQuiet = flags.quiet as boolean || config.display.quiet;
     
     try {
       const result = await editImage({

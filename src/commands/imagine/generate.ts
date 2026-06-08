@@ -45,7 +45,7 @@ export const generateCommand: Command = {
     const ref = flags.ref as string[] | undefined;
     const n = flags.n ? parseInt(flags.n as string, 10) : undefined;
     const isJson = flags.json as boolean;
-    const isQuiet = flags.quiet as boolean || config.output.quiet;
+    const isQuiet = flags.quiet as boolean || config.display.quiet;
     
     try {
       const result = await generateImage({

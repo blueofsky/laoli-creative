@@ -73,7 +73,7 @@ export const DEFAULT_CONFIG: Config = {
     customUrl: '',
   },
   
-  output: {
+  display: {
     defaultFormat: 'text',
     quiet: false,
     noColor: false,

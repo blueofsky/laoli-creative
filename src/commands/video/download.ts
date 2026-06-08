@@ -30,7 +30,7 @@ export const downloadCommand: Command = {
     
     const providerName = (flags.provider as string) || config.video.defaultProvider || 'apimart';
     const isJson = flags.json as boolean;
-    const isQuiet = flags.quiet as boolean || config.output.quiet;
+    const isQuiet = flags.quiet as boolean || config.display.quiet;
     
     try {
       if (!isQuiet) {

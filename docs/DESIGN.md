@@ -495,7 +495,7 @@ laoli imagine generate --prompt "A cat" --output cat.png --json
     "customUrl": ""
   },
   
-  "output": {
+  "display": {
     "defaultFormat": "text",
     "quiet": false,
     "noColor": false

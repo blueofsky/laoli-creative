@@ -45,7 +45,7 @@ export const generateCommand: Command = {
     const lyrics = flags.lyrics as string;
     const instrumental = flags.instrumental as boolean;
     const isJson = flags.json as boolean;
-    const isQuiet = flags.quiet as boolean || config.output.quiet;
+    const isQuiet = flags.quiet as boolean || config.display.quiet;
     
     try {
       const params: MusicParams = {

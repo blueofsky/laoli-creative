@@ -139,12 +139,12 @@ function applyEnvVars(config: Config): Config {
     result.providers.mimo = { ...result.providers.mimo, apiKey: process.env.MIMO_API_KEY };
   }
   
-  // 输出配置
+  // 显示配置
   if (process.env.LAOLI_OUTPUT_FORMAT) {
-    result.output = { ...result.output, defaultFormat: process.env.LAOLI_OUTPUT_FORMAT as 'text' | 'json' };
+    result.display = { ...result.display, defaultFormat: process.env.LAOLI_OUTPUT_FORMAT as 'text' | 'json' };
   }
   if (process.env.LAOLI_QUIET === 'true') {
-    result.output = { ...result.output, quiet: true };
+    result.display = { ...result.display, quiet: true };
   }
   
   return result;
@@ -158,13 +158,13 @@ function applyFlags(config: Config, flags: Record<string, any>): Config {
     result.defaultRegion = flags.region;
   }
   if (flags.output) {
-    result.output = { ...result.output, defaultFormat: flags.output };
+    result.display = { ...result.display, defaultFormat: flags.output };
   }
   if (flags.quiet) {
-    result.output = { ...result.output, quiet: true };
+    result.display = { ...result.display, quiet: true };
   }
   if (flags.verbose) {
-    result.output = { ...result.output, quiet: false };
+    result.display = { ...result.display, quiet: false };
   }
   if (flags.proxy) {
     result.proxy = flags.proxy;

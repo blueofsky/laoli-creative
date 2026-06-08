@@ -26,7 +26,7 @@ export const batchCommand: Command = {
     
     const jobs = flags.jobs ? parseInt(flags.jobs as string, 10) : undefined;
     const isJson = flags.json as boolean;
-    const isQuiet = flags.quiet as boolean || config.output.quiet;
+    const isQuiet = flags.quiet as boolean || config.display.quiet;
     
     try {
       if (!isQuiet) {

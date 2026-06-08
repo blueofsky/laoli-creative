@@ -53,7 +53,7 @@ export const synthesizeCommand: Command = {
     const pitch = flags.pitch ? parseFloat(flags.pitch as string) : undefined;
     const format = (flags.format as string) || config.tts.defaultFormat;
     const isJson = flags.json as boolean;
-    const isQuiet = flags.quiet as boolean || config.output.quiet;
+    const isQuiet = flags.quiet as boolean || config.display.quiet;
     
     try {
       const params: TTSParams = {

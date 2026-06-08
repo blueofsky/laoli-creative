@@ -51,7 +51,7 @@ export const generateCommand: Command = {
     const pollInterval = flags['poll-interval'] ? parseInt(flags['poll-interval'] as string, 10) : undefined;
     const timeout = flags.timeout ? parseInt(flags.timeout as string, 10) : undefined;
     const isJson = flags.json as boolean;
-    const isQuiet = flags.quiet as boolean || config.output.quiet;
+    const isQuiet = flags.quiet as boolean || config.display.quiet;
     
     try {
       const params: VideoParams = {
