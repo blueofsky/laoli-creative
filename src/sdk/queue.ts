@@ -71,6 +71,16 @@ export function list(status?: TaskRecord['status']): TaskRecord[] {
   return status ? tasks.filter(t => t.status === status) : tasks;
 }
 
+/** 按 taskId 移除任务（完成/失败后出队） */
+export function remove(taskId: string): boolean {
+  const tasks = readQueue();
+  const idx = tasks.findIndex(t => t.taskId === taskId);
+  if (idx === -1) return false;
+  tasks.splice(idx, 1);
+  writeQueue(tasks);
+  return true;
+}
+
 /** 清理已完成/失败的任务 */
 export function clear(status?: 'completed' | 'failed'): number {
   const tasks = readQueue();
