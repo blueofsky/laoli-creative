@@ -28,61 +28,80 @@ export const apimartProvider: Provider = {
   async generateImage(params: ImageParams): Promise<ImageResult> {
     const apiKey = getApiKey('apimart');
     const model = params.model || 'gpt-image-2';
-    const requestBody: any = { model, prompt: params.prompt };
+    const body: any = { model, prompt: params.prompt };
 
     if (params.size) {
-      requestBody.size = params.size;
+      body.size = params.size;
     } else if (params.aspectRatio) {
-      requestBody.size = aspectRatioToSize(params.aspectRatio);
+      body.size = aspectRatioToSize(params.aspectRatio);
     } else {
-      requestBody.size = '1024x1024';
+      body.size = '1024x1024';
     }
-    // 图生图：APIMart 需要先上传图片获取 URL，再传入 image_urls
+
+    // APIMart uses resolution (not quality)
+    if (params.quality) {
+      body.resolution = params.quality === 'normal' ? '1k' : '2k';
+    }
+
+    // 图生图：上传本地文件 → image_urls
     if (params.refImages && params.refImages.length > 0) {
       const urls: string[] = [];
       for (const ref of params.refImages) {
         if (ref.startsWith('http://') || ref.startsWith('https://')) {
           urls.push(ref);
         } else {
-          // 上传本地文件到 APIMart
           const buf = readFileSync(ref);
           const mime = ref.endsWith('.png') ? 'image/png' : 'image/jpeg';
-          const blob = new Blob([buf], { type: mime });
           const form = new FormData();
-          form.append('file', blob, ref.split('/').pop() || 'ref.png');
-
+          form.append('file', new Blob([buf], { type: mime }), ref.split('/').pop() || 'ref.png');
           const uploadRes = await fetch(`${BASE_URL}/uploads/images`, {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${apiKey}` },
-            body: form,
+            method: 'POST', headers: { Authorization: `Bearer ${apiKey}` }, body: form,
           });
           if (!uploadRes.ok) throw new ProviderError(`APIMart upload failed`, 'apimart', uploadRes.status);
           const uploadData: any = await uploadRes.json();
           urls.push(uploadData.url);
         }
       }
-      requestBody.image_urls = urls;
-    }
-    if (params.quality) {
-      requestBody.quality = params.quality === 'normal' ? '1k' : '2k';
+      body.image_urls = urls;
     }
 
-    try {
-      const response = await fetch(`${BASE_URL}/images/generations`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-        body: JSON.stringify(requestBody),
-      });
-      if (!response.ok) {
-        const err: any = await response.json().catch(() => ({}));
-        throw new ProviderError(`APIMart API error: ${err.error?.message || response.statusText}`, 'apimart', response.status);
-      }
-      const data: any = await response.json();
-      return { url: data.data[0].url, outputPath: await downloadFile(data.data[0].url, params.outputPath), metadata: { provider: 'apimart', model, size: requestBody.size } };
-    } catch (error) {
-      if (error instanceof ProviderError) throw error;
-      throw new NetworkError(`APIMart API request failed: ${error instanceof Error ? error.message : String(error)}`);
+    // APIMart 是异步流程：提交任务 → 轮询结果
+    const submitRes = await fetch(`${BASE_URL}/images/generations`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify(body),
+    });
+    if (!submitRes.ok) {
+      const err: any = await submitRes.json().catch(() => ({}));
+      throw new ProviderError(`APIMart API error: ${err.error?.message || submitRes.statusText}`, 'apimart', submitRes.status);
     }
+    const submitData: any = await submitRes.json();
+    const taskId: string | undefined = submitData.data?.[0]?.task_id;
+    if (!taskId) throw new ProviderError(`APIMart did not return task_id`, 'apimart');
+
+    // 轮询等待完成
+    const pollInterval = 5000;
+    const maxAttempts = 120; // 10分钟
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      await new Promise(r => setTimeout(r, pollInterval));
+      const pollRes = await fetch(`${BASE_URL}/tasks/${taskId}`, {
+        headers: { Authorization: `Bearer ${apiKey}` },
+      });
+      if (!pollRes.ok) {
+        const err: any = await pollRes.json().catch(() => ({}));
+        throw new ProviderError(`APIMart poll error: ${err.error?.message || pollRes.statusText}`, 'apimart', pollRes.status);
+      }
+      const status: any = await pollRes.json();
+      if (status.data?.status === 'completed') {
+        const imgUrl: string | undefined = status.data.result?.images?.[0]?.url?.[0];
+        if (!imgUrl) throw new ProviderError(`APIMart returned no image URL`, 'apimart');
+        return { url: imgUrl, outputPath: await downloadFile(imgUrl, params.outputPath), metadata: { provider: 'apimart', model } };
+      }
+      if (status.data?.status === 'failed') {
+        throw new ProviderError(`APIMart task failed: ${status.data.error || 'unknown'}`, 'apimart');
+      }
+    }
+    throw new ProviderError(`APIMart task timed out after ${(maxAttempts * pollInterval) / 1000}s`, 'apimart');
   },
 
   async editImage(params: EditImageParams): Promise<ImageResult> {

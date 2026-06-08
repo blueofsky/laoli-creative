@@ -12,7 +12,7 @@ export const tuziProvider: Provider = {
   async generateImage(params: ImageParams): Promise<ImageResult> {
     const apiKey = getApiKey('tuzi');
     const model = params.model || 'gpt-image-2';
-    const requestBody: any = { model, prompt: params.prompt };
+    const requestBody: any = { model, prompt: params.prompt, response_format: 'url' };
 
     if (params.size) {
       requestBody.size = params.size;
