@@ -1,5 +1,7 @@
 # Laoli Creative
 
+[![CI](https://github.com/blueofsky/laoli-creative/actions/workflows/ci.yml/badge.svg)](https://github.com/blueofsky/laoli-creative/actions/workflows/ci.yml)
+
 Laoli Creative - AI Content Creation Toolkit with Skills
 
 ## Installation
