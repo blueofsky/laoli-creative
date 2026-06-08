@@ -13,6 +13,7 @@ export interface TaskRecord {
   createdAt: string;
   status: 'pending' | 'processing' | 'completed' | 'failed';
   error?: string;
+  costMs?: number;
 }
 
 function readQueue(): TaskRecord[] {
@@ -91,7 +92,9 @@ export function archive(taskId: string, result: { status: 'completed' | 'failed'
   writeQueue(tasks);
 
   ensureDir();
-  const record = { ...task, ...result, archivedAt: new Date().toISOString() };
+  const now = new Date().toISOString();
+  const costMs = task.createdAt ? Date.now() - new Date(task.createdAt).getTime() : undefined;
+  const record = { ...task, ...result, archivedAt: now, costMs };
   appendFileSync(LOG_FILE, JSON.stringify(record) + '\n', 'utf-8');
 }
 

@@ -28,7 +28,8 @@ export const historyCommand: Command = {
       for (const r of records) {
         const icon = r.status === 'completed' ? '✓' : '✗';
         const prompt = r.prompt.length > 40 ? r.prompt.slice(0, 40) + '...' : r.prompt;
-        console.log(`  ${icon} ${r.status.padEnd(10)} ${prompt}`);
+        const cost = r.costMs ? ` (${(r.costMs / 1000).toFixed(0)}s)` : '';
+        console.log(`  ${icon} ${r.status.padEnd(10)} ${prompt}${cost}`);
         console.log(`     ${r.outputPath}`);
         if (r.error) console.log(`     error: ${r.error}`);
       }
