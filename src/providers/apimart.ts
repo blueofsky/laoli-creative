@@ -37,8 +37,31 @@ export const apimartProvider: Provider = {
     } else {
       requestBody.size = '1024x1024';
     }
+    // 图生图：APIMart 需要先上传图片获取 URL，再传入 image_urls
     if (params.refImages && params.refImages.length > 0) {
-      requestBody.image = params.refImages[0];
+      const urls: string[] = [];
+      for (const ref of params.refImages) {
+        if (ref.startsWith('http://') || ref.startsWith('https://')) {
+          urls.push(ref);
+        } else {
+          // 上传本地文件到 APIMart
+          const buf = readFileSync(ref);
+          const mime = ref.endsWith('.png') ? 'image/png' : 'image/jpeg';
+          const blob = new Blob([buf], { type: mime });
+          const form = new FormData();
+          form.append('file', blob, ref.split('/').pop() || 'ref.png');
+
+          const uploadRes = await fetch(`${BASE_URL}/uploads/images`, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${apiKey}` },
+            body: form,
+          });
+          if (!uploadRes.ok) throw new ProviderError(`APIMart upload failed`, 'apimart', uploadRes.status);
+          const uploadData: any = await uploadRes.json();
+          urls.push(uploadData.url);
+        }
+      }
+      requestBody.image_urls = urls;
     }
     if (params.quality) {
       requestBody.quality = params.quality === 'normal' ? '1k' : '2k';
@@ -63,28 +86,14 @@ export const apimartProvider: Provider = {
   },
 
   async editImage(params: EditImageParams): Promise<ImageResult> {
-    const apiKey = getApiKey('apimart');
-    const model = params.model || 'gpt-image-2';
-    const imageBuffer = readFileSync(params.inputPath);
-    const base64Image = imageBuffer.toString('base64');
-    const requestBody = { model, prompt: params.prompt, image: `data:image/png;base64,${base64Image}` };
-
-    try {
-      const response = await fetch(`${BASE_URL}/images/edits`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-        body: JSON.stringify(requestBody),
-      });
-      if (!response.ok) {
-        const err: any = await response.json().catch(() => ({}));
-        throw new ProviderError(`APIMart API error: ${err.error?.message || response.statusText}`, 'apimart', response.status);
-      }
-      const data: any = await response.json();
-      return { url: data.data[0].url, outputPath: await downloadFile(data.data[0].url, params.outputPath), metadata: { provider: 'apimart', model } };
-    } catch (error) {
-      if (error instanceof ProviderError) throw error;
-      throw new NetworkError(`APIMart API request failed: ${error instanceof Error ? error.message : String(error)}`);
-    }
+    // APIMart 图生图走 generateImage + refImages 路径
+    return this.generateImage({
+      prompt: params.prompt,
+      outputPath: params.outputPath,
+      model: params.model,
+      provider: 'apimart',
+      refImages: [params.inputPath],
+    });
   },
 
   async batchGenerateImages(params: BatchImageParams): Promise<BatchImageResult[]> {

@@ -21,8 +21,19 @@ export const tuziProvider: Provider = {
     } else {
       requestBody.size = '1024x1024';
     }
+    // 图生图：参考图转 base64 data URL，放入 image 数组
     if (params.refImages && params.refImages.length > 0) {
-      requestBody.image = params.refImages[0];
+      const images: string[] = [];
+      for (const ref of params.refImages) {
+        if (ref.startsWith('http://') || ref.startsWith('https://')) {
+          images.push(ref);
+        } else {
+          const buf = readFileSync(ref);
+          const mime = ref.endsWith('.png') ? 'image/png' : 'image/jpeg';
+          images.push(`data:${mime};base64,${buf.toString('base64')}`);
+        }
+      }
+      requestBody.image = images;
     }
     if (params.quality) {
       requestBody.quality = params.quality === 'normal' ? '1k' : '2k';
@@ -47,28 +58,16 @@ export const tuziProvider: Provider = {
   },
 
   async editImage(params: EditImageParams): Promise<ImageResult> {
-    const apiKey = getApiKey('tuzi');
-    const model = params.model || 'gpt-image-2';
-    const imageBuffer = readFileSync(params.inputPath);
-    const base64Image = imageBuffer.toString('base64');
-    const requestBody = { model, prompt: params.prompt, image: `data:image/png;base64,${base64Image}` };
-
-    try {
-      const response = await fetch(`${BASE_URL}/images/edits`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-        body: JSON.stringify(requestBody),
-      });
-      if (!response.ok) {
-        const err: any = await response.json().catch(() => ({}));
-        throw new ProviderError(`Tuzi API error: ${err.error?.message || response.statusText}`, 'tuzi', response.status);
-      }
-      const data: any = await response.json();
-      return { url: data.data[0].url, outputPath: await downloadFile(data.data[0].url, params.outputPath), metadata: { provider: 'tuzi', model } };
-    } catch (error) {
-      if (error instanceof ProviderError) throw error;
-      throw new NetworkError(`Tuzi API request failed: ${error instanceof Error ? error.message : String(error)}`);
-    }
+    // Tuzi 图生图走 generateImage + refImages 路径
+    const mime = params.inputPath.endsWith('.png') ? 'image/png' : 'image/jpeg';
+    const buf = readFileSync(params.inputPath);
+    return this.generateImage({
+      prompt: params.prompt,
+      outputPath: params.outputPath,
+      model: params.model,
+      provider: 'tuzi',
+      refImages: [`data:${mime};base64,${buf.toString('base64')}`],
+    });
   },
 
   async batchGenerateImages(params: BatchImageParams): Promise<BatchImageResult[]> {
