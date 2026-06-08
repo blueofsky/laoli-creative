@@ -3,6 +3,7 @@ import { generateCommand } from './generate';
 import { queryCommand } from './query';
 import { downloadCommand } from './download';
 import { listCommand } from './list';
+import { batchCommand } from './batch';
 
 export const videoCommands: CommandGroup = {
   name: 'video',
@@ -12,5 +13,6 @@ export const videoCommands: CommandGroup = {
     queryCommand,
     downloadCommand,
     listCommand,
+    batchCommand,
   ],
 };
