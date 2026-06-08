@@ -14,6 +14,7 @@ export const batchCommand: Command = {
     { flag: '--async', description: 'Submit only, do not wait', type: 'boolean' },
     { flag: '--jobs <count>', description: 'Concurrent downloads', type: 'number' },
     { flag: '--poll-interval <ms>', description: 'Poll interval in milliseconds', type: 'number' },
+    { flag: '--timeout <ms>', description: 'Max wait time in milliseconds', type: 'number' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
     { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],
@@ -33,6 +34,7 @@ export const batchCommand: Command = {
     const isAsync = flags.async as boolean;
     const jobs = flags.jobs ? parseInt(flags.jobs as string, 10) : 2;
     const pollInterval = flags['poll-interval'] ? parseInt(flags['poll-interval'] as string, 10) : 10000;
+    const timeout = flags.timeout ? parseInt(flags.timeout as string, 10) : 0;
     const isJson = flags.json as boolean;
     const isQuiet = flags.quiet as boolean || config.display.quiet;
 
@@ -74,9 +76,15 @@ export const batchCommand: Command = {
 
     // 默认：自动轮询，完成一个下载一个
     if (!isQuiet) info('Polling and downloading...');
+    const startTime = Date.now();
     const completed: string[] = [];
 
     while (true) {
+      if (timeout > 0 && Date.now() - startTime > timeout) {
+        const remaining = list().length;
+        throw new CLIError(`Batch timed out after ${timeout / 1000}s (${completed.length} done, ${remaining} remaining)`, ExitCode.TIMEOUT);
+      }
+
       const pending = list().filter(t => t.status === 'pending' || t.status === 'processing');
       if (pending.length === 0) break;
 

@@ -18,7 +18,6 @@ export const generateCommand: Command = {
     { flag: '--resolution <p>', description: 'Resolution: 480p, 720p, 1080p, 4k' },
     { flag: '--ref <files...>', description: 'Reference images' },
     { flag: '--async', description: 'Return task ID immediately', type: 'boolean' },
-    { flag: '--wait', description: 'Wait for completion (default)', type: 'boolean' },
     { flag: '--poll-interval <ms>', description: 'Poll interval in milliseconds', type: 'number' },
     { flag: '--timeout <ms>', description: 'Timeout in milliseconds', type: 'number' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
