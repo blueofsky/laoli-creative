@@ -23,8 +23,19 @@ export const agnesProvider: Provider = {
       requestBody.size = '1024x1024';
     }
 
+    // 图生图：参考图片转 base64 data URL，放入 extra_body.image 数组
     if (params.refImages && params.refImages.length > 0) {
-      requestBody.image = params.refImages[0];
+      const images: string[] = [];
+      for (const ref of params.refImages) {
+        if (ref.startsWith('http://') || ref.startsWith('https://')) {
+          images.push(ref);
+        } else {
+          const buf = readFileSync(ref);
+          const mime = ref.endsWith('.png') ? 'image/png' : 'image/jpeg';
+          images.push(`data:${mime};base64,${buf.toString('base64')}`);
+        }
+      }
+      requestBody.extra_body = { image: images, response_format: 'url' };
     }
 
     try {
