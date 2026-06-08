@@ -15,6 +15,7 @@ export const generateCommand: Command = {
     { flag: '--aspect-ratio <ratio>', description: 'Aspect ratio (e.g., 16:9, 1:1)' },
     { flag: '--size <WxH>', description: 'Image size (e.g., 1024x1024)' },
 
+    { flag: '--quality <level>', description: 'Quality: normal, 2k' },
     { flag: '--ref <files...>', description: 'Reference images' },
     { flag: '--n <count>', description: 'Number of images', type: 'number' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
@@ -41,7 +42,7 @@ export const generateCommand: Command = {
     const model = (flags.model as string) || config.imagine.defaultModel;
     const aspectRatio = flags['aspect-ratio'] as string;
     const size = flags.size as string;
-    const quality = flags.quality as string;
+    const quality = (flags.quality as string) || config.imagine.defaultQuality || '2k';
     const ref = flags.ref as string[] | undefined;
     const n = flags.n ? parseInt(flags.n as string, 10) : undefined;
     const isJson = flags.json as boolean;

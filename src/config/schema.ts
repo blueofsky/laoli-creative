@@ -43,6 +43,7 @@ export const DEFAULT_CONFIG: Config = {
     defaultModel: 'agnes-image-2.1-flash',
     defaultOutputDir: './images',
 
+    defaultQuality: '2k',
     defaultAspectRatio: '1:1',
   },
   

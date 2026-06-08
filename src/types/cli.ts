@@ -62,6 +62,7 @@ export interface ModuleConfig {
 }
 
 export interface ImagineConfig extends ModuleConfig {
+  defaultQuality?: string;
   defaultAspectRatio?: string;
 }
 

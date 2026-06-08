@@ -110,6 +110,12 @@
           "default": "./images",
           "description": "默认输出目录"
         },
+        "defaultQuality": {
+          "type": "string",
+          "enum": ["normal", "2k"],
+          "default": "2k",
+          "description": "默认质量"
+        },
         "defaultAspectRatio": {
           "type": "string",
           "default": "1:1",

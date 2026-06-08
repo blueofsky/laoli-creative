@@ -40,6 +40,9 @@ export const apimartProvider: Provider = {
     if (params.refImages && params.refImages.length > 0) {
       requestBody.image = params.refImages[0];
     }
+    if (params.quality) {
+      requestBody.quality = params.quality === 'normal' ? '1k' : '2k';
+    }
 
     try {
       const response = await fetch(`${BASE_URL}/images/generations`, {
