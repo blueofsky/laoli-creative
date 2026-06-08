@@ -1,7 +1,6 @@
 import type { Command, Config, Flags } from '../../types/cli';
 import { saveConfig } from '../../config/loader';
 import { success } from '../../utils/logger';
-import { CLIError, ExitCode } from '../../errors/codes';
 
 export const logoutCommand: Command = {
   name: 'logout',
@@ -14,7 +13,7 @@ export const logoutCommand: Command = {
     'laoli auth logout',
     'laoli auth logout --provider agnes',
   ],
-  execute: async (config: Config, flags: Flags) => {
+  execute: async (_config: Config, flags: Flags) => {
     const provider = flags.provider as string;
     
     if (provider) {

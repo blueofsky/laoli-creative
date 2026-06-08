@@ -2,7 +2,7 @@ import { Registry } from './registry';
 import { parseArgs } from './args';
 import { loadConfig } from './config/loader';
 import { handleError } from './errors/handler';
-import type { Command, CommandGroup, CLIOptions } from './types/cli';
+import type { CLIOptions } from './types/cli';
 
 export class CLI {
   private registry: Registry;

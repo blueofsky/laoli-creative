@@ -74,11 +74,11 @@ async function uploadSingleFile(filePath: string, config: PicgoConfig): Promise<
   });
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(`GitHub API error: ${error.message || response.statusText}`);
+    const err: any = await response.json().catch(() => ({}));
+    throw new Error(`GitHub API error: ${err.message || response.statusText}`);
   }
 
-  const data = await response.json();
+  const data: any = await response.json();
 
   let fileUrl: string;
   if (config.customUrl) {

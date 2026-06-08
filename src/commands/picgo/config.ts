@@ -22,7 +22,7 @@ export const configCommand: Command = {
     'laoli picgo config --repo username/image-host --custom-url "https://cdn.jsdmirror.com/gh/username/image-host@main"',
     'laoli picgo config --show',
   ],
-  execute: async (config: Config, flags: Flags) => {
+  execute: async (_config: Config, flags: Flags) => {
     const show = flags.show as boolean;
     const isJson = flags.json as boolean;
     

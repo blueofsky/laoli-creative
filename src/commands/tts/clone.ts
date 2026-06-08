@@ -1,5 +1,4 @@
 import type { Command, Config, Flags } from '../../types/cli';
-import { success, json } from '../../utils/logger';
 import { CLIError, ExitCode } from '../../errors/codes';
 
 export const cloneCommand: Command = {
@@ -18,25 +17,15 @@ export const cloneCommand: Command = {
   examples: [
     'laoli tts clone --voice-file sample.wav --text "Hello" --output clone.mp3',
   ],
-  execute: async (config: Config, flags: Flags) => {
+  execute: async (_config: Config, flags: Flags) => {
     const voiceFile = flags['voice-file'] as string;
     const text = flags.text as string;
     const output = flags.output as string;
-    
-    if (!voiceFile) {
-      throw new CLIError('Missing required argument: --voice-file', ExitCode.INVALID_ARGS);
-    }
-    if (!text) {
-      throw new CLIError('Missing required argument: --text', ExitCode.INVALID_ARGS);
-    }
-    if (!output) {
-      throw new CLIError('Missing required argument: --output', ExitCode.INVALID_ARGS);
-    }
-    
-    const isJson = flags.json as boolean;
-    const isQuiet = flags.quiet as boolean || config.output.quiet;
-    
-    // TODO: 实现音色克隆功能
+
+    if (!voiceFile) throw new CLIError('Missing required argument: --voice-file', ExitCode.INVALID_ARGS);
+    if (!text) throw new CLIError('Missing required argument: --text', ExitCode.INVALID_ARGS);
+    if (!output) throw new CLIError('Missing required argument: --output', ExitCode.INVALID_ARGS);
+
     throw new CLIError('Voice cloning not yet implemented', ExitCode.GENERAL);
   },
 };

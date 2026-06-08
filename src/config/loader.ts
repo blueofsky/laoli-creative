@@ -1,5 +1,5 @@
 import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
-import { join, dirname } from 'path';
+import { join } from 'path';
 import { homedir } from 'os';
 import { DEFAULT_CONFIG } from './schema';
 import type { Config } from '../types/cli';

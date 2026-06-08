@@ -1,7 +1,5 @@
 import type { Command, Config, Flags } from '../../types/cli';
-import { getProvider } from '../../providers';
-import { json, info } from '../../utils/logger';
-import { CLIError, ExitCode } from '../../errors/codes';
+import { json } from '../../utils/logger';
 import { getVoices as getMimoVoices } from '../../providers/mimo';
 
 const MINIMAX_VOICES = [

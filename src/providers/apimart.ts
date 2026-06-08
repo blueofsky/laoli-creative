@@ -28,12 +28,8 @@ export const apimartProvider: Provider = {
   async generateImage(params: ImageParams): Promise<ImageResult> {
     const apiKey = getApiKey('apimart');
     const model = params.model || 'gpt-image-2';
-    
-    const requestBody: any = {
-      model,
-      prompt: params.prompt,
-    };
-    
+    const requestBody: any = { model, prompt: params.prompt };
+
     if (params.size) {
       requestBody.size = params.size;
     } else if (params.aspectRatio) {
@@ -41,28 +37,22 @@ export const apimartProvider: Provider = {
     } else {
       requestBody.size = '1024x1024';
     }
-    
     if (params.refImages && params.refImages.length > 0) {
       requestBody.image = params.refImages[0];
     }
-    
+
     try {
       const response = await fetch(`${BASE_URL}/images/generations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
         body: JSON.stringify(requestBody),
       });
-      
       if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
-        throw new ProviderError(`APIMart API error: ${error.error?.message || response.statusText}`, 'apimart', response.status);
+        const err: any = await response.json().catch(() => ({}));
+        throw new ProviderError(`APIMart API error: ${err.error?.message || response.statusText}`, 'apimart', response.status);
       }
-      
-      const data = await response.json();
-      const url = data.data[0].url;
-      const outputPath = await downloadFile(url, params.outputPath);
-      
-      return { url, outputPath, metadata: { provider: 'apimart', model, size: requestBody.size } };
+      const data: any = await response.json();
+      return { url: data.data[0].url, outputPath: await downloadFile(data.data[0].url, params.outputPath), metadata: { provider: 'apimart', model, size: requestBody.size } };
     } catch (error) {
       if (error instanceof ProviderError) throw error;
       throw new NetworkError(`APIMart API request failed: ${error instanceof Error ? error.message : String(error)}`);
@@ -74,26 +64,20 @@ export const apimartProvider: Provider = {
     const model = params.model || 'gpt-image-2';
     const imageBuffer = readFileSync(params.inputPath);
     const base64Image = imageBuffer.toString('base64');
-    
     const requestBody = { model, prompt: params.prompt, image: `data:image/png;base64,${base64Image}` };
-    
+
     try {
       const response = await fetch(`${BASE_URL}/images/edits`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
         body: JSON.stringify(requestBody),
       });
-      
       if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
-        throw new ProviderError(`APIMart API error: ${error.error?.message || response.statusText}`, 'apimart', response.status);
+        const err: any = await response.json().catch(() => ({}));
+        throw new ProviderError(`APIMart API error: ${err.error?.message || response.statusText}`, 'apimart', response.status);
       }
-      
-      const data = await response.json();
-      const url = data.data[0].url;
-      const outputPath = await downloadFile(url, params.outputPath);
-      
-      return { url, outputPath, metadata: { provider: 'apimart', model } };
+      const data: any = await response.json();
+      return { url: data.data[0].url, outputPath: await downloadFile(data.data[0].url, params.outputPath), metadata: { provider: 'apimart', model } };
     } catch (error) {
       if (error instanceof ProviderError) throw error;
       throw new NetworkError(`APIMart API request failed: ${error instanceof Error ? error.message : String(error)}`);
@@ -102,53 +86,35 @@ export const apimartProvider: Provider = {
 
   async batchGenerateImages(params: BatchImageParams): Promise<BatchImageResult[]> {
     getApiKey('apimart');
-    
-    if (!existsSync(params.batchFile)) {
-      throw new ProviderError(`Batch file not found: ${params.batchFile}`, 'apimart');
-    }
-    
-    const batchContent = readFileSync(params.batchFile, 'utf-8');
-    const batchItems = JSON.parse(batchContent);
-    if (!Array.isArray(batchItems)) {
-      throw new ProviderError('Batch file must contain a JSON array', 'apimart');
-    }
-    
+    if (!existsSync(params.batchFile)) throw new ProviderError(`Batch file not found: ${params.batchFile}`, 'apimart');
+    const batchItems = JSON.parse(readFileSync(params.batchFile, 'utf-8'));
+    if (!Array.isArray(batchItems)) throw new ProviderError('Batch file must contain a JSON array', 'apimart');
+
     const results: BatchImageResult[] = [];
     const concurrency = params.jobs || 4;
-    
     for (let i = 0; i < batchItems.length; i += concurrency) {
       const batch = batchItems.slice(i, i + concurrency);
       const batchResults = await Promise.all(
         batch.map(async (item: any) => {
-          const result = await this.generateImage({
-            prompt: item.prompt, outputPath: item.output, model: item.model,
-            aspectRatio: item.aspectRatio, size: item.size,
-          });
+          const result = await this.generateImage({ prompt: item.prompt, outputPath: item.output, model: item.model, aspectRatio: item.aspectRatio, size: item.size });
           return { url: result.url, outputPath: result.outputPath, metadata: result.metadata };
         })
       );
       results.push(...batchResults);
     }
-    
     return results;
   },
 
   async generateVideo(params: VideoParams): Promise<VideoResult> {
     const apiKey = getApiKey('apimart');
     const model = params.model || 'doubao-seedance-1-0-pro-fast';
-    
     const modelConfig = VIDEO_MODELS[model];
-    if (!modelConfig) {
-      throw new ProviderError(`Unsupported video model: ${model}. Supported: ${Object.keys(VIDEO_MODELS).join(', ')}`, 'apimart');
-    }
-    
+    if (!modelConfig) throw new ProviderError(`Unsupported video model: ${model}. Supported: ${Object.keys(VIDEO_MODELS).join(', ')}`, 'apimart');
+
     const requestBody: any = { model, prompt: params.prompt };
     const seconds = params.seconds || 5;
-    if (seconds > modelConfig.maxDuration) {
-      throw new ProviderError(`Duration ${seconds}s exceeds max ${modelConfig.maxDuration}s for ${model}`, 'apimart');
-    }
+    if (seconds > modelConfig.maxDuration) throw new ProviderError(`Duration ${seconds}s exceeds max ${modelConfig.maxDuration}s for ${model}`, 'apimart');
     requestBody.duration = seconds;
-    
     if (params.size) {
       requestBody.size = params.size;
     } else if (params.resolution) {
@@ -156,24 +122,17 @@ export const apimartProvider: Provider = {
     } else {
       requestBody.size = RESOLUTION_MAP['1080p'];
     }
-    
-    if (params.refImages && params.refImages.length > 0) {
-      requestBody.image = params.refImages[0];
-    }
-    
+    if (params.refImages && params.refImages.length > 0) requestBody.image = params.refImages[0];
+
     try {
       const response = await fetch(`${BASE_URL}/videos/generations`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-        body: JSON.stringify(requestBody),
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` }, body: JSON.stringify(requestBody),
       });
-      
       if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
-        throw new ProviderError(`APIMart Video API error: ${error.error?.message || response.statusText}`, 'apimart', response.status);
+        const err: any = await response.json().catch(() => ({}));
+        throw new ProviderError(`APIMart Video API error: ${err.error?.message || response.statusText}`, 'apimart', response.status);
       }
-      
-      const data = await response.json();
+      const data: any = await response.json();
       return { taskId: data.id, status: 'pending', metadata: { provider: 'apimart', model, duration: seconds, size: requestBody.size } };
     } catch (error) {
       if (error instanceof ProviderError) throw error;
@@ -183,23 +142,17 @@ export const apimartProvider: Provider = {
 
   async queryVideoTask(taskId: string): Promise<VideoResult> {
     const apiKey = getApiKey('apimart');
-    
     try {
-      const response = await fetch(`${BASE_URL}/videos/generations/${taskId}`, {
-        headers: { 'Authorization': `Bearer ${apiKey}` },
-      });
-      
+      const response = await fetch(`${BASE_URL}/videos/generations/${taskId}`, { headers: { 'Authorization': `Bearer ${apiKey}` } });
       if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
-        throw new ProviderError(`APIMart Video API error: ${error.error?.message || response.statusText}`, 'apimart', response.status);
+        const err: any = await response.json().catch(() => ({}));
+        throw new ProviderError(`APIMart Video API error: ${err.error?.message || response.statusText}`, 'apimart', response.status);
       }
-      
-      const data = await response.json();
+      const data: any = await response.json();
       let status: VideoResult['status'] = 'pending';
       if (data.status === 'succeeded') status = 'completed';
       else if (data.status === 'failed') status = 'failed';
       else if (data.status === 'processing' || data.status === 'running') status = 'processing';
-      
       return { taskId: data.id, status, url: data.output?.video_url || data.video_url, metadata: { provider: 'apimart', model: data.model } };
     } catch (error) {
       if (error instanceof ProviderError) throw error;
@@ -208,10 +161,8 @@ export const apimartProvider: Provider = {
   },
 
   async downloadVideo(taskId: string, outputPath: string): Promise<string> {
-    const result = await this.queryVideoTask(taskId);
-    if (result.status !== 'completed' || !result.url) {
-      throw new ProviderError(`Video task ${taskId} is not completed. Status: ${result.status}`, 'apimart');
-    }
-    return downloadFile(result.url, outputPath);
+    const result = await this.queryVideoTask!(taskId);
+    if (result.status !== 'completed' || !result.url) throw new ProviderError(`Video task ${taskId} is not completed. Status: ${result.status}`, 'apimart');
+    return downloadFile(result.url!, outputPath);
   },
 };

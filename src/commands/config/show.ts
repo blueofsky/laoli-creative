@@ -1,5 +1,4 @@
 import type { Command, Config, Flags } from '../../types/cli';
-import { loadConfig } from '../../config/loader';
 import { json } from '../../utils/logger';
 
 export const showCommand: Command = {

@@ -15,7 +15,7 @@ export const loginCommand: Command = {
     'laoli auth login --api-key sk-xxxxx',
     'laoli auth login --api-key sk-xxxxx --provider agnes',
   ],
-  execute: async (config: Config, flags: Flags) => {
+  execute: async (_config: Config, flags: Flags) => {
     const apiKey = flags['api-key'] as string;
     const provider = (flags.provider as string) || 'agnes';
     
