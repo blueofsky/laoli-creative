@@ -1,4 +1,4 @@
-import type { Provider, ImageParams, ImageResult, EditImageParams, BatchImageParams, BatchImageResult } from '../types/sdk';
+import type { Provider, ImageParams, ImageResult, BatchImageParams, BatchImageResult } from '../types/sdk';
 import { ProviderError, NetworkError } from '../errors/codes';
 import { readFileSync, existsSync } from 'fs';
 import { getApiKey, aspectRatioToSize } from './shared';
@@ -57,18 +57,6 @@ export const tuziProvider: Provider = {
     }
   },
 
-  async editImage(params: EditImageParams): Promise<ImageResult> {
-    // Tuzi 图生图走 generateImage + refImages 路径
-    const mime = params.inputPath.endsWith('.png') ? 'image/png' : 'image/jpeg';
-    const buf = readFileSync(params.inputPath);
-    return this.generateImage({
-      prompt: params.prompt,
-      outputPath: params.outputPath,
-      model: params.model,
-      provider: 'tuzi',
-      refImages: [`data:${mime};base64,${buf.toString('base64')}`],
-    });
-  },
 
   async batchGenerateImages(params: BatchImageParams): Promise<BatchImageResult[]> {
     getApiKey('tuzi');

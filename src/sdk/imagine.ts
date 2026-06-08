@@ -8,11 +8,6 @@ export async function generateImage(params: ImageParams): Promise<ImageResult> {
   return provider.generateImage(params);
 }
 
-export async function editImage(params: EditImageParams): Promise<ImageResult> {
-  const provider = getProvider(params.provider || 'agnes');
-  return provider.editImage(params);
-}
-
 export async function batchGenerateImages(params: BatchImageParams): Promise<BatchImageResult[]> {
   if (!existsSync(params.batchFile)) {
     throw new ProviderError(`Batch file not found: ${params.batchFile}`, 'batch');
@@ -49,12 +44,4 @@ export async function batchGenerateImages(params: BatchImageParams): Promise<Bat
   }
 
   return results;
-}
-
-export interface EditImageParams {
-  inputPath: string;
-  prompt: string;
-  outputPath: string;
-  provider?: string;
-  model?: string;
 }

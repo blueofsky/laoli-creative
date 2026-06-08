@@ -1,4 +1,4 @@
-import type { Provider, ImageParams, ImageResult, EditImageParams, BatchImageParams, BatchImageResult, VideoParams, VideoResult } from '../types/sdk';
+import type { Provider, ImageParams, ImageResult, BatchImageParams, BatchImageResult, VideoParams, VideoResult } from '../types/sdk';
 import { ProviderError, NetworkError } from '../errors/codes';
 import { readFileSync, existsSync } from 'fs';
 import { getApiKey, aspectRatioToSize } from './shared';
@@ -104,16 +104,6 @@ export const apimartProvider: Provider = {
     throw new ProviderError(`APIMart task timed out after ${(maxAttempts * pollInterval) / 1000}s`, 'apimart');
   },
 
-  async editImage(params: EditImageParams): Promise<ImageResult> {
-    // APIMart 图生图走 generateImage + refImages 路径
-    return this.generateImage({
-      prompt: params.prompt,
-      outputPath: params.outputPath,
-      model: params.model,
-      provider: 'apimart',
-      refImages: [params.inputPath],
-    });
-  },
 
   async batchGenerateImages(params: BatchImageParams): Promise<BatchImageResult[]> {
     getApiKey('apimart');

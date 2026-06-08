@@ -1,5 +1,4 @@
-export { generateImage, editImage, batchGenerateImages } from './imagine';
-export type { EditImageParams } from './imagine';
+export { generateImage, batchGenerateImages } from './imagine';
 
 export { synthesizeSpeech, listVoices } from './tts';
 export { generateVideo, queryVideoTask, downloadVideo, waitForVideoCompletion } from './video';

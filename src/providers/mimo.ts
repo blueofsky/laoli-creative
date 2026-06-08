@@ -39,9 +39,6 @@ export const mimoProvider: Provider = {
     throw new ProviderError('Image generation not supported by MiMo provider', 'mimo');
   },
 
-  async editImage(): Promise<any> {
-    throw new ProviderError('Image editing not supported by MiMo provider', 'mimo');
-  },
 
   async batchGenerateImages(): Promise<any> {
     throw new ProviderError('Image generation not supported by MiMo provider', 'mimo');

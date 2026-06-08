@@ -44,9 +44,6 @@ export const minimaxProvider: Provider = {
     }
   },
 
-  async editImage(): Promise<ImageResult> {
-    throw new ProviderError('Image editing not supported by MiniMax provider', 'minimax');
-  },
 
   async batchGenerateImages(params: BatchImageParams): Promise<BatchImageResult[]> {
     getApiKey('minimax');

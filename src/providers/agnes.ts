@@ -1,4 +1,4 @@
-import type { Provider, ImageParams, ImageResult, EditImageParams, BatchImageParams, BatchImageResult } from '../types/sdk';
+import type { Provider, ImageParams, ImageResult, BatchImageParams, BatchImageResult } from '../types/sdk';
 import { ProviderError, NetworkError } from '../errors/codes';
 import { readFileSync, existsSync } from 'fs';
 import { getApiKey, aspectRatioToSize } from './shared';
@@ -65,48 +65,6 @@ export const agnesProvider: Provider = {
     }
   },
 
-  async editImage(params: EditImageParams): Promise<ImageResult> {
-    const apiKey = getApiKey('agnes');
-    const model = params.model || 'agnes-image-2.1-flash';
-    const imageBuffer = readFileSync(params.inputPath);
-    const mime = params.inputPath.endsWith('.png') ? 'image/png' : 'image/jpeg';
-    const base64Image = imageBuffer.toString('base64');
-
-    const requestBody = {
-      model,
-      prompt: params.prompt,
-      extra_body: {
-        image: [`data:${mime};base64,${base64Image}`],
-        response_format: 'url',
-      },
-    };
-
-    try {
-      const response = await fetch(`${BASE_URL}/images/generations`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-        body: JSON.stringify(requestBody),
-      });
-
-      if (!response.ok) {
-        const err: any = await response.json().catch(() => ({}));
-        throw new ProviderError(
-          `Agnes API error: ${err.error?.message || response.statusText}`,
-          'agnes',
-          response.status
-        );
-      }
-
-      const data: any = await response.json();
-      const url = data.data[0].url;
-      const outputPath = await downloadFile(url, params.outputPath);
-
-      return { url, outputPath, metadata: { provider: 'agnes', model } };
-    } catch (error) {
-      if (error instanceof ProviderError) throw error;
-      throw new NetworkError(`Agnes API request failed: ${error instanceof Error ? error.message : String(error)}`);
-    }
-  },
 
   async batchGenerateImages(params: BatchImageParams): Promise<BatchImageResult[]> {
     getApiKey('agnes');
