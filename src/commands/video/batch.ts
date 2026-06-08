@@ -12,7 +12,7 @@ export const batchCommand: Command = {
   options: [
     { flag: '--batchfile <path>', description: 'JSON batch file path', required: true },
     { flag: '--poll', description: 'Auto-poll and download after submission', type: 'boolean' },
-    { flag: '--jobs <count>', description: 'Concurrent downloads', type: 'number' },
+    { flag: '--jobs <count>', description: 'Concurrent downloads (with --poll)', type: 'number' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
     { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],
