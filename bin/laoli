@@ -1,7 +1,2 @@
-#!/usr/bin/env node
-// 生产环境使用：先尝试加载构建产物，失败则回退到源码（Bun 开发模式）
-try {
-  await import('../dist/main.mjs');
-} catch {
-  await import('../src/main.ts');
-}
+#!/usr/bin/env bun
+import '../src/main.ts';
