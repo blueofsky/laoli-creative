@@ -74,8 +74,8 @@ export const generateCommand: Command = {
       
       // 如果是异步模式，记录到队列并返回任务 ID
       if (isAsync) {
-        const { addTask } = await import('../../sdk/queue');
-        addTask({ taskId: result.taskId, provider: providerName, outputPath: output, prompt: prompt.slice(0, 50) });
+        const { push } = await import('../../sdk/queue');
+        push({ taskId: result.taskId, provider: providerName, outputPath: output, prompt: prompt.slice(0, 50) });
         if (isJson) {
           json(result);
         } else if (!isQuiet) {

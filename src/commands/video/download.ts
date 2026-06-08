@@ -1,6 +1,6 @@
 import type { Command, Config, Flags } from '../../types/cli';
 import { queryVideoTask, downloadVideo } from '../../sdk/video';
-import { updateTask, getTask } from '../../sdk/queue';
+import { update, get } from '../../sdk/queue';
 import { success, json, info } from '../../utils/logger';
 import { CLIError, ExitCode } from '../../errors/codes';
 
@@ -23,7 +23,7 @@ export const downloadCommand: Command = {
     if (!taskId) throw new CLIError('Missing required argument: --task-id', ExitCode.INVALID_ARGS);
 
     // 从队列读取已保存的路径和 provider
-    const saved = getTask(taskId);
+    const saved = get(taskId);
     const providerName = (flags.provider as string) || saved?.provider || config.video.defaultProvider || 'apimart';
     const output = (flags.output as string) || saved?.outputPath;
     if (!output) throw new CLIError('Missing required argument: --output', ExitCode.INVALID_ARGS);
@@ -36,7 +36,7 @@ export const downloadCommand: Command = {
       if (result.status === 'completed' && result.url) {
         // 任务完成，下载
         await downloadVideo(taskId, output, providerName);
-        updateTask(taskId, { status: 'completed' });
+        update(taskId, { status: 'completed' });
 
         if (isJson) {
           json({ ...result, outputPath: output });
@@ -44,11 +44,11 @@ export const downloadCommand: Command = {
           success(`Video saved to ${output}`);
         }
       } else if (result.status === 'failed') {
-        updateTask(taskId, { status: 'failed' });
+        update(taskId, { status: 'failed' });
         throw new CLIError(`Video generation failed`, ExitCode.PROVIDER_ERROR);
       } else {
         // 还在处理中
-        updateTask(taskId, { status: 'processing' });
+        update(taskId, { status: 'processing' });
         if (isJson) {
           json({ taskId, status: result.status });
         } else {

@@ -1,5 +1,5 @@
 import type { Command, Config, Flags } from '../../types/cli';
-import { listTasks } from '../../sdk/queue';
+import { list } from '../../sdk/queue';
 import { json, info } from '../../utils/logger';
 
 export const listCommand: Command = {
@@ -19,7 +19,7 @@ export const listCommand: Command = {
     const filter = flags.status as string | undefined;
     const isJson = flags.json as boolean;
 
-    const tasks = listTasks(filter as any);
+    const tasks = list(filter as any);
     if (tasks.length === 0) {
       info('No video tasks found.');
       return;
