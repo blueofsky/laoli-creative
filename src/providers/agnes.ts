@@ -167,34 +167,49 @@ export const agnesProvider: Provider = {
     }
   },
 
-  async queryVideoTask(taskId: string): Promise<VideoResult> {
+  async queryVideoTask(taskId: string, retries = 3): Promise<VideoResult> {
     const apiKey = getApiKey('agnes');
 
-    try {
-      const response = await fetch(`${BASE_URL.replace('/v1', '')}/agnesapi?video_id=${taskId}`, {
-        headers: { Authorization: `Bearer ${apiKey}` },
-      });
-      if (!response.ok) {
-        const err: any = await response.json().catch(() => ({}));
-        throw new ProviderError(`Agnes Video query error: ${err.error?.message || response.statusText}`, 'agnes', response.status);
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const response = await fetch(`${BASE_URL.replace('/v1', '')}/agnesapi?video_id=${taskId}`, {
+          headers: { Authorization: `Bearer ${apiKey}` },
+        });
+
+        if (response.status === 429) {
+          // Rate limited: wait and retry
+          if (attempt < retries) {
+            const waitMs = (attempt + 1) * 3000;
+            await new Promise(r => setTimeout(r, waitMs));
+            continue;
+          }
+          throw new ProviderError('Agnes API rate limit exceeded. Try again later.', 'agnes', 429);
+        }
+
+        if (!response.ok) {
+          const err: any = await response.json().catch(() => ({}));
+          throw new ProviderError(`Agnes Video query error: ${err.error?.message || response.statusText}`, 'agnes', response.status);
+        }
+        const data: any = await response.json();
+
+        let status: VideoResult['status'] = 'processing';
+        if (data.status === 'completed') status = 'completed';
+        else if (data.status === 'failed') status = 'failed';
+        else if (data.status === 'queued') status = 'pending';
+
+        return {
+          taskId,
+          status,
+          url: data.remixed_from_video_id || data.video_url || data.url,
+          metadata: { provider: 'agnes', progress: data.progress },
+        };
+      } catch (error) {
+        if (error instanceof ProviderError && (error as any).statusCode !== 429) throw error;
+        if (attempt >= retries) throw error;
+        await new Promise(r => setTimeout(r, (attempt + 1) * 3000));
       }
-      const data: any = await response.json();
-
-      let status: VideoResult['status'] = 'processing';
-      if (data.status === 'completed') status = 'completed';
-      else if (data.status === 'failed') status = 'failed';
-      else if (data.status === 'queued') status = 'pending';
-
-      return {
-        taskId,
-        status,
-        url: data.remixed_from_video_id || data.video_url || data.url,
-        metadata: { provider: 'agnes', progress: data.progress },
-      };
-    } catch (error) {
-      if (error instanceof ProviderError) throw error;
-      throw new NetworkError(`Agnes Video query failed: ${error instanceof Error ? error.message : String(error)}`);
     }
+    throw new ProviderError('Agnes Video query failed after retries', 'agnes');
   },
 
   async downloadVideo(taskId: string, outputPath: string): Promise<string> {
