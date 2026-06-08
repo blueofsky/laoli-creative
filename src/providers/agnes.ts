@@ -58,12 +58,20 @@ export const agnesProvider: Provider = {
     const apiKey = getApiKey('agnes');
     const model = params.model || 'agnes-image-2.1-flash';
     const imageBuffer = readFileSync(params.inputPath);
+    const mime = params.inputPath.endsWith('.png') ? 'image/png' : 'image/jpeg';
     const base64Image = imageBuffer.toString('base64');
 
-    const requestBody = { model, prompt: params.prompt, image: `data:image/png;base64,${base64Image}` };
+    const requestBody = {
+      model,
+      prompt: params.prompt,
+      extra_body: {
+        image: [`data:${mime};base64,${base64Image}`],
+        response_format: 'url',
+      },
+    };
 
     try {
-      const response = await fetch(`${BASE_URL}/images/edits`, {
+      const response = await fetch(`${BASE_URL}/images/generations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
         body: JSON.stringify(requestBody),

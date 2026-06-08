@@ -33,7 +33,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
         const value = argv[i + 1];
         
         // 处理数组参数（如 --ref file1 file2）
-        if (flagName === 'ref' || flagName === 'input') {
+        if (flagName === 'ref') {
           const values: string[] = [value];
           i += 2;
           while (i < argv.length && !argv[i].startsWith('--')) {
