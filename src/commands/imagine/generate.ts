@@ -40,7 +40,7 @@ export const generateCommand: Command = {
     
     const provider = (flags.provider as string) || config.imagine.defaultProvider || config.defaultProvider;
     const model = (flags.model as string) || config.imagine.defaultModel;
-    const aspectRatio = flags['aspect-ratio'] as string;
+    const aspectRatio = (flags['aspect-ratio'] as string) || config.imagine.defaultAspectRatio;
     const size = flags.size as string;
     const quality = (flags.quality as string) || config.imagine.defaultQuality || '2k';
     const ref = flags.ref as string[] | undefined;
