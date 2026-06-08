@@ -13,6 +13,7 @@ export const batchCommand: Command = {
     { flag: '--batchfile <path>', description: 'JSON batch file path', required: true },
     { flag: '--async', description: 'Submit only, do not wait', type: 'boolean' },
     { flag: '--jobs <count>', description: 'Concurrent downloads', type: 'number' },
+    { flag: '--poll-interval <ms>', description: 'Poll interval in milliseconds', type: 'number' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
     { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],
@@ -31,6 +32,7 @@ export const batchCommand: Command = {
 
     const isAsync = flags.async as boolean;
     const jobs = flags.jobs ? parseInt(flags.jobs as string, 10) : 2;
+    const pollInterval = flags['poll-interval'] ? parseInt(flags['poll-interval'] as string, 10) : 10000;
     const isJson = flags.json as boolean;
     const isQuiet = flags.quiet as boolean || config.display.quiet;
 
@@ -99,7 +101,7 @@ export const batchCommand: Command = {
       }));
 
       if (pending.length > 0) {
-        await new Promise(r => setTimeout(r, 10000)); // 10 秒轮询间隔
+        await new Promise(r => setTimeout(r, pollInterval));
       }
     }
 
