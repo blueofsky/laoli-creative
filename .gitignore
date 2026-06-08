@@ -1,0 +1,13 @@
+node_modules/
+dist/
+*.exe
+.env
+.env.*
+coverage/
+*.tgz
+.DS_Store
+.package-lock.json
+*.tsbuildinfo
+.vscode/
+.idea/
+*.log

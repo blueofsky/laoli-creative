@@ -1,0 +1,263 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Laoli CLI Configuration",
+  "description": "Laoli CLI 配置文件 schema",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "integer",
+      "default": 1,
+      "description": "配置文件版本，用于迁移"
+    },
+    "defaultProvider": {
+      "type": "string",
+      "enum": ["agnes", "apimart", "tuzi", "minimax", "mimo"],
+      "description": "默认 provider"
+    },
+    "defaultRegion": {
+      "type": "string",
+      "enum": ["global", "cn"],
+      "default": "cn",
+      "description": "默认区域"
+    },
+    "providers": {
+      "type": "object",
+      "description": "各 provider 的配置",
+      "properties": {
+        "agnes": { "$ref": "#/definitions/providerConfig" },
+        "apimart": { "$ref": "#/definitions/providerConfig" },
+        "tuzi": { "$ref": "#/definitions/providerConfig" },
+        "minimax": { "$ref": "#/definitions/providerConfig" },
+        "mimo": { "$ref": "#/definitions/providerConfig" }
+      },
+      "additionalProperties": false
+    },
+    "imagine": {
+      "$ref": "#/definitions/imagineConfig",
+      "description": "图片生成模块配置"
+    },
+    "tts": {
+      "$ref": "#/definitions/ttsConfig",
+      "description": "TTS 模块配置"
+    },
+    "video": {
+      "$ref": "#/definitions/videoConfig",
+      "description": "视频生成模块配置"
+    },
+    "bgm": {
+      "$ref": "#/definitions/bgmConfig",
+      "description": "背景音乐模块配置"
+    },
+    "picgo": {
+      "$ref": "#/definitions/picgoConfig",
+      "description": "图片上传模块配置"
+    },
+    "output": {
+      "$ref": "#/definitions/outputConfig",
+      "description": "输出配置"
+    },
+    "proxy": {
+      "type": "string",
+      "description": "HTTP 代理地址"
+    }
+  },
+  "definitions": {
+    "providerConfig": {
+      "type": "object",
+      "properties": {
+        "apiKey": {
+          "type": "string",
+          "description": "API Key"
+        },
+        "baseUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "API Base URL"
+        },
+        "defaultModel": {
+          "type": "string",
+          "description": "默认模型"
+        },
+        "timeout": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 30000,
+          "description": "请求超时时间（毫秒）"
+        },
+        "maxRetries": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 3,
+          "description": "最大重试次数"
+        }
+      },
+      "additionalProperties": false
+    },
+    "imagineConfig": {
+      "type": "object",
+      "properties": {
+        "defaultProvider": {
+          "type": "string",
+          "enum": ["agnes", "apimart", "tuzi"],
+          "description": "默认 provider"
+        },
+        "defaultModel": {
+          "type": "string",
+          "description": "默认模型"
+        },
+        "defaultOutputDir": {
+          "type": "string",
+          "default": "./images",
+          "description": "默认输出目录"
+        },
+        "defaultQuality": {
+          "type": "string",
+          "enum": ["normal", "2k"],
+          "default": "2k",
+          "description": "默认质量"
+        },
+        "defaultAspectRatio": {
+          "type": "string",
+          "default": "1:1",
+          "description": "默认宽高比"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ttsConfig": {
+      "type": "object",
+      "properties": {
+        "defaultProvider": {
+          "type": "string",
+          "enum": ["minimax", "mimo"],
+          "description": "默认 provider"
+        },
+        "defaultModel": {
+          "type": "string",
+          "description": "默认模型"
+        },
+        "defaultOutputDir": {
+          "type": "string",
+          "default": "./audio",
+          "description": "默认输出目录"
+        },
+        "defaultVoice": {
+          "type": "string",
+          "description": "默认音色"
+        },
+        "defaultFormat": {
+          "type": "string",
+          "enum": ["mp3", "wav"],
+          "default": "mp3",
+          "description": "默认音频格式"
+        }
+      },
+      "additionalProperties": false
+    },
+    "videoConfig": {
+      "type": "object",
+      "properties": {
+        "defaultProvider": {
+          "type": "string",
+          "enum": ["apimart", "tuzi", "agnes"],
+          "description": "默认 provider"
+        },
+        "defaultModel": {
+          "type": "string",
+          "description": "默认模型"
+        },
+        "defaultOutputDir": {
+          "type": "string",
+          "default": "./videos",
+          "description": "默认输出目录"
+        },
+        "defaultSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 5,
+          "description": "默认时长（秒）"
+        },
+        "defaultResolution": {
+          "type": "string",
+          "enum": ["480p", "720p", "1080p", "4k"],
+          "default": "1080p",
+          "description": "默认分辨率"
+        }
+      },
+      "additionalProperties": false
+    },
+    "bgmConfig": {
+      "type": "object",
+      "properties": {
+        "defaultProvider": {
+          "type": "string",
+          "enum": ["minimax"],
+          "description": "默认 provider"
+        },
+        "defaultModel": {
+          "type": "string",
+          "description": "默认模型"
+        },
+        "defaultOutputDir": {
+          "type": "string",
+          "default": "./bgm",
+          "description": "默认输出目录"
+        },
+        "defaultFormat": {
+          "type": "string",
+          "enum": ["mp3", "wav"],
+          "default": "mp3",
+          "description": "默认音频格式"
+        }
+      },
+      "additionalProperties": false
+    },
+    "picgoConfig": {
+      "type": "object",
+      "properties": {
+        "repo": {
+          "type": "string",
+          "description": "GitHub 仓库（owner/repo）"
+        },
+        "branch": {
+          "type": "string",
+          "default": "main",
+          "description": "分支"
+        },
+        "path": {
+          "type": "string",
+          "default": "assets/images",
+          "description": "仓库内路径"
+        },
+        "customUrl": {
+          "type": "string",
+          "description": "自定义域名"
+        }
+      },
+      "additionalProperties": false
+    },
+    "outputConfig": {
+      "type": "object",
+      "properties": {
+        "defaultFormat": {
+          "type": "string",
+          "enum": ["text", "json"],
+          "default": "text",
+          "description": "默认输出格式"
+        },
+        "quiet": {
+          "type": "boolean",
+          "default": false,
+          "description": "静默模式"
+        },
+        "noColor": {
+          "type": "boolean",
+          "default": false,
+          "description": "禁用颜色"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
