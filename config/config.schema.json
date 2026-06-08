@@ -105,11 +105,6 @@
           "type": "string",
           "description": "默认模型"
         },
-        "defaultOutputDir": {
-          "type": "string",
-          "default": "./images",
-          "description": "默认输出目录"
-        },
         "defaultQuality": {
           "type": "string",
           "enum": ["normal", "2k"],
@@ -136,11 +131,6 @@
           "type": "string",
           "description": "默认模型"
         },
-        "defaultOutputDir": {
-          "type": "string",
-          "default": "./audio",
-          "description": "默认输出目录"
-        },
         "defaultVoice": {
           "type": "string",
           "description": "默认音色"
@@ -165,11 +155,6 @@
         "defaultModel": {
           "type": "string",
           "description": "默认模型"
-        },
-        "defaultOutputDir": {
-          "type": "string",
-          "default": "./videos",
-          "description": "默认输出目录"
         },
         "defaultSeconds": {
           "type": "integer",
@@ -197,11 +182,6 @@
         "defaultModel": {
           "type": "string",
           "description": "默认模型"
-        },
-        "defaultOutputDir": {
-          "type": "string",
-          "default": "./bgm",
-          "description": "默认输出目录"
         },
         "defaultFormat": {
           "type": "string",

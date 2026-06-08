@@ -2,7 +2,7 @@
   "version": 1,
   "defaultProvider": "agnes",
   "defaultRegion": "cn",
-  
+
   "providers": {
     "agnes": {
       "baseUrl": "https://apihub.agnes-ai.com/v1",
@@ -27,50 +27,45 @@
       "defaultModel": "mimo-v2.5-tts"
     }
   },
-  
+
   "imagine": {
     "defaultProvider": "agnes",
     "defaultModel": "agnes-image-2.1-flash",
-    "defaultOutputDir": "./images",
     "defaultQuality": "2k",
     "defaultAspectRatio": "1:1"
   },
-  
+
   "tts": {
     "defaultProvider": "mimo",
     "defaultModel": "mimo-v2.5-tts",
-    "defaultOutputDir": "./audio",
     "defaultVoice": "冰糖",
     "defaultFormat": "mp3"
   },
-  
+
   "video": {
     "defaultProvider": "apimart",
     "defaultModel": "doubao-seedance-1-0-pro-fast",
-    "defaultOutputDir": "./videos",
     "defaultSeconds": 5,
     "defaultResolution": "1080p"
   },
-  
+
   "bgm": {
     "defaultProvider": "minimax",
-    "defaultModel": "music-2.6",
-    "defaultOutputDir": "./bgm",
-    "defaultFormat": "mp3"
+    "defaultModel": "music-2.6"
   },
-  
+
   "picgo": {
     "repo": "username/image-host",
     "branch": "main",
     "path": "assets/images",
     "customUrl": "https://cdn.jsdmirror.com/gh/username/image-host@main"
   },
-  
-  "output": {
+
+  "display": {
     "defaultFormat": "text",
     "quiet": false,
     "noColor": false
   },
-  
+
   "proxy": ""
 }
