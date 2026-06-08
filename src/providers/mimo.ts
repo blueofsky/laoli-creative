@@ -3,6 +3,7 @@ import { ProviderError, NetworkError } from '../errors/codes';
 import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
 import { dirname } from 'path';
 import { getApiKey } from './shared';
+import { apiFetch } from '../client/http';
 
 const BASE_URL = 'https://api.xiaomimimo.com/v1';
 
@@ -59,11 +60,7 @@ async function synthesizeWithPresetVoice(params: TTSParams, apiKey: string): Pro
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/audio/speech`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-      body: JSON.stringify(requestBody),
-    });
+    const response = await apiFetch('mimo', 'POST', `${BASE_URL}/audio/speech`, { headers: { Authorization: `Bearer ${apiKey}` }, body: JSON.stringify(requestBody), description: 'audio_speech' });
     if (!response.ok) {
       const err: any = await response.json().catch(() => ({}));
       throw new ProviderError(`MiMo API error: ${err.error?.message || response.statusText}`, 'mimo', response.status);
@@ -84,11 +81,7 @@ async function synthesizeWithVoiceDesign(params: TTSParams, apiKey: string): Pro
   const requestBody: any = { model: 'mimo-v2.5-tts-voicedesign', input: { text: params.text }, voice_setting: { context: params.voice || '' } };
 
   try {
-    const response = await fetch(`${BASE_URL}/audio/speech`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-      body: JSON.stringify(requestBody),
-    });
+    const response = await apiFetch('mimo', 'POST', `${BASE_URL}/audio/speech`, { headers: { Authorization: `Bearer ${apiKey}` }, body: JSON.stringify(requestBody), description: 'audio_speech' });
     if (!response.ok) {
       const err: any = await response.json().catch(() => ({}));
       throw new ProviderError(`MiMo API error: ${err.error?.message || response.statusText}`, 'mimo', response.status);
@@ -115,11 +108,7 @@ async function synthesizeWithVoiceClone(params: TTSParams, apiKey: string): Prom
   const requestBody: any = { model: 'mimo-v2.5-tts-voiceclone', input: { text: params.text }, voice_setting: { voice_file: audioBase64 } };
 
   try {
-    const response = await fetch(`${BASE_URL}/audio/speech`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-      body: JSON.stringify(requestBody),
-    });
+    const response = await apiFetch('mimo', 'POST', `${BASE_URL}/audio/speech`, { headers: { Authorization: `Bearer ${apiKey}` }, body: JSON.stringify(requestBody), description: 'audio_speech' });
     if (!response.ok) {
       const err: any = await response.json().catch(() => ({}));
       throw new ProviderError(`MiMo API error: ${err.error?.message || response.statusText}`, 'mimo', response.status);

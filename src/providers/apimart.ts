@@ -2,7 +2,8 @@ import type { Provider, ImageParams, ImageResult, BatchImageParams, BatchImageRe
 import { ProviderError, NetworkError } from '../errors/codes';
 import { readFileSync, existsSync } from 'fs';
 import { getApiKey, aspectRatioToSize } from './shared';
-import { downloadFile } from '../client/http';
+import { downloadFile, apiFetch } from '../client/http';
+
 
 const BASE_URL = 'https://api.apimart.ai/v1';
 
@@ -54,8 +55,8 @@ export const apimartProvider: Provider = {
           const mime = ref.endsWith('.png') ? 'image/png' : 'image/jpeg';
           const form = new FormData();
           form.append('file', new Blob([buf], { type: mime }), ref.split('/').pop() || 'ref.png');
-          const uploadRes = await fetch(`${BASE_URL}/uploads/images`, {
-            method: 'POST', headers: { Authorization: `Bearer ${apiKey}` }, body: form,
+          const uploadRes = await apiFetch('apimart', 'POST', `${BASE_URL}/uploads/images`, {
+            headers: { Authorization: `Bearer ${apiKey}` }, body: form, description: 'uploadImage',
           });
           if (!uploadRes.ok) throw new ProviderError(`APIMart upload failed`, 'apimart', uploadRes.status);
           const uploadData: any = await uploadRes.json();
@@ -66,11 +67,7 @@ export const apimartProvider: Provider = {
     }
 
     // APIMart 是异步流程：提交任务 → 轮询结果
-    const submitRes = await fetch(`${BASE_URL}/images/generations`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify(body),
-    });
+    const submitRes = await apiFetch('apimart', 'POST', `${BASE_URL}/images/generations`, { headers: { Authorization: `Bearer ${apiKey}` }, body: JSON.stringify(body), description: 'images_generations' });
     if (!submitRes.ok) {
       const err: any = await submitRes.json().catch(() => ({}));
       throw new ProviderError(`APIMart API error: ${err.error?.message || submitRes.statusText}`, 'apimart', submitRes.status);
@@ -84,8 +81,8 @@ export const apimartProvider: Provider = {
     const maxAttempts = 120; // 10分钟
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       await new Promise(r => setTimeout(r, pollInterval));
-      const pollRes = await fetch(`${BASE_URL}/tasks/${taskId}`, {
-        headers: { Authorization: `Bearer ${apiKey}` },
+      const pollRes = await apiFetch('apimart', 'GET', `${BASE_URL}/tasks/${taskId}`, {
+        headers: { Authorization: `Bearer ${apiKey}` }, description: 'pollTask',
       });
       if (!pollRes.ok) {
         const err: any = await pollRes.json().catch(() => ({}));
@@ -146,9 +143,7 @@ export const apimartProvider: Provider = {
     if (params.refImages && params.refImages.length > 0) requestBody.image = params.refImages[0];
 
     try {
-      const response = await fetch(`${BASE_URL}/videos/generations`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` }, body: JSON.stringify(requestBody),
-      });
+      const response = await apiFetch('apimart', 'POST', `${BASE_URL}/videos/generations`, { headers: { Authorization: `Bearer ${apiKey}` }, body: JSON.stringify(requestBody), description: 'videos_generations' });
       if (!response.ok) {
         const err: any = await response.json().catch(() => ({}));
         throw new ProviderError(`APIMart Video API error: ${err.error?.message || response.statusText}`, 'apimart', response.status);
@@ -164,7 +159,9 @@ export const apimartProvider: Provider = {
   async queryVideoTask(taskId: string): Promise<VideoResult> {
     const apiKey = getApiKey('apimart');
     try {
-      const response = await fetch(`${BASE_URL}/videos/generations/${taskId}`, { headers: { 'Authorization': `Bearer ${apiKey}` } });
+      const response = await apiFetch('apimart', 'GET', `${BASE_URL}/videos/generations/${taskId}`, {
+        headers: { Authorization: `Bearer ${apiKey}` }, description: 'queryVideo',
+      });
       if (!response.ok) {
         const err: any = await response.json().catch(() => ({}));
         throw new ProviderError(`APIMart Video API error: ${err.error?.message || response.statusText}`, 'apimart', response.status);

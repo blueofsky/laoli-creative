@@ -2,7 +2,7 @@ import type { Provider, ImageParams, ImageResult, BatchImageParams, BatchImageRe
 import { ProviderError, NetworkError } from '../errors/codes';
 import { readFileSync, existsSync } from 'fs';
 import { getApiKey, aspectRatioToSize } from './shared';
-import { downloadFile } from '../client/http';
+import { downloadFile, apiFetch } from '../client/http';
 
 const BASE_URL = 'https://apihub.agnes-ai.com/v1';
 
@@ -49,10 +49,10 @@ export const agnesProvider: Provider = {
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/images/generations`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+      const response = await apiFetch('agnes', 'POST', `${BASE_URL}/images/generations`, {
+        headers: { Authorization: `Bearer ${apiKey}` },
         body: JSON.stringify(requestBody),
+        description: 'generateImage',
       });
 
       if (!response.ok) {
@@ -149,10 +149,10 @@ export const agnesProvider: Provider = {
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/videos`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+      const response = await apiFetch('agnes', 'POST', `${BASE_URL}/videos`, {
+        headers: { Authorization: `Bearer ${apiKey}` },
         body: JSON.stringify(requestBody),
+        description: 'generateVideo',
       });
       if (!response.ok) {
         const err: any = await response.json().catch(() => ({}));
@@ -172,8 +172,9 @@ export const agnesProvider: Provider = {
 
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
-        const response = await fetch(`${BASE_URL.replace('/v1', '')}/agnesapi?video_id=${taskId}`, {
+        const response = await apiFetch('agnes', 'GET', `${BASE_URL.replace('/v1', '')}/agnesapi?video_id=${taskId}`, {
           headers: { Authorization: `Bearer ${apiKey}` },
+          description: 'queryVideo',
         });
 
         if (response.status === 429) {

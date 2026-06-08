@@ -2,7 +2,8 @@ import type { Provider, ImageParams, ImageResult, BatchImageParams, BatchImageRe
 import { ProviderError, NetworkError } from '../errors/codes';
 import { readFileSync, existsSync } from 'fs';
 import { getApiKey, aspectRatioToSize } from './shared';
-import { downloadFile } from '../client/http';
+import { downloadFile, apiFetch } from '../client/http';
+
 
 const BASE_URL = 'https://api.tu-zi.com/v1';
 
@@ -40,11 +41,7 @@ export const tuziProvider: Provider = {
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/images/generations`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-        body: JSON.stringify(requestBody),
-      });
+      const response = await apiFetch('tuzi', 'POST', `${BASE_URL}/images/generations`, { headers: { Authorization: `Bearer ${apiKey}` }, body: JSON.stringify(requestBody), description: 'images_generations' });
       if (!response.ok) {
         const err: any = await response.json().catch(() => ({}));
         throw new ProviderError(`Tuzi API error: ${err.error?.message || response.statusText}`, 'tuzi', response.status);
@@ -109,10 +106,8 @@ export const tuziProvider: Provider = {
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/videos`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${apiKey}` },
-        body: form,
+      const response = await apiFetch('tuzi', 'POST', `${BASE_URL}/videos`, {
+        headers: { Authorization: `Bearer ${apiKey}` }, body: form, description: 'generateVideo',
       });
       if (!response.ok) {
         const err: any = await response.json().catch(() => ({}));
@@ -130,8 +125,8 @@ export const tuziProvider: Provider = {
     const apiKey = getApiKey('tuzi');
 
     try {
-      const response = await fetch(`${BASE_URL}/videos/${taskId}`, {
-        headers: { Authorization: `Bearer ${apiKey}` },
+      const response = await apiFetch('tuzi', 'GET', `${BASE_URL}/videos/${taskId}`, {
+        headers: { Authorization: `Bearer ${apiKey}` }, description: 'queryVideo',
       });
       if (!response.ok) {
         const err: any = await response.json().catch(() => ({}));

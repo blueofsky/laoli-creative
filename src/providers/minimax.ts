@@ -3,7 +3,8 @@ import { ProviderError, NetworkError } from '../errors/codes';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 import { getApiKey } from './shared';
-import { downloadFile } from '../client/http';
+import { downloadFile, apiFetch } from '../client/http';
+
 
 const BASE_URL = 'https://api.minimax.io/v1';
 
@@ -27,11 +28,7 @@ export const minimaxProvider: Provider = {
     const requestBody: any = { model, prompt: params.prompt };
 
     try {
-      const response = await fetch(`${BASE_URL}/images/generations`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-        body: JSON.stringify(requestBody),
-      });
+      const response = await apiFetch('minimax', 'POST', `${BASE_URL}/images/generations`, { headers: { Authorization: `Bearer ${apiKey}` }, body: JSON.stringify(requestBody), description: 'images_generations' });
       if (!response.ok) {
         const err: any = await response.json().catch(() => ({}));
         throw new ProviderError(`MiniMax API error: ${err.error?.message || response.statusText}`, 'minimax', response.status);
@@ -74,11 +71,7 @@ export const minimaxProvider: Provider = {
     if (params.pitch) requestBody.voice_setting.pitch = params.pitch;
 
     try {
-      const response = await fetch(`${BASE_URL}/t2a_v2`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-        body: JSON.stringify(requestBody),
-      });
+      const response = await apiFetch('minimax', 'POST', `${BASE_URL}/t2a_v2`, { headers: { Authorization: `Bearer ${apiKey}` }, body: JSON.stringify(requestBody), description: 't2a_v2' });
       if (!response.ok) {
         const err: any = await response.json().catch(() => ({}));
         throw new ProviderError(`MiniMax TTS API error: ${err.error?.message || response.statusText}`, 'minimax', response.status);
@@ -103,11 +96,7 @@ export const minimaxProvider: Provider = {
     if (params.instrumental) requestBody.instrumental = true;
 
     try {
-      const response = await fetch(`${BASE_URL}/music_generation`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-        body: JSON.stringify(requestBody),
-      });
+      const response = await apiFetch('minimax', 'POST', `${BASE_URL}/music_generation`, { headers: { Authorization: `Bearer ${apiKey}` }, body: JSON.stringify(requestBody), description: 'music_generation' });
       if (!response.ok) {
         const err: any = await response.json().catch(() => ({}));
         throw new ProviderError(`MiniMax Music API error: ${err.error?.message || response.statusText}`, 'minimax', response.status);
