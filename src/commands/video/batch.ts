@@ -11,15 +11,15 @@ export const batchCommand: Command = {
   usage: 'laoli video batch --batchfile <path> [options]',
   options: [
     { flag: '--batchfile <path>', description: 'JSON batch file path', required: true },
-    { flag: '--poll', description: 'Auto-poll and download after submission', type: 'boolean' },
-    { flag: '--jobs <count>', description: 'Concurrent downloads (with --poll)', type: 'number' },
+    { flag: '--async', description: 'Submit only, do not wait', type: 'boolean' },
+    { flag: '--jobs <count>', description: 'Concurrent downloads', type: 'number' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
     { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],
   examples: [
     'laoli video batch --batchfile batch.json',
-    'laoli video batch --batchfile batch.json --poll',
-    'laoli video batch --batchfile batch.json --poll --jobs 4',
+    'laoli video batch --batchfile batch.json --jobs 4',
+    'laoli video batch --batchfile batch.json --async',
   ],
   execute: async (config: Config, flags: Flags) => {
     const batchfile = flags.batchfile as string;
@@ -29,7 +29,7 @@ export const batchCommand: Command = {
     const batchItems: any[] = JSON.parse(readFileSync(batchfile, 'utf-8'));
     if (!Array.isArray(batchItems)) throw new CLIError('Batch file must contain a JSON array', ExitCode.INVALID_ARGS);
 
-    const doPoll = flags.poll as boolean;
+    const isAsync = flags.async as boolean;
     const jobs = flags.jobs ? parseInt(flags.jobs as string, 10) : 2;
     const isJson = flags.json as boolean;
     const isQuiet = flags.quiet as boolean || config.display.quiet;
@@ -55,7 +55,7 @@ export const batchCommand: Command = {
       results.push({ taskId: result.taskId, outputPath: item.output, status: 'submitted' });
     }));
 
-    if (!doPoll) {
+    if (isAsync) {
       // 只提交不轮询
       if (isJson) {
         json(results);
@@ -70,7 +70,7 @@ export const batchCommand: Command = {
       return;
     }
 
-    // 第二步：自动轮询，完成一个下载一个
+    // 默认：自动轮询，完成一个下载一个
     if (!isQuiet) info('Polling and downloading...');
     const completed: string[] = [];
 
