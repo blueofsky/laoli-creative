@@ -107,9 +107,9 @@
 ### 发布准备
 - [x] 配置 TypeScript 严格模式
 - [x] 配置 ESLint
-- [ ] 构建验证（`bun run build`）
+- [x] 构建验证（`bun run build`）
+- [x] 配置 GitHub Actions CI（push/PR 自动 typecheck + lint + build + test）
 - [ ] 配置 npm 发布
-- [ ] 配置 GitHub Actions CI
 - [ ] 配置版本管理
 
 ## 待定事项
