@@ -9,7 +9,7 @@ export const queryCommand: Command = {
   usage: 'laoli video query --task-id <id> [--output json]',
   options: [
     { flag: '--task-id <id>', description: 'Task ID', required: true },
-    { flag: '--provider <name>', description: 'Provider: apimart, agnes, tuzi' },
+    { flag: '--provider <name>', description: 'Provider: apimart, agnes, tuzi. Default from config' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
   ],
   examples: [

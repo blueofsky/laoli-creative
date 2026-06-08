@@ -9,7 +9,7 @@ export const batchCommand: Command = {
   usage: 'laoli imagine batch --batchfile <path> [options]',
   options: [
     { flag: '--batchfile <path>', description: 'JSON batch file path', required: true },
-    { flag: '--jobs <count>', description: 'Number of concurrent jobs', type: 'number' },
+    { flag: '--jobs <count>', description: 'Number of concurrent jobs. Default 4', type: 'number' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
     { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],

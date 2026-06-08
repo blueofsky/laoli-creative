@@ -7,7 +7,7 @@ export const historyCommand: Command = {
   description: 'Show completed/failed video task history',
   usage: 'laoli video history [--limit <n>]',
   options: [
-    { flag: '--limit <n>', description: 'Number of recent records', type: 'number' },
+    { flag: '--limit <n>', description: 'Number of recent records. Default 20', type: 'number' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
   ],
   examples: ['laoli video history', 'laoli video history --limit 5', 'laoli video history --json'],

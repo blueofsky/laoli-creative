@@ -7,7 +7,7 @@ export const listCommand: Command = {
   description: 'List pending video generation tasks',
   usage: 'laoli video list [--limit <n>] [--json]',
   options: [
-    { flag: '--limit <n>', description: 'Number of recent records', type: 'number' },
+    { flag: '--limit <n>', description: 'Number of recent records. Default all', type: 'number' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
   ],
   examples: ['laoli video list', 'laoli video list --limit 5', 'laoli video list --json'],

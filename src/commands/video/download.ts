@@ -11,7 +11,7 @@ export const downloadCommand: Command = {
   options: [
     { flag: '--task-id <id>', description: 'Task ID (or use saved from --async)', required: true },
     { flag: '--output <path>', description: 'Output file path (override saved path)' },
-    { flag: '--provider <name>', description: 'Provider: apimart, agnes, tuzi' },
+    { flag: '--provider <name>', description: 'Provider: apimart, agnes, tuzi. Default from config' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
   ],
   examples: [

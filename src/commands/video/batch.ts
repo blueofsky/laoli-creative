@@ -12,9 +12,9 @@ export const batchCommand: Command = {
   options: [
     { flag: '--batchfile <path>', description: 'JSON batch file path', required: true },
     { flag: '--async', description: 'Submit only, do not wait', type: 'boolean' },
-    { flag: '--jobs <count>', description: 'Concurrent downloads', type: 'number' },
-    { flag: '--poll-interval <ms>', description: 'Poll interval in milliseconds', type: 'number' },
-    { flag: '--timeout <ms>', description: 'Max wait time in milliseconds', type: 'number' },
+    { flag: '--jobs <count>', description: 'Concurrent downloads. Default 2', type: 'number' },
+    { flag: '--poll-interval <ms>', description: 'Poll interval (ms). Default 10000', type: 'number' },
+    { flag: '--timeout <ms>', description: 'Per-task timeout (ms). Default 600000', type: 'number' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
     { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],
@@ -34,7 +34,7 @@ export const batchCommand: Command = {
     const isAsync = flags.async as boolean;
     const jobs = flags.jobs ? parseInt(flags.jobs as string, 10) : 2;
     const pollInterval = flags['poll-interval'] ? parseInt(flags['poll-interval'] as string, 10) : 10000;
-    const timeout = flags.timeout ? parseInt(flags.timeout as string, 10) : 0;
+    const taskTimeout = flags.timeout ? parseInt(flags.timeout as string, 10) : 600000; // 默认 10 分钟
     const isJson = flags.json as boolean;
     const isQuiet = flags.quiet as boolean || config.display.quiet;
 
@@ -80,9 +80,10 @@ export const batchCommand: Command = {
     const completed: string[] = [];
 
     while (true) {
-      if (timeout > 0 && Date.now() - startTime > timeout) {
+      if (Date.now() - startTime > 3600000) {
+        // 整批最多等 1 小时
         const remaining = list().length;
-        throw new CLIError(`Batch timed out after ${timeout / 1000}s (${completed.length} done, ${remaining} remaining)`, ExitCode.TIMEOUT);
+        throw new CLIError(`Batch timed out after 1h (${completed.length} done, ${remaining} remaining)`, ExitCode.TIMEOUT);
       }
 
       const pending = list().filter(t => t.status === 'pending' || t.status === 'processing');
@@ -90,6 +91,14 @@ export const batchCommand: Command = {
 
       const chunk = pending.slice(0, jobs);
       await Promise.all(chunk.map(async (task) => {
+        // 检查单任务超时
+        const taskAge = Date.now() - new Date(task.createdAt).getTime();
+        if (taskAge > taskTimeout) {
+          archive(task.taskId, { status: 'failed', error: `Task timed out after ${Math.round(taskAge / 1000)}s` });
+          if (!isQuiet) info(`Timed out: ${task.outputPath}`);
+          return;
+        }
+
         try {
           const status = await queryVideoTask(task.taskId, task.provider);
           if (status.status === 'completed' && status.url) {
