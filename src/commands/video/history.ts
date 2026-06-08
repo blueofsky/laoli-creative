@@ -1,6 +1,6 @@
 import type { Command, Config, Flags } from '../../types/cli';
 import { history } from '../../sdk/queue';
-import { info } from '../../utils/logger';
+import { json, info } from '../../utils/logger';
 
 export const historyCommand: Command = {
   name: 'history',
@@ -22,7 +22,7 @@ export const historyCommand: Command = {
     }
 
     if (isJson) {
-      console.log(JSON.stringify(records, null, 2));
+      json(records);
     } else {
       console.log('\nVideo Task History (recent):\n');
       for (const r of records) {

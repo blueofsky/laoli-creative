@@ -11,10 +11,10 @@ export const videoCommands: CommandGroup = {
   description: 'Video generation',
   commands: [
     generateCommand,
-    queryCommand,
-    downloadCommand,
-    listCommand,
     batchCommand,
+    listCommand,
+    downloadCommand,
+    queryCommand,
     historyCommand,
   ],
 };
