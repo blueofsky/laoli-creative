@@ -2,7 +2,7 @@ import { Registry } from './registry';
 import { parseArgs } from './args';
 import { loadConfig } from './config/loader';
 import { handleError } from './errors/handler';
-import type { CLIOptions } from './types/cli';
+import type { Command, CommandGroup, CLIOptions, OptionDef } from './types/cli';
 
 export class CLI {
   private registry: Registry;
@@ -11,8 +11,7 @@ export class CLI {
   constructor(options: CLIOptions) {
     this.options = options;
     this.registry = new Registry();
-    
-    // 注册所有命令组
+
     for (const command of options.commands) {
       this.registry.register(command);
     }
@@ -20,33 +19,51 @@ export class CLI {
 
   async run(argv: string[]): Promise<void> {
     try {
-      // 处理全局选项
-      if (argv.includes('--version') || argv.includes('-v')) {
-        console.log(`${this.options.name} ${this.options.version}`);
-        process.exit(0);
-      }
-
-      if (argv.includes('--help') || argv.includes('-h') || argv.length === 0) {
-        this.printHelp();
-        process.exit(0);
-      }
-
-      // 解析命令路径
       const { commandPath, flags, positional } = parseArgs(argv);
 
-      // 查找命令
-      const command = this.registry.resolve(commandPath);
-      if (!command) {
-        console.error(`Unknown command: ${commandPath.join(' ')}`);
+      // --version
+      if (commandPath.length === 0 && (flags.version || flags.v)) {
+        console.log(`${this.options.name} ${this.options.version}`);
+        return;
+      }
+
+      // 无参数 → 主帮助
+      if (commandPath.length === 0) {
+        this.printHelp();
+        return;
+      }
+
+      const [groupName, ...subCmdPath] = commandPath;
+      const group = this.registry.getGroup(groupName);
+
+      if (!group) {
+        console.error(`Unknown command: ${groupName}`);
         console.error(`Run '${this.options.name} --help' for usage.`);
         process.exit(1);
       }
 
-      // 加载配置
-      const config = loadConfig(flags);
+      // laoli auth 或 laoli auth --help → 组帮助
+      if (subCmdPath.length === 0) {
+        this.printGroupHelp(group);
+        return;
+      }
 
-      // 执行命令
-      await command.execute(config, { ...flags, _positional: positional });
+      // 查找子命令
+      const subCmd = group.commands.find(c => c.name === subCmdPath[0]);
+      if (!subCmd) {
+        console.error(`Unknown subcommand: ${commandPath.join(' ')}`);
+        process.exit(1);
+      }
+
+      // laoli auth login --help → 子命令详情
+      if (flags.help || flags.h) {
+        this.printCommandHelp(group, subCmd);
+        return;
+      }
+
+      // 正常执行
+      const config = loadConfig(flags);
+      await subCmd.execute(config, { ...flags, _positional: positional });
     } catch (error) {
       handleError(error);
     }
@@ -80,10 +97,62 @@ Global Options:
   private getCommandHelp(): string {
     const commands = this.registry.getAll();
     const maxNameLength = Math.max(...commands.map(c => c.name.length));
-    
+
     return commands.map(cmd => {
       const padding = ' '.repeat(maxNameLength - cmd.name.length + 2);
       return `  ${cmd.name}${padding}${cmd.description}`;
     }).join('\n');
+  }
+
+  private printGroupHelp(group: CommandGroup): void {
+    const cmdPath = `${this.options.name} ${group.name}`;
+    const maxNameLength = Math.max(...group.commands.map(c => c.name.length));
+
+    console.log(`
+${cmdPath} - ${group.description}
+
+Usage:
+  ${cmdPath} <subcommand> [options]
+
+Subcommands:
+${group.commands.map(cmd => {
+  const padding = ' '.repeat(maxNameLength - cmd.name.length + 2);
+  return `  ${cmd.name}${padding}${cmd.description}`;
+}).join('\n')}
+
+Run '${cmdPath} <subcommand> --help' for more details.
+`);
+  }
+
+  private printCommandHelp(group: CommandGroup, command: Command): void {
+    const cmdPath = `${this.options.name} ${group.name} ${command.name}`;
+
+    console.log(`
+${cmdPath} - ${command.description}
+
+Usage:
+${command.usage ? `  ${command.usage}` : `  ${cmdPath} [options]`}
+
+${this.getOptionsTable(command.options || [])}
+
+${command.examples && command.examples.length > 0 ? `Examples:
+${command.examples.map(e => `  # ${e}`).join('\n')}
+` : ''}`);
+  }
+
+  private getOptionsTable(options: OptionDef[]): string {
+    if (options.length === 0) return '';
+
+    const maxFlagLen = Math.max(...options.map(o => o.flag.length));
+    const lines: string[] = ['Options:'];
+
+    for (const opt of options) {
+      const flag = opt.flag;
+      const padding = ' '.repeat(maxFlagLen - flag.length + 2);
+      const required = opt.required ? ' (required)' : '';
+      lines.push(`  ${flag}${padding}${opt.description}${required}`);
+    }
+
+    return lines.join('\n');
   }
 }
