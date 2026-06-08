@@ -4,6 +4,7 @@ import { queryCommand } from './query';
 import { downloadCommand } from './download';
 import { listCommand } from './list';
 import { batchCommand } from './batch';
+import { historyCommand } from './history';
 
 export const videoCommands: CommandGroup = {
   name: 'video',
@@ -14,5 +15,6 @@ export const videoCommands: CommandGroup = {
     downloadCommand,
     listCommand,
     batchCommand,
+    historyCommand,
   ],
 };

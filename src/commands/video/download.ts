@@ -1,6 +1,6 @@
 import type { Command, Config, Flags } from '../../types/cli';
 import { queryVideoTask, downloadVideo } from '../../sdk/video';
-import { update, get, remove } from '../../sdk/queue';
+import { get, update, archive } from '../../sdk/queue';
 import { success, json, info } from '../../utils/logger';
 import { CLIError, ExitCode } from '../../errors/codes';
 
@@ -36,7 +36,7 @@ export const downloadCommand: Command = {
       if (result.status === 'completed' && result.url) {
         // 任务完成，下载
         await downloadVideo(taskId, output, providerName);
-        remove(taskId);
+        archive(taskId, { status: 'completed' });
 
         if (isJson) {
           json({ ...result, outputPath: output });
@@ -44,7 +44,7 @@ export const downloadCommand: Command = {
           success(`Video saved to ${output}`);
         }
       } else if (result.status === 'failed') {
-        remove(taskId);
+        archive(taskId, { status: 'failed', error: result.metadata?.error || 'Unknown error' });
         throw new CLIError(`Video generation failed`, ExitCode.PROVIDER_ERROR);
       } else {
         // 还在处理中

@@ -1,8 +1,9 @@
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, appendFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 
 const QUEUE_FILE = join(homedir(), '.laoli', 'tasks.json');
+const LOG_FILE = join(homedir(), '.laoli', 'tasks.log');
 
 export interface TaskRecord {
   taskId: string;
@@ -11,6 +12,7 @@ export interface TaskRecord {
   prompt: string;
   createdAt: string;
   status: 'pending' | 'processing' | 'completed' | 'failed';
+  error?: string;
 }
 
 function readQueue(): TaskRecord[] {
@@ -28,14 +30,19 @@ function writeQueue(tasks: TaskRecord[]): void {
   writeFileSync(QUEUE_FILE, JSON.stringify(tasks, null, 2), 'utf-8');
 }
 
-/** 入队：添加一个任务到末尾 */
+function ensureDir(): void {
+  const dir = join(homedir(), '.laoli');
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+}
+
+/** 入队 */
 export function push(task: Omit<TaskRecord, 'createdAt' | 'status'>): void {
   const tasks = readQueue();
   tasks.push({ ...task, createdAt: new Date().toISOString(), status: 'pending' });
   writeQueue(tasks);
 }
 
-/** 出队：移除并返回最早的一个 pending 任务 */
+/** 出队：移除并返回最早一个 pending/processing 任务 */
 export function pop(): TaskRecord | undefined {
   const tasks = readQueue();
   const idx = tasks.findIndex(t => t.status === 'pending' || t.status === 'processing');
@@ -45,12 +52,12 @@ export function pop(): TaskRecord | undefined {
   return task;
 }
 
-/** 查看队列头部（不移除） */
+/** 查看头部不移除 */
 export function peek(): TaskRecord | undefined {
   return readQueue().find(t => t.status === 'pending' || t.status === 'processing');
 }
 
-/** 按 taskId 更新任务状态 */
+/** 更新队列中任务的状态 */
 export function update(taskId: string, updates: Partial<TaskRecord>): void {
   const tasks = readQueue();
   const idx = tasks.findIndex(t => t.taskId === taskId);
@@ -60,36 +67,41 @@ export function update(taskId: string, updates: Partial<TaskRecord>): void {
   }
 }
 
-/** 按 taskId 查找单个任务 */
+/** 按 taskId 查找 */
 export function get(taskId: string): TaskRecord | undefined {
   return readQueue().find(t => t.taskId === taskId);
 }
 
-/** 列出所有任务，可按状态过滤 */
-export function list(status?: TaskRecord['status']): TaskRecord[] {
-  const tasks = readQueue();
-  return status ? tasks.filter(t => t.status === status) : tasks;
+/** 列出未完成的任务 */
+export function list(): TaskRecord[] {
+  return readQueue();
 }
 
-/** 按 taskId 移除任务（完成/失败后出队） */
-export function remove(taskId: string): boolean {
-  const tasks = readQueue();
-  const idx = tasks.findIndex(t => t.taskId === taskId);
-  if (idx === -1) return false;
-  tasks.splice(idx, 1);
-  writeQueue(tasks);
-  return true;
-}
-
-/** 清理已完成/失败的任务 */
-export function clear(status?: 'completed' | 'failed'): number {
-  const tasks = readQueue();
-  const remaining = status ? tasks.filter(t => t.status !== status) : [];
-  writeQueue(remaining);
-  return tasks.length - remaining.length;
-}
-
-/** 队列中等待处理的任务数 */
+/** 队列中待处理数量 */
 export function size(): number {
   return readQueue().filter(t => t.status === 'pending' || t.status === 'processing').length;
+}
+
+/** 任务完成/失败时：从队列移除，追加到日志 */
+export function archive(taskId: string, result: { status: 'completed' | 'failed'; error?: string }): void {
+  const tasks = readQueue();
+  const idx = tasks.findIndex(t => t.taskId === taskId);
+  if (idx === -1) return;
+  const task = tasks.splice(idx, 1)[0];
+  writeQueue(tasks);
+
+  ensureDir();
+  const record = { ...task, ...result, archivedAt: new Date().toISOString() };
+  appendFileSync(LOG_FILE, JSON.stringify(record) + '\n', 'utf-8');
+}
+
+/** 查看历史日志（每行一个 JSON） */
+export function history(limit = 20): TaskRecord[] {
+  try {
+    if (!existsSync(LOG_FILE)) return [];
+    const lines = readFileSync(LOG_FILE, 'utf-8').trim().split('\n').filter(Boolean);
+    return lines.slice(-limit).map(line => JSON.parse(line));
+  } catch {
+    return [];
+  }
 }
