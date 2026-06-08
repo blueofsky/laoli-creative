@@ -10,7 +10,7 @@ export const downloadCommand: Command = {
   options: [
     { flag: '--task-id <id>', description: 'Task ID', required: true },
     { flag: '--output <path>', description: 'Output file path', required: true },
-    { flag: '--provider <name>', description: 'Provider: apimart, tuzi, agnes' },
+    { flag: '--provider <name>', description: 'Provider: apimart' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
     { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],

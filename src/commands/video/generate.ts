@@ -11,7 +11,7 @@ export const generateCommand: Command = {
   options: [
     { flag: '--prompt <text>', description: 'Video description', required: true },
     { flag: '--output <path>', description: 'Output video file path', required: true },
-    { flag: '--provider <name>', description: 'Provider: apimart, tuzi, agnes' },
+    { flag: '--provider <name>', description: 'Provider: apimart' },
     { flag: '--model <id>', description: 'Model ID' },
     { flag: '--seconds <n>', description: 'Video duration in seconds', type: 'number' },
     { flag: '--size <WxH>', description: 'Video size (e.g., 1280x720)' },
