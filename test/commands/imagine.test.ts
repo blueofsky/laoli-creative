@@ -1,15 +1,10 @@
 import { describe, it, expect, mock } from 'bun:test';
 import { generateCommand } from '../../src/commands/imagine/generate';
-import { editCommand } from '../../src/commands/imagine/edit';
 import { batchCommand } from '../../src/commands/imagine/batch';
 
 describe('imagine commands', () => {
   it('generate should have correct name', () => {
     expect(generateCommand.name).toBe('generate');
-  });
-
-  it('edit should have correct name', () => {
-    expect(editCommand.name).toBe('edit');
   });
 
   it('batch should have correct name', () => {

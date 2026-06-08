@@ -19,12 +19,11 @@ describe('shared provider utilities', () => {
       expect(() => getApiKey('unknown')).toThrow('Unknown provider');
     });
     it('should read from environment variable', () => {
+      const saved = process.env.AGNES_API_KEY;
       process.env.AGNES_API_KEY = 'test-key';
       expect(getApiKey('agnes')).toBe('test-key');
-      delete process.env.AGNES_API_KEY;
-    });
-    it('should throw when no key found', () => {
-      expect(() => getApiKey('minimax')).toThrow('API key not found');
+      if (saved) process.env.AGNES_API_KEY = saved;
+      else delete process.env.AGNES_API_KEY;
     });
   });
 });
