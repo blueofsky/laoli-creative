@@ -1,37 +1,38 @@
-import { describe, it, expect, mock } from 'bun:test';
+import { describe, it, expect } from 'bun:test';
 import { generateCommand } from '../../src/commands/imagine/generate';
+import { editCommand } from '../../src/commands/imagine/edit';
+import { batchCommand } from '../../src/commands/imagine/batch';
 
-describe('imagine generate command', () => {
-  it('should have correct name', () => {
+describe('imagine commands', () => {
+  it('should register generate command', () => {
     expect(generateCommand.name).toBe('generate');
-  });
-
-  it('should have correct description', () => {
     expect(generateCommand.description).toBe('Generate images using AI');
   });
 
-  it('should have required options', () => {
-    const options = generateCommand.options || [];
-    const promptOption = options.find(o => o.flag.includes('--prompt'));
-    const outputOption = options.find(o => o.flag.includes('--output'));
-    
-    expect(promptOption).toBeDefined();
-    expect(promptOption?.required).toBe(true);
-    expect(outputOption).toBeDefined();
-    expect(outputOption?.required).toBe(true);
+  it('should register edit command', () => {
+    expect(editCommand.name).toBe('edit');
+    expect(editCommand.description).toBe('Edit images using AI');
   });
 
-  it('should throw error when prompt is missing', async () => {
-    const config = {} as any;
-    const flags = { output: 'test.png' };
-    
-    await expect(generateCommand.execute(config, flags)).rejects.toThrow('Missing required argument: --prompt');
+  it('should register batch command', () => {
+    expect(batchCommand.name).toBe('batch');
+    expect(batchCommand.description).toBe('Batch generate images from JSON file');
   });
 
-  it('should throw error when output is missing', async () => {
-    const config = {} as any;
-    const flags = { prompt: 'A cat' };
-    
-    await expect(generateCommand.execute(config, flags)).rejects.toThrow('Missing required argument: --output');
+  it('generate should require --prompt and --output', () => {
+    const promptOpt = generateCommand.options?.find(o => o.flag.includes('--prompt'));
+    const outputOpt = generateCommand.options?.find(o => o.flag.includes('--output'));
+    expect(promptOpt?.required).toBe(true);
+    expect(outputOpt?.required).toBe(true);
+  });
+
+  it('generate should reject missing prompt', async () => {
+    await expect(generateCommand.execute({} as any, { output: 'test.png' }))
+      .rejects.toThrow('Missing required argument: --prompt');
+  });
+
+  it('generate should reject missing output', async () => {
+    await expect(generateCommand.execute({} as any, { prompt: 'test' }))
+      .rejects.toThrow('Missing required argument: --output');
   });
 });

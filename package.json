@@ -30,6 +30,7 @@
     "dev": "bun run src/main.ts",
     "build": "bun run build.ts",
     "build:dev": "bun run build.ts --dev",
+    "build:tsc": "tsc",
     "lint": "eslint src/ test/",
     "lint:fix": "eslint src/ test/ --fix",
     "lint:strict": "eslint src/ test/ --max-warnings 90",
