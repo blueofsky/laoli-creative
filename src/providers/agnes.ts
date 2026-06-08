@@ -1,10 +1,20 @@
-import type { Provider, ImageParams, ImageResult, BatchImageParams, BatchImageResult } from '../types/sdk';
+import type { Provider, ImageParams, ImageResult, BatchImageParams, BatchImageResult, VideoParams, VideoResult } from '../types/sdk';
 import { ProviderError, NetworkError } from '../errors/codes';
 import { readFileSync, existsSync } from 'fs';
 import { getApiKey, aspectRatioToSize } from './shared';
 import { downloadFile } from '../client/http';
 
 const BASE_URL = 'https://apihub.agnes-ai.com/v1';
+
+// 视频尺寸映射 (长边 1152px)
+const VIDEO_SIZE_MAP: Record<string, { width: number; height: number }> = {
+  '16:9': { width: 1152, height: 648 },
+  '9:16': { width: 648, height: 1152 },
+  '1:1': { width: 1152, height: 1152 },
+  '4:3': { width: 1152, height: 864 },
+  '3:4': { width: 864, height: 1152 },
+  '21:9': { width: 1152, height: 493 },
+};
 
 export const agnesProvider: Provider = {
   name: 'agnes',
@@ -98,5 +108,90 @@ export const agnesProvider: Provider = {
     }
 
     return results;
+  },
+
+  async generateVideo(params: VideoParams): Promise<VideoResult> {
+    const apiKey = getApiKey('agnes');
+    const model = params.model || 'agnes-video-v2.0';
+
+    // 计算宽高
+    let width = 648, height = 1152;
+    if (params.size) {
+      const [w, h] = params.size.split('x').map(Number);
+      if (w && h) { width = w; height = h; }
+    } else if (params.resolution) {
+      // resolution 如 1080p 含宽高比信息
+    } else {
+      const size = VIDEO_SIZE_MAP['9:16'];
+      width = size.width; height = size.height;
+    }
+
+    const seconds = params.seconds || 5;
+    const numFrames = 8 * seconds + 1;
+    const frameRate = 24;
+
+    const requestBody: any = { model, prompt: params.prompt, width, height, num_frames: numFrames, frame_rate: frameRate };
+
+    // 参考图处理
+    if (params.refImages && params.refImages.length > 0) {
+      // 仅支持 URL（实际使用中通过 picgo 上传）
+      requestBody.image = params.refImages[0];
+    }
+
+    try {
+      const response = await fetch(`${BASE_URL}/videos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify(requestBody),
+      });
+      if (!response.ok) {
+        const err: any = await response.json().catch(() => ({}));
+        throw new ProviderError(`Agnes Video API error: ${err.error?.message || response.statusText}`, 'agnes', response.status);
+      }
+      const data: any = await response.json();
+      const taskId = data.video_id || data.id;
+      return { taskId, status: 'pending', metadata: { provider: 'agnes', model } };
+    } catch (error) {
+      if (error instanceof ProviderError) throw error;
+      throw new NetworkError(`Agnes Video API request failed: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  },
+
+  async queryVideoTask(taskId: string): Promise<VideoResult> {
+    const apiKey = getApiKey('agnes');
+
+    try {
+      const response = await fetch(`${BASE_URL.replace('/v1', '')}/agnesapi?video_id=${taskId}`, {
+        headers: { Authorization: `Bearer ${apiKey}` },
+      });
+      if (!response.ok) {
+        const err: any = await response.json().catch(() => ({}));
+        throw new ProviderError(`Agnes Video query error: ${err.error?.message || response.statusText}`, 'agnes', response.status);
+      }
+      const data: any = await response.json();
+
+      let status: VideoResult['status'] = 'processing';
+      if (data.status === 'completed') status = 'completed';
+      else if (data.status === 'failed') status = 'failed';
+      else if (data.status === 'queued') status = 'pending';
+
+      return {
+        taskId,
+        status,
+        url: data.remixed_from_video_id || data.video_url || data.url,
+        metadata: { provider: 'agnes', progress: data.progress },
+      };
+    } catch (error) {
+      if (error instanceof ProviderError) throw error;
+      throw new NetworkError(`Agnes Video query failed: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  },
+
+  async downloadVideo(taskId: string, outputPath: string): Promise<string> {
+    const result = await this.queryVideoTask!(taskId);
+    if (result.status !== 'completed' || !result.url) {
+      throw new ProviderError(`Video task ${taskId} not completed. Status: ${result.status}`, 'agnes');
+    }
+    return downloadFile(result.url, outputPath);
   },
 };

@@ -1,4 +1,4 @@
-import type { Provider, ImageParams, ImageResult, BatchImageParams, BatchImageResult } from '../types/sdk';
+import type { Provider, ImageParams, ImageResult, BatchImageParams, BatchImageResult, VideoParams, VideoResult } from '../types/sdk';
 import { ProviderError, NetworkError } from '../errors/codes';
 import { readFileSync, existsSync } from 'fs';
 import { getApiKey, aspectRatioToSize } from './shared';
@@ -77,5 +77,85 @@ export const tuziProvider: Provider = {
       results.push(...batchResults);
     }
     return results;
+  },
+
+  async generateVideo(params: VideoParams): Promise<VideoResult> {
+    const apiKey = getApiKey('tuzi');
+    const model = params.model || 'veo3.1';
+    const seconds = params.seconds || 5;
+
+    // Tuzi 使用 FormData 提交
+    const form = new FormData();
+    form.append('model', model);
+    form.append('prompt', params.prompt);
+    form.append('seconds', String(seconds));
+
+    if (params.resolution) form.append('resolution', params.resolution);
+    if (params.size) {
+      form.append('size', params.size);
+    } else if (params.resolution) {
+      // 由 resolution 决定
+    }
+
+    // 参考图
+    if (params.refImages && params.refImages.length > 0) {
+      for (const ref of params.refImages) {
+        if (!ref.startsWith('http://') && !ref.startsWith('https://')) {
+          const buf = readFileSync(ref);
+          const mime = ref.endsWith('.png') ? 'image/png' : 'image/jpeg';
+          form.append('input_reference', new Blob([buf], { type: mime }), ref.split('/').pop() || 'ref.png');
+        }
+      }
+    }
+
+    try {
+      const response = await fetch(`${BASE_URL}/videos`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${apiKey}` },
+        body: form,
+      });
+      if (!response.ok) {
+        const err: any = await response.json().catch(() => ({}));
+        throw new ProviderError(`Tuzi Video API error: ${err.error?.message || response.statusText}`, 'tuzi', response.status);
+      }
+      const data: any = await response.json();
+      return { taskId: data.id, status: 'pending', metadata: { provider: 'tuzi', model } };
+    } catch (error) {
+      if (error instanceof ProviderError) throw error;
+      throw new NetworkError(`Tuzi Video API request failed: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  },
+
+  async queryVideoTask(taskId: string): Promise<VideoResult> {
+    const apiKey = getApiKey('tuzi');
+
+    try {
+      const response = await fetch(`${BASE_URL}/videos/${taskId}`, {
+        headers: { Authorization: `Bearer ${apiKey}` },
+      });
+      if (!response.ok) {
+        const err: any = await response.json().catch(() => ({}));
+        throw new ProviderError(`Tuzi Video query error: ${err.error?.message || response.statusText}`, 'tuzi', response.status);
+      }
+      const data: any = await response.json();
+
+      let status: VideoResult['status'] = 'processing';
+      if (data.status === 'completed') status = 'completed';
+      else if (data.status === 'failed') status = 'failed';
+      else if (data.status === 'queued' || data.status === 'pending') status = 'pending';
+
+      return { taskId, status, url: data.video_url || data.url, metadata: { provider: 'tuzi', progress: data.progress } };
+    } catch (error) {
+      if (error instanceof ProviderError) throw error;
+      throw new NetworkError(`Tuzi Video query failed: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  },
+
+  async downloadVideo(taskId: string, outputPath: string): Promise<string> {
+    const result = await this.queryVideoTask!(taskId);
+    if (result.status !== 'completed' || !result.url) {
+      throw new ProviderError(`Video task ${taskId} not completed. Status: ${result.status}`, 'tuzi');
+    }
+    return downloadFile(result.url, outputPath);
   },
 };
