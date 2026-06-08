@@ -1,6 +1,7 @@
 import type { CommandGroup } from '../../types/cli';
 import { showCommand } from './show';
 import { setCommand } from './set';
+import { exportSchemaCommand } from './export-schema';
 
 export const configCommands: CommandGroup = {
   name: 'config',
@@ -8,5 +9,6 @@ export const configCommands: CommandGroup = {
   commands: [
     showCommand,
     setCommand,
+    exportSchemaCommand,
   ],
 };
