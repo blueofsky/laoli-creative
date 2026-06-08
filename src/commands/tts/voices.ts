@@ -30,9 +30,9 @@ export const voicesCommand: Command = {
   execute: async (config: Config, flags: Flags) => {
     const providerName = (flags.provider as string) || config.tts.defaultProvider || 'minimax';
     const isJson = flags.json as boolean;
-    
-    let voices: any[] = [];
-    
+
+    let voices: any[];
+
     if (providerName === 'mimo') {
       voices = getMimoVoices();
     } else {

@@ -44,7 +44,7 @@ export async function uploadImage(params: PicgoUploadParams): Promise<PicgoUploa
       const result = await uploadSingleFile(file, config);
       results.push(result);
     } catch (error) {
-      throw new Error(`Failed to upload ${file}: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(`Failed to upload ${file}: ${error instanceof Error ? error.message : String(error)}`, { cause: error });
     }
   }
 
