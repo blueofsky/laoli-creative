@@ -1,6 +1,5 @@
 import type { CommandGroup } from '../../types/cli';
 import { loginCommand } from './login';
-import { logoutCommand } from './logout';
 import { statusCommand } from './status';
 
 export const authCommands: CommandGroup = {
@@ -8,7 +7,6 @@ export const authCommands: CommandGroup = {
   description: 'Authentication management',
   commands: [
     loginCommand,
-    logoutCommand,
     statusCommand,
   ],
 };

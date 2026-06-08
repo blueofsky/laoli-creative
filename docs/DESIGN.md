@@ -300,11 +300,8 @@ laoli config export-schema [--output <path>]
 #### 2.2.12 认证管理
 
 ```bash
-# 登录
-laoli auth login [--api-key <key>]
-
-# 登出
-laoli auth logout
+# 保存 API Key
+laoli auth login --api-key <key> [--provider <name>]
 
 # 查看状态
 laoli auth status

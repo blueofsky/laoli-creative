@@ -5,8 +5,8 @@ import { CLIError, ExitCode } from '../../errors/codes';
 
 export const loginCommand: Command = {
   name: 'login',
-  description: 'Login with API key',
-  usage: 'laoli auth login [--api-key <key>]',
+  description: 'Save API key to configuration',
+  usage: 'laoli auth login --api-key <key> [--provider <name>]',
   options: [
     { flag: '--api-key <key>', description: 'API key' },
     { flag: '--provider <name>', description: 'Provider: agnes, apimart, tuzi, minimax' },

@@ -1,5 +1,6 @@
 import { requestJson } from '../client/http';
 import { ProviderError } from '../errors/codes';
+import { loadConfig } from '../config/loader';
 
 /**
  * Provider -> env var name mapping for API keys
@@ -21,13 +22,23 @@ export function getApiKey(providerName: string): string {
     throw new ProviderError(`Unknown provider: ${providerName}`, providerName);
   }
 
+  // 1. 环境变量（最高优先级）
   for (const envVar of envVars) {
     const apiKey = process.env[envVar];
     if (apiKey) return apiKey;
   }
 
+  // 2. 配置文件 ~/.laoli/config.json -> providers.{name}.apiKey
+  try {
+    const config = loadConfig();
+    const cfgKey = config.providers?.[providerName]?.apiKey;
+    if (cfgKey) return cfgKey;
+  } catch {
+    // 配置文件加载失败则跳过
+  }
+
   throw new ProviderError(
-    `${capitalize(providerName)} API key not found. Set ${envVars.join(' or ')} environment variable.`,
+    `${capitalize(providerName)} API key not found. Try: laoli auth login --api-key <key> --provider ${providerName}`,
     providerName
   );
 }

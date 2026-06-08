@@ -83,8 +83,7 @@ laoli config export-schema [--output schema.json]
 ### 认证管理 (auth)
 
 ```bash
-laoli auth login [--api-key sk-xxxxx]
-laoli auth logout
+laoli auth login --api-key <key> [--provider <name>]
 laoli auth status
 ```
 

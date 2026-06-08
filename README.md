@@ -74,7 +74,6 @@ laoli config set --key <key> --value <value>
 
 ```bash
 laoli auth login --api-key <key> [--provider <name>]
-laoli auth logout [--provider <name>]
 laoli auth status
 ```
 
