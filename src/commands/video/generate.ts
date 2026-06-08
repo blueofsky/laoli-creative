@@ -72,14 +72,16 @@ export const generateCommand: Command = {
       // 提交视频生成任务
       const result = await generateVideo(params);
       
-      // 如果是异步模式，直接返回任务 ID
+      // 如果是异步模式，记录到队列并返回任务 ID
       if (isAsync) {
+        const { addTask } = await import('../../sdk/queue');
+        addTask({ taskId: result.taskId, provider: providerName, outputPath: output, prompt: prompt.slice(0, 50) });
         if (isJson) {
           json(result);
         } else if (!isQuiet) {
           info(`Video generation started. Task ID: ${result.taskId}`);
-          info(`Check status with: laoli video query --task-id ${result.taskId}`);
-          info(`Download with: laoli video download --task-id ${result.taskId} --output ${output}`);
+          info(`Check status with: laoli video list`);
+          info(`Download with: laoli video download --task-id ${result.taskId}`);
         }
         return;
       }
