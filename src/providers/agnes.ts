@@ -127,15 +127,25 @@ export const agnesProvider: Provider = {
     }
 
     const seconds = params.seconds || 5;
-    const numFrames = 8 * seconds + 1;
     const frameRate = 24;
+    // num_frames 必须满足 8n + 1，最大 441
+    const rawFrames = Math.round(seconds * frameRate);
+    const n = Math.max(1, Math.min(Math.ceil(rawFrames / 8), 55)); // 55*8+1 = 441
+    const numFrames = 8 * n + 1;
 
     const requestBody: any = { model, prompt: params.prompt, width, height, num_frames: numFrames, frame_rate: frameRate };
 
-    // 参考图处理
+    // 参考图处理：Video API 不支持 data URL，自动用 picgo CLI 上传到图床
     if (params.refImages && params.refImages.length > 0) {
-      // 仅支持 URL（实际使用中通过 picgo 上传）
-      requestBody.image = params.refImages[0];
+      let ref = params.refImages[0];
+      if (!ref.startsWith('http://') && !ref.startsWith('https://')) {
+        const { execSync } = await import('child_process');
+        const url = execSync(`npx picgo upload "${ref}"`, { encoding: 'utf-8' });
+        // picgo 输出最后一行是 URL
+        const lines = url.trim().split('\n');
+        ref = lines[lines.length - 1].trim();
+      }
+      requestBody.image = ref;
     }
 
     try {
