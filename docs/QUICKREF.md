@@ -38,38 +38,11 @@ laoli video download --task-id 12345 --output output.mp4
 laoli bgm generate --prompt "描述" --output output.mp3 [--instrumental]
 ```
 
-### 图表生成 (diagram)
-
-```bash
-laoli diagram create --type architecture --output diagram.svg [--input config.json]
-laoli diagram create --type flowchart --prompt "流程描述" --output flow.svg
-```
-
-### 多平台同步 (sync)
-
-```bash
-laoli sync publish --file article.md --platform juejin,zhihu [--title "标题"]
-laoli sync platforms [--auth]
-```
-
 ### 图片上传 (picgo)
 
 ```bash
 laoli picgo upload --input image.png
 laoli picgo config --repo owner/repo --token xxx [--path assets/images]
-```
-
-### URL 转 Markdown (url)
-
-```bash
-laoli url fetch --url https://example.com --output article.md [--download-media]
-```
-
-### 图片压缩 (compress)
-
-```bash
-laoli compress image --input photo.png [--format webp] [--quality 80]
-laoli compress image --input ./images/ --recursive
 ```
 
 ### 配置管理 (config)

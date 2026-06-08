@@ -227,30 +227,7 @@ laoli bgm generate --prompt <text> --output <path> [options]
   --instrumental         纯音乐
 ```
 
-#### 2.2.6 图表生成
-
-```bash
-# 创建图表
-laoli diagram create --type <type> --output <path> [options]
-  --type <type>          类型：architecture, flowchart, sequence, mindmap
-  --input <path>         输入文件
-  --prompt <text>        描述文本
-  --style <name>         样式
-```
-
-#### 2.2.7 多平台同步
-
-```bash
-# 发布文章
-laoli sync publish --file <path> --platform <platforms> [options]
-  --title <text>         标题
-  --cover <path>         封面图
-
-# 查看平台状态
-laoli sync platforms [--auth]
-```
-
-#### 2.2.8 图片上传
+#### 2.2.6 图片上传
 
 ```bash
 # 上传图片
@@ -264,27 +241,7 @@ laoli picgo config --repo <owner/repo> --token <token> [options]
   --custom-url <url>     自定义域名
 ```
 
-#### 2.2.9 URL 转 Markdown
-
-```bash
-# 抓取网页
-laoli url fetch --url <url> --output <path> [options]
-  --download-media       下载媒体文件
-  --wait                 等待用户确认
-  --timeout <ms>         超时时间
-```
-
-#### 2.2.10 图片压缩
-
-```bash
-# 压缩图片
-laoli compress image --input <path> [options]
-  --format <fmt>         格式：webp, png, jpeg
-  --quality <n>          质量：0-100
-  --recursive            递归处理
-```
-
-#### 2.2.11 配置管理
+#### 2.2.7 配置管理
 
 ```bash
 # 查看配置
@@ -297,7 +254,7 @@ laoli config set --key <key> --value <value>
 laoli config export-schema [--output <path>]
 ```
 
-#### 2.2.12 认证管理
+#### 2.2.8 认证管理
 
 ```bash
 # 保存 API Key
@@ -531,31 +488,11 @@ laoli imagine generate --prompt "A cat" --output cat.png --json
     "defaultFormat": "mp3"
   },
   
-  "diagram": {
-    "defaultOutputDir": "./diagrams",
-    "defaultStyle": "dark"
-  },
-  
-  "sync": {
-    "defaultPlatforms": ["juejin", "zhihu", "csdn"]
-  },
-  
   "picgo": {
     "repo": "",
     "branch": "main",
     "path": "assets/images",
     "customUrl": ""
-  },
-  
-  "url": {
-    "defaultOutputDir": "./reference",
-    "downloadMedia": "ask",
-    "timeout": 30000
-  },
-  
-  "compress": {
-    "defaultFormat": "webp",
-    "defaultQuality": 80
   },
   
   "output": {
@@ -583,10 +520,7 @@ TUZI_API_KEY=xxxxx
 MINIMAX_API_KEY=xxxxx
 
 # 其他服务
-WECHATSYNC_TOKEN=xxxxx
 MIMO_API_KEY=xxxxx
-FEISHU_APP_ID=xxxxx
-FEISHU_APP_SECRET=xxxxx
 
 # 代理
 HTTPS_PROXY=http://127.0.0.1:7890
@@ -708,15 +642,8 @@ export enum ExitCode {
 
 ### Phase 3：辅助功能 (Week 5-6)
 
-- [ ] `laoli bgm` 模块
-- [ ] `laoli diagram` 模块
-- [ ] `laoli compress` 模块
-
-### Phase 4：集成功能 (Week 7-8)
-
-- [ ] `laoli sync` 模块
-- [ ] `laoli picgo` 模块
-- [ ] `laoli url` 模块
+- [x] `laoli bgm` 模块
+- [x] `laoli picgo` 模块
 
 ### Phase 5：Skills 开发 (Week 9-10)
 
