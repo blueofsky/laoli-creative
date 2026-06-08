@@ -178,7 +178,7 @@ export function saveConfig(config: Partial<Config>): void {
   if (!existsSync(CONFIG_DIR)) {
     mkdirSync(CONFIG_DIR, { recursive: true });
   }
-  
+
   // 加载现有配置
   let existingConfig: Config = DEFAULT_CONFIG;
   if (existsSync(CONFIG_FILE)) {
@@ -189,10 +189,15 @@ export function saveConfig(config: Partial<Config>): void {
       // 忽略解析错误
     }
   }
-  
+
   // 合并配置
   const mergedConfig = mergeConfigs(existingConfig, config);
-  
+
+  // 清除 providers 中的 apiKey（只从环境变量 / .env 读取，不持久化到配置文件）
+  for (const providerName of Object.keys(mergedConfig.providers)) {
+    delete mergedConfig.providers[providerName].apiKey;
+  }
+
   // 保存配置
   writeFileSync(CONFIG_FILE, JSON.stringify(mergedConfig, null, 2), 'utf-8');
 }
