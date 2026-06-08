@@ -41,32 +41,27 @@ export const DEFAULT_CONFIG: Config = {
   imagine: {
     defaultProvider: 'agnes',
     defaultModel: 'agnes-image-2.1-flash',
-    defaultOutputDir: './images',
-
     defaultQuality: '2k',
     defaultAspectRatio: '1:1',
   },
-  
+
   tts: {
     defaultProvider: 'mimo',
     defaultModel: 'mimo-v2.5-tts',
-    defaultOutputDir: './audio',
     defaultVoice: '冰糖',
     defaultFormat: 'mp3',
   },
-  
+
   video: {
     defaultProvider: 'apimart',
     defaultModel: 'doubao-seedance-1-0-pro-fast',
-    defaultOutputDir: './videos',
     defaultSeconds: 5,
     defaultResolution: '1080p',
   },
-  
+
   bgm: {
     defaultProvider: 'minimax',
     defaultModel: 'music-2.6',
-    defaultOutputDir: './bgm',
   },
   
   picgo: {

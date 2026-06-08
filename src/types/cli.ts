@@ -58,7 +58,6 @@ export interface ProviderConfig {
 export interface ModuleConfig {
   defaultProvider?: string;
   defaultModel?: string;
-  defaultOutputDir?: string;
 }
 
 export interface ImagineConfig extends ModuleConfig {
