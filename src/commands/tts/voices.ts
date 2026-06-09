@@ -1,17 +1,7 @@
 import type { Command, Config, Flags } from '../../types/cli';
-import { json } from '../../utils/logger';
+import { json, info } from '../../utils/logger';
+import { getVoices as getMinimaxVoices } from '../../providers/minimax';
 import { getVoices as getMimoVoices } from '../../providers/mimo';
-
-const MINIMAX_VOICES = [
-  { id: '冰糖', name: '冰糖', language: 'Chinese', gender: 'Female', style: '活泼少女' },
-  { id: '茉莉', name: '茉莉', language: 'Chinese', gender: 'Female', style: '知性女声' },
-  { id: '苏打', name: '苏打', language: 'Chinese', gender: 'Male', style: '阳光少年' },
-  { id: '白桦', name: '白桦', language: 'Chinese', gender: 'Male', style: '成熟男声' },
-  { id: 'Mia', name: 'Mia', language: 'English', gender: 'Female', style: 'Lively girl' },
-  { id: 'Chloe', name: 'Chloe', language: 'English', gender: 'Female', style: 'Sweet Dreamy' },
-  { id: 'Milo', name: 'Milo', language: 'English', gender: 'Male', style: 'Sunny boy' },
-  { id: 'Dean', name: 'Dean', language: 'English', gender: 'Male', style: 'Steady Gentle' },
-];
 
 export const voicesCommand: Command = {
   name: 'voices',
@@ -33,10 +23,15 @@ export const voicesCommand: Command = {
 
     let voices: any[];
 
-    if (providerName === 'mimo') {
-      voices = getMimoVoices();
-    } else {
-      voices = MINIMAX_VOICES;
+    try {
+      if (providerName === 'mimo') {
+        voices = await getMimoVoices();
+      } else {
+        voices = await getMinimaxVoices();
+      }
+    } catch {
+      info('Failed to fetch voices from API.');
+      return;
     }
     
     if (isJson) {

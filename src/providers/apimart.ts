@@ -140,7 +140,26 @@ export const apimartProvider: Provider = {
     } else {
       requestBody.size = RESOLUTION_MAP['1080p'];
     }
-    if (params.refImages && params.refImages.length > 0) requestBody.image = params.refImages[0];
+    if (params.refImages && params.refImages.length > 0) {
+      const urls: string[] = [];
+      for (const ref of params.refImages) {
+        if (ref.startsWith('http://') || ref.startsWith('https://')) {
+          urls.push(ref);
+        } else {
+          const buf = readFileSync(ref);
+          const mime = ref.endsWith('.png') ? 'image/png' : 'image/jpeg';
+          const form = new FormData();
+          form.append('file', new Blob([buf], { type: mime }), ref.split('/').pop() || 'ref.png');
+          const uploadRes = await apiFetch('apimart', 'POST', `${BASE_URL}/uploads/images`, {
+            headers: { Authorization: `Bearer ${apiKey}` }, body: form, description: 'uploadImage',
+          });
+          if (!uploadRes.ok) throw new ProviderError(`APIMart upload failed`, 'apimart', uploadRes.status);
+          const uploadData: any = await uploadRes.json();
+          urls.push(uploadData.url);
+        }
+      }
+      requestBody.image_urls = urls;
+    }
 
     try {
       const response = await apiFetch('apimart', 'POST', `${BASE_URL}/videos/generations`, { headers: { Authorization: `Bearer ${apiKey}` }, body: JSON.stringify(requestBody), description: 'videos_generations' });
@@ -149,7 +168,9 @@ export const apimartProvider: Provider = {
         throw new ProviderError(`APIMart Video API error: ${err.error?.message || response.statusText}`, 'apimart', response.status);
       }
       const data: any = await response.json();
-      return { taskId: data.id, status: 'pending', metadata: { provider: 'apimart', model, duration: seconds, size: requestBody.size } };
+      const taskId = data.data?.[0]?.task_id || data.id;
+      if (!taskId) throw new ProviderError('APIMart did not return task_id', 'apimart');
+      return { taskId, status: 'pending', metadata: { provider: 'apimart', model, duration: seconds, size: requestBody.size } };
     } catch (error) {
       if (error instanceof ProviderError) throw error;
       throw new NetworkError(`APIMart Video API request failed: ${error instanceof Error ? error.message : String(error)}`);
@@ -166,12 +187,14 @@ export const apimartProvider: Provider = {
         const err: any = await response.json().catch(() => ({}));
         throw new ProviderError(`APIMart Video API error: ${err.error?.message || response.statusText}`, 'apimart', response.status);
       }
-      const data: any = await response.json();
+      const raw: any = await response.json();
+      const data = raw.data || raw;
       let status: VideoResult['status'] = 'pending';
-      if (data.status === 'succeeded') status = 'completed';
+      if (data.status === 'succeeded' || data.status === 'completed') status = 'completed';
       else if (data.status === 'failed') status = 'failed';
       else if (data.status === 'processing' || data.status === 'running') status = 'processing';
-      return { taskId: data.id, status, url: data.output?.video_url || data.video_url, metadata: { provider: 'apimart', model: data.model } };
+      const url = data.result?.videos?.[0]?.url?.[0] || data.output?.video_url || data.video_url;
+      return { taskId: data.id, status, url, metadata: { provider: 'apimart', model: data.model } };
     } catch (error) {
       if (error instanceof ProviderError) throw error;
       throw new NetworkError(`APIMart Video API request failed: ${error instanceof Error ? error.message : String(error)}`);

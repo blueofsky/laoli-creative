@@ -25,6 +25,7 @@ function truncate(str: string, maxLen = 2000): string {
 /** 格式化 JSON 请求/响应体用于日志输出 */
 function formatBody(body: any): string {
   if (!body) return '<no body>';
+  if (body instanceof FormData) return '<FormData>';
   try {
     const parsed = typeof body === 'string' ? JSON.parse(body) : body;
     return truncate(JSON.stringify(parsed, null, 2));
@@ -76,9 +77,14 @@ export async function apiFetch(
   debug(logLines.join('\n'));
 
   try {
+    const defaultHeaders: Record<string, string> = {};
+    // FormData 不要设 Content-Type，让 fetch 自动设置 multipart/form-data 和 boundary
+    if (!(options?.body instanceof FormData)) {
+      defaultHeaders['Content-Type'] = 'application/json';
+    }
     const response = await fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json', ...options?.headers },
+      headers: { ...defaultHeaders, ...options?.headers },
       body: options?.body,
     });
     const ms = Date.now() - start;

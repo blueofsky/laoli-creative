@@ -8,14 +8,14 @@ import { apiFetch } from '../client/http';
 const BASE_URL = 'https://api.xiaomimimo.com/v1';
 
 const VOICES = [
-  { id: '冰糖', name: '冰糖', language: 'Chinese', gender: 'Female', style: '活泼少女' },
-  { id: '茉莉', name: '茉莉', language: 'Chinese', gender: 'Female', style: '知性女声' },
-  { id: '苏打', name: '苏打', language: 'Chinese', gender: 'Male', style: '阳光少年' },
-  { id: '白桦', name: '白桦', language: 'Chinese', gender: 'Male', style: '成熟男声' },
-  { id: 'Mia', name: 'Mia', language: 'English', gender: 'Female', style: 'Lively girl' },
-  { id: 'Chloe', name: 'Chloe', language: 'English', gender: 'Female', style: 'Sweet Dreamy' },
-  { id: 'Milo', name: 'Milo', language: 'English', gender: 'Male', style: 'Sunny boy' },
-  { id: 'Dean', name: 'Dean', language: 'English', gender: 'Male', style: 'Steady Gentle' },
+  { id: 'female-shaonv', name: '少女音色', language: 'Chinese', gender: 'Female', style: '甜美少女' },
+  { id: 'female-yujie', name: '御姐音色', language: 'Chinese', gender: 'Female', style: '成熟御姐' },
+  { id: 'female-chengshu', name: '成熟女性', language: 'Chinese', gender: 'Female', style: '沉稳成熟' },
+  { id: 'female-tianmei', name: '甜美女性', language: 'Chinese', gender: 'Female', style: '甜美温柔' },
+  { id: 'male-qn-qingse', name: '青涩青年', language: 'Chinese', gender: 'Male', style: '青涩青春' },
+  { id: 'male-qn-jingying', name: '精英青年', language: 'Chinese', gender: 'Male', style: '精英干练' },
+  { id: 'male-qn-badao', name: '霸道青年', language: 'Chinese', gender: 'Male', style: '霸道强势' },
+  { id: 'male-qn-daxuesheng', name: '大学生', language: 'Chinese', gender: 'Male', style: '阳光开朗' },
 ];
 
 export const mimoProvider: Provider = {

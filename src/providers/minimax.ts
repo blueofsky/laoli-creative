@@ -6,18 +6,7 @@ import { getApiKey } from './shared';
 import { downloadFile, apiFetch } from '../client/http';
 
 
-const BASE_URL = 'https://api.minimax.io/v1';
-
-const VOICES = [
-  { id: '冰糖', name: '冰糖', language: 'Chinese', gender: 'Female', style: '活泼少女' },
-  { id: '茉莉', name: '茉莉', language: 'Chinese', gender: 'Female', style: '知性女声' },
-  { id: '苏打', name: '苏打', language: 'Chinese', gender: 'Male', style: '阳光少年' },
-  { id: '白桦', name: '白桦', language: 'Chinese', gender: 'Male', style: '成熟男声' },
-  { id: 'Mia', name: 'Mia', language: 'English', gender: 'Female', style: 'Lively girl' },
-  { id: 'Chloe', name: 'Chloe', language: 'English', gender: 'Female', style: 'Sweet Dreamy' },
-  { id: 'Milo', name: 'Milo', language: 'English', gender: 'Male', style: 'Sunny boy' },
-  { id: 'Dean', name: 'Dean', language: 'English', gender: 'Male', style: 'Steady Gentle' },
-];
+const BASE_URL = 'https://api.minimaxi.com/v1';
 
 export const minimaxProvider: Provider = {
   name: 'minimax',
@@ -114,6 +103,34 @@ export const minimaxProvider: Provider = {
   },
 };
 
-export function getVoices() {
-  return VOICES;
+export async function getVoices(): Promise<any[]> {
+  try {
+    const apiKey = getApiKey('minimax');
+    const response = await apiFetch('minimax', 'POST', `${BASE_URL}/get_voice`, {
+      headers: { Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({ voice_type: 'system' }),
+      description: 'getVoices',
+    });
+    if (!response.ok) throw new Error('Failed to fetch voices');
+    const data: any = await response.json();
+    return (data.system_voice || []).map((v: any) => ({
+      id: v.voice_id,
+      name: v.voice_name,
+      language: v.voice_id.startsWith('Chinese') ? 'Chinese' :
+               v.voice_id.startsWith('English') ? 'English' :
+               v.voice_id.startsWith('Japanese') ? 'Japanese' :
+               v.voice_id.startsWith('Korean') ? 'Korean' : 'Other',
+      gender: (v.description?.[0] || '').includes('女') ? 'Female' : 'Male',
+      style: v.description?.[0] || '',
+    }));
+  } catch {
+    // fallback: 返回常用音色
+    return [
+      { id: 'female-shaonv', name: '少女音色', language: 'Chinese', gender: 'Female', style: '甜美少女' },
+      { id: 'female-yujie', name: '御姐音色', language: 'Chinese', gender: 'Female', style: '成熟御姐' },
+      { id: 'female-chengshu', name: '成熟女性', language: 'Chinese', gender: 'Female', style: '沉稳成熟' },
+      { id: 'male-qn-qingse', name: '青涩青年', language: 'Chinese', gender: 'Male', style: '青涩青春' },
+      { id: 'male-qn-jingying', name: '精英青年', language: 'Chinese', gender: 'Male', style: '精英干练' },
+    ];
+  }
 }

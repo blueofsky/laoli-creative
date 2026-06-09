@@ -20,6 +20,5 @@ export async function listVoices(providerName?: string): Promise<any[]> {
     return getMimoVoices();
   }
 
-  // minimax 或其他 provider 的预置音色
   return getMinimaxVoices();
 }
