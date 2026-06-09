@@ -5,6 +5,7 @@
 ### Features
 
 - **Refactor**: `imagine` → `image` (command, SDK, skill, docs)
+- **Skills moved**: All skills migrated to [laoli-recipe](https://github.com/blueofsky/laoli-recipe) repo
 - **log4js**: Replace custom logger with log4js (dateFile daily rolling, automatic rotation)
 - **HTTP body logging**: Full request/response body at DEBUG level, Authorization auto-masked
 - **`laoli logs`**: New command to view/follow log files (`laoli logs`, `laoli logs -f`, `laoli logs --list`)

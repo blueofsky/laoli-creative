@@ -1,7 +1,7 @@
 {
   "name": "laoli-creative",
   "version": "1.0.1",
-  "description": "Laoli Creative - AI Content Creation Toolkit with Skills",
+  "description": "Laoli Creative - AI 内容创作 CLI 工具",
   "type": "module",
   "engines": {
     "bun": ">=1.0",
@@ -22,7 +22,6 @@
   },
   "files": [
     "dist",
-    "skills",
     "docs",
     "config"
   ],
@@ -58,8 +57,7 @@
     "image-generation",
     "tts",
     "video",
-    "cli",
-    "skills"
+    "cli"
   ],
   "author": "Laoli Recipe",
   "license": "MIT"
