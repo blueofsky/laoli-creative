@@ -51,13 +51,13 @@ laoli imagine generate --prompt <text> --output <path> [options]
 |------|------|
 | `--prompt <text>` | 图片描述（必填） |
 | `--output <path>` | 输出路径（必填） |
-| `--provider <name>` | Provider: agnes, apimart, tuzi |
-| `--model <id>` | 模型 ID |
-| `--aspect-ratio <ratio>` | 宽高比：16:9, 9:16, 1:1, 4:3 |
-| `--size <WxH>` | 尺寸：1024x1024 |
-| `--quality <level>` | 质量：normal, 2k |
+| `--provider <name>` | Provider: agnes（默认）, apimart, tuzi |
+| `--model <id>` | 模型 ID（默认 agnes-image-2.1-flash） |
+| `--aspect-ratio <ratio>` | 宽高比：16:9, 9:16, 1:1, 4:3（默认 1:1） |
+| `--size <WxH>` | 尺寸：1024x1024（可选，不填则由 provider 决定） |
+| `--quality <level>` | 质量：normal, 2k（默认 2k） |
 | `--ref <files...>` | 参考图片路径或 URL（图生图） |
-| `--n <count>` | 生成数量，默认 1 |
+| `--n <count>` | 生成数量（默认 1） |
 | `--json` | JSON 输出 |
 | `--quiet` | 抑制非必要输出 |
 

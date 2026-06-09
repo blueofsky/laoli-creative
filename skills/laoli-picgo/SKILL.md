@@ -47,7 +47,8 @@ laoli picgo config --repo <owner/repo> --token <token> [options]
 | `--token <token>` | GitHub Personal Access Token |
 | `--path <path>` | 仓库内路径（默认 `img/`） |
 | `--branch <branch>` | 分支（默认 `main`） |
-| `--custom-url <url>` | 自定义 CDN 域名 |
+| `--custom-url <url>` | 自定义 CDN 域名（可选） |
+| `--show` | 查看当前配置（无需其他参数） |
 | `--show` | 查看当前配置 |
 
 ### 上传

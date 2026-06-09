@@ -50,14 +50,14 @@ laoli tts speak --text "<text>" --output <path> [options]
 | `--text <text>` | 要合成的文本（必填） |
 | `--output <path>` | 输出音频文件路径（必填） |
 | `--provider <name>` | Provider：`minimax`（默认）、`mimo` |
-| `--model <id>` | 模型 ID |
-| `--voice <id>` | 音色 ID |
-| `--speed <n>` | 语速 0.5~2.0（minimax） |
-| `--vol <n>` | 音量 0~10（minimax） |
-| `--pitch <n>` | 音调 -12~12（minimax） |
+| `--model <id>` | 模型 ID（默认 `speech-2.8-hd`） |
+| `--voice <id>` | 音色 ID（默认 `female-shaonv`） |
+| `--speed <n>` | 语速 0.5~2.0（默认 1.0，minimax） |
+| `--vol <n>` | 音量 0~10（默认 3，minimax） |
+| `--pitch <n>` | 音调 -12~12（默认 0，minimax） |
 | `--emotion <e>` | 情绪：happy/sad/angry/calm/whisper...（minimax） |
 | `--context <text>` | 自然语言风格描述（mimo 导演模式） |
-| `--format <fmt>` | 输出格式：mp3、wav |
+| `--format <fmt>` | 输出格式：mp3、wav（默认 mp3） |
 | `--json` | JSON 输出 |
 
 ### 查看音色

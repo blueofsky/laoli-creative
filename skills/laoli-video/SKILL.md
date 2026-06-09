@@ -49,15 +49,15 @@ laoli video generate --prompt "<描述>" --output <path> [options]
 |------|------|
 | `--prompt <text>` | 视频描述（必填） |
 | `--output <path>` | 输出视频文件路径（必填） |
-| `--provider <name>` | Provider：`agnes`（免费）、`tuzi`、`apimart` |
-| `--model <id>` | 模型 ID |
-| `--seconds <n>` | 视频时长（秒） |
-| `--size <WxH>` | 尺寸（如 `9:16`、`1280x720`） |
-| `--resolution <p>` | 分辨率：480p、720p、1080p、4k |
+| `--provider <name>` | Provider：`apimart`（默认）、`agnes`（免费）、`tuzi` |
+| `--model <id>` | 模型 ID（默认 doubao-seedance-1-0-pro-fast） |
+| `--seconds <n>` | 视频时长秒数（默认 5） |
+| `--size <WxH>` | 尺寸（如 `9:16`、`1280x720`，可选） |
+| `--resolution <p>` | 分辨率：480p、720p、1080p、4k（默认 1080p） |
 | `--ref <path>` | 参考图片路径或 URL（图生视频） |
 | `--async` | 只提交不等待，返回 taskId |
 | `--poll-interval <ms>` | 轮询间隔（默认 5000） |
-| `--timeout <ms>` | 单任务超时（默认 600000） |
+| `--timeout <ms>` | 单任务超时毫秒（默认 600000，即 10 分钟） |
 | `--json` | JSON 输出 |
 
 ### 批量生成

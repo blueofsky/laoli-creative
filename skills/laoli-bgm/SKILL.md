@@ -47,7 +47,7 @@ laoli bgm --prompt "<描述>" --output <path> [options]
 | `--prompt <text>` | 音乐描述（必填） |
 | `--output <path>` | 输出音频文件路径（必填） |
 | `--provider <name>` | Provider：`minimax` |
-| `--model <id>` | 模型 ID |
+| `--model <id>` | 模型 ID（默认 `music-2.6`） |
 | `--lyrics <text>` | 歌词文本（有歌词则转为歌曲） |
 | `--instrumental` | 纯音乐模式 |
 | `--json` | JSON 输出 |
