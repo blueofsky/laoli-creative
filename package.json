@@ -42,11 +42,13 @@
   "dependencies": {
     "@clack/prompts": "^0.7.0",
     "es-toolkit": "^1.46.1",
+    "log4js": "^6.9.1",
     "undici": "^6.21.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/bun": "latest",
+    "@types/log4js": "^2.3.5",
     "eslint": "^10.4.1",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.60.1"

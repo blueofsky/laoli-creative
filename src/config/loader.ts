@@ -146,7 +146,7 @@ function applyEnvVars(config: Config): Config {
   if (process.env.LAOLI_QUIET === 'true') {
     result.display = { ...result.display, quiet: true };
   }
-  
+
   return result;
 }
 

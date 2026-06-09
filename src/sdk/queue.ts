@@ -2,8 +2,8 @@ import { readFileSync, writeFileSync, appendFileSync, existsSync, mkdirSync } fr
 import { join } from 'path';
 import { homedir } from 'os';
 
-const QUEUE_FILE = join(homedir(), '.laoli', 'tasks.json');
-const LOG_FILE = join(homedir(), '.laoli', 'tasks.log');
+const QUEUE_FILE = join(homedir(), '.laoli', 'tasks', 'queue.json');
+const LOG_FILE = join(homedir(), '.laoli', 'tasks', 'archive.log');
 
 export interface TaskRecord {
   taskId: string;
@@ -26,13 +26,13 @@ function readQueue(): TaskRecord[] {
 }
 
 function writeQueue(tasks: TaskRecord[]): void {
-  const dir = join(homedir(), '.laoli');
+  const dir = join(homedir(), '.laoli', 'tasks');
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
   writeFileSync(QUEUE_FILE, JSON.stringify(tasks, null, 2), 'utf-8');
 }
 
 function ensureDir(): void {
-  const dir = join(homedir(), '.laoli');
+  const dir = join(homedir(), '.laoli', 'tasks');
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
 }
 

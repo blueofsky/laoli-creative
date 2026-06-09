@@ -2,6 +2,7 @@ import { Registry } from './registry';
 import { parseArgs } from './args';
 import { loadConfig } from './config/loader';
 import { handleError } from './errors/handler';
+import { setLogLevel, initLogging } from './utils/logger';
 import type { Command, CommandGroup, CLIOptions, OptionDef } from './types/cli';
 
 export class CLI {
@@ -20,6 +21,18 @@ export class CLI {
   async run(argv: string[]): Promise<void> {
     try {
       const { commandPath, flags, positional } = parseArgs(argv);
+
+      // 在加载配置前处理 --verbose / --log-level，存入 pending（log4js 尚未初始化）
+      let cliLogLevel: string | null = null;
+      if (flags.verbose) {
+        cliLogLevel = 'DEBUG';
+      }
+      if (flags['log-level']) {
+        cliLogLevel = (flags['log-level'] as string).toUpperCase();
+      }
+      if (cliLogLevel) {
+        setLogLevel(cliLogLevel);
+      }
 
       // --version
       if (commandPath.length === 0 && (flags.version || flags.v)) {
@@ -63,6 +76,15 @@ export class CLI {
 
       // 正常执行
       const config = loadConfig(flags);
+
+      // 用最终配置初始化 log4js（控制台 + 日期滚动文件）
+      initLogging();
+
+      // CLI 参数中的日志级别优先级高于配置，重新应用
+      if (cliLogLevel) {
+        setLogLevel(cliLogLevel);
+      }
+
       await subCmd.execute(config, { ...flags, _positional: positional });
     } catch (error) {
       handleError(error);
@@ -86,7 +108,8 @@ Global Options:
   --region <region>      Region: global, cn
   --output <format>      Output format: text, json
   --quiet                Suppress non-essential output
-  --verbose              Verbose output
+  --verbose              Verbose output (enable DEBUG logs)
+  --log-level <level>    Log level: DEBUG, INFO, WARN, ERROR
   --dry-run              Dry run mode
   --non-interactive      Non-interactive mode
   --help, -h             Show help

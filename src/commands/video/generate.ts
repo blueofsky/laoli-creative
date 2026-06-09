@@ -47,8 +47,12 @@ export const generateCommand: Command = {
     const resolution = (flags.resolution as string) || config.video.defaultResolution;
     const ref = flags.ref as string[] | undefined;
     const isAsync = flags.async as boolean;
-    const pollInterval = flags['poll-interval'] ? parseInt(flags['poll-interval'] as string, 10) : undefined;
-    const timeout = flags.timeout ? parseInt(flags.timeout as string, 10) : undefined;
+    const pollInterval = flags['poll-interval']
+      ? parseInt(flags['poll-interval'] as string, 10)
+      : config.video.pollInterval ?? 5000;
+    const timeout = flags.timeout
+      ? parseInt(flags.timeout as string, 10)
+      : config.video.timeout ?? 600000;
     const isJson = flags.json as boolean;
     const isQuiet = flags.quiet as boolean || config.display.quiet;
     

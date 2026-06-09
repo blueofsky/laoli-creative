@@ -4,11 +4,7 @@ import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { CLI } from './cli';
-import { enableFileLogging } from './utils/logger';
 import { imagineCommands } from './commands/imagine';
-
-// 启用文件日志（~/.laoli/laoli.log）
-enableFileLogging();
 import { ttsCommands } from './commands/tts';
 import { videoCommands } from './commands/video';
 import { bgmCommands } from './commands/bgm';

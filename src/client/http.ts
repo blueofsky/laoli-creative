@@ -16,7 +16,45 @@ export interface HttpResponse<T = any> {
   data: T;
 }
 
-/** 封装 fetch 并记录请求日志（耗时、状态） */
+/** 截断过长的字符串（用于日志输出） */
+function truncate(str: string, maxLen = 2000): string {
+  if (str.length <= maxLen) return str;
+  return str.slice(0, maxLen) + `\n... [truncated, ${str.length - maxLen} more bytes]`;
+}
+
+/** 格式化 JSON 请求/响应体用于日志输出 */
+function formatBody(body: any): string {
+  if (!body) return '<no body>';
+  try {
+    const parsed = typeof body === 'string' ? JSON.parse(body) : body;
+    return truncate(JSON.stringify(parsed, null, 2));
+  } catch {
+    const str = typeof body === 'string' ? body : String(body);
+    return truncate(str);
+  }
+}
+
+/** 安全读取 Response body 的副本用于日志（不消耗原始流） */
+async function cloneBodyForLog(res: Response): Promise<string> {
+  try {
+    const clone = res.clone();
+    const text = await clone.text();
+    return formatBody(text);
+  } catch {
+    return '<unable to read body>';
+  }
+}
+
+/**
+ * 封装 fetch 并输出完整的请求/响应报文（DEBUG 级别）
+ *
+ * 所有 provider 的 API 调用都走这个函数，DEBUG 模式下能看到：
+ *   → POST /v1/videos
+ *   Headers: {...}
+ *   Body: { prompt: "...", model: "..." }
+ *   ← 200 (5234ms)
+ *   Body: { video_id: "...", status: "queued" }
+ */
 export async function apiFetch(
   provider: string,
   method: string,
@@ -25,7 +63,17 @@ export async function apiFetch(
 ): Promise<Response> {
   const desc = options?.description || `${method} ${url.replace(/https?:\/\/[^/]+/, '')}`;
   const start = Date.now();
-  debug(`[${provider}] → ${desc}`);
+
+  // 构建完整的请求日志（含报文）
+  const reqBody = options?.body;
+
+  // 逐行输出请求日志，避免超大 JSON 挤在一行
+  const logLines: string[] = [`[${provider}] → ${desc}`];
+  if (reqBody) {
+    logLines.push(`  Headers: ${JSON.stringify(sanitizeHeaders(options?.headers))}`);
+    logLines.push(`  Body: ${formatBody(reqBody)}`);
+  }
+  debug(logLines.join('\n'));
 
   try {
     const response = await fetch(url, {
@@ -34,10 +82,13 @@ export async function apiFetch(
       body: options?.body,
     });
     const ms = Date.now() - start;
+
     if (response.ok) {
-      debug(`[${provider}] ← ${desc} (${response.status}, ${ms}ms)`);
+      const resBody = await cloneBodyForLog(response);
+      debug(`[${provider}] ← ${desc} (${response.status}, ${ms}ms)\n  Body: ${resBody}`);
     } else {
-      logError(`[${provider}] ← ${desc} (${response.status}, ${ms}ms)`);
+      const resBody = await cloneBodyForLog(response);
+      logError(`[${provider}] ← ${desc} (${response.status}, ${ms}ms)\n  Body: ${resBody}`);
     }
     return response;
   } catch (err) {
@@ -45,6 +96,20 @@ export async function apiFetch(
     logError(`[${provider}] ✗ ${desc} (${ms}ms): ${err instanceof Error ? err.message : String(err)}`);
     throw err;
   }
+}
+
+/** 脱敏请求头中的 Authorization，避免 API Key 泄漏到日志 */
+function sanitizeHeaders(headers?: Record<string, string>): Record<string, string> {
+  if (!headers) return {};
+  const sanitized: Record<string, string> = {};
+  for (const [key, value] of Object.entries(headers)) {
+    if (key.toLowerCase() === 'authorization') {
+      sanitized[key] = value.length > 12 ? value.slice(0, 8) + '...' + value.slice(-4) : '***';
+    } else {
+      sanitized[key] = value;
+    }
+  }
+  return sanitized;
 }
 
 export async function request<T = any>(options: RequestOptions): Promise<HttpResponse<T>> {

@@ -33,8 +33,13 @@ export const batchCommand: Command = {
 
     const isAsync = flags.async as boolean;
     const jobs = flags.jobs ? parseInt(flags.jobs as string, 10) : 2;
-    const pollInterval = flags['poll-interval'] ? parseInt(flags['poll-interval'] as string, 10) : 10000;
-    const taskTimeout = flags.timeout ? parseInt(flags.timeout as string, 10) : 600000; // 默认 10 分钟
+    const pollInterval = flags['poll-interval']
+      ? parseInt(flags['poll-interval'] as string, 10)
+      : config.video.batchPollInterval ?? 10000;
+    const taskTimeout = flags.timeout
+      ? parseInt(flags.timeout as string, 10)
+      : config.video.timeout ?? 600000;
+    const batchTimeout = config.video.batchTimeout ?? 3600000;
     const isJson = flags.json as boolean;
     const isQuiet = flags.quiet as boolean || config.display.quiet;
 
@@ -80,8 +85,8 @@ export const batchCommand: Command = {
     const completed: string[] = [];
 
     while (true) {
-      if (Date.now() - startTime > 3600000) {
-        // 整批最多等 1 小时
+      if (Date.now() - startTime > batchTimeout) {
+        // 整批超时
         const remaining = list().length;
         throw new CLIError(`Batch timed out after 1h (${completed.length} done, ${remaining} remaining)`, ExitCode.TIMEOUT);
       }

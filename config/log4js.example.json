@@ -1,0 +1,21 @@
+{
+  "appenders": {
+    "out": {
+      "type": "stdout",
+      "layout": { "type": "colored" }
+    },
+    "file": {
+      "type": "dateFile",
+      "filename": "logs/laoli.log",
+      "pattern": "yyyy-MM-dd",
+      "keepFileExt": true,
+      "numBackups": 30
+    }
+  },
+  "categories": {
+    "default": {
+      "appenders": ["out", "file"],
+      "level": "INFO"
+    }
+  }
+}

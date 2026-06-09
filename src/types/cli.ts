@@ -73,6 +73,10 @@ export interface TTSConfig extends ModuleConfig {
 export interface VideoConfig extends ModuleConfig {
   defaultSeconds?: number;
   defaultResolution?: string;
+  pollInterval?: number;
+  batchPollInterval?: number;
+  timeout?: number;
+  batchTimeout?: number;
 }
 
 export interface PicgoConfig {

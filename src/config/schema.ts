@@ -57,13 +57,17 @@ export const DEFAULT_CONFIG: Config = {
     defaultModel: 'doubao-seedance-1-0-pro-fast',
     defaultSeconds: 5,
     defaultResolution: '1080p',
+    pollInterval: 5000,
+    batchPollInterval: 10000,
+    timeout: 600000,
+    batchTimeout: 3600000,
   },
 
   bgm: {
     defaultProvider: 'minimax',
     defaultModel: 'music-2.6',
   },
-  
+
   picgo: {
     repo: '',
     branch: 'main',
