@@ -1,12 +1,12 @@
 import type { Command, Config, Flags } from '../../types/cli';
-import { batchGenerateImages } from '../../sdk/imagine';
+import { batchGenerateImages } from '../../sdk/image';
 import { success, json, info } from '../../utils/logger';
 import { CLIError, ExitCode } from '../../errors/codes';
 
 export const batchCommand: Command = {
   name: 'batch',
   description: 'Batch generate images from JSON file',
-  usage: 'laoli imagine batch --batchfile <path> [options]',
+  usage: 'laoli image batch --batchfile <path> [options]',
   options: [
     { flag: '--batchfile <path>', description: 'JSON batch file path', required: true },
     { flag: '--jobs <count>', description: 'Number of concurrent jobs. Default 4', type: 'number' },
@@ -14,8 +14,8 @@ export const batchCommand: Command = {
     { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],
   examples: [
-    'laoli imagine batch --batchfile batch.json',
-    'laoli imagine batch --batchfile batch.json --jobs 4',
+    'laoli image batch --batchfile batch.json',
+    'laoli image batch --batchfile batch.json --jobs 4',
   ],
   execute: async (config: Config, flags: Flags) => {
     const batchfile = flags.batchfile as string;

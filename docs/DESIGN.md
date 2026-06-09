@@ -53,10 +53,9 @@ laoli-creative 依赖 Provider APIs
 laoli-creative/
 ├── src/
 │   ├── commands/                    # 子命令模块
-│   │   ├── imagine/                # 图片生成
-│   │   │   ├── generate.ts         # laoli imagine generate
-│   │   │   ├── edit.ts             # laoli imagine edit
-│   │   │   ├── batch.ts            # laoli imagine batch
+│   │   ├── image/                # 图片生成
+│   │   │   ├── generate.ts         # laoli image generate
+│   │   │   ├── batch.ts            # laoli image batch
 │   │   │   └── index.ts            # 命令注册
 │   │   ├── tts/                    # TTS 语音合成
 │   │   │   ├── synthesize.ts       # laoli tts synthesize
@@ -85,7 +84,7 @@ laoli-creative/
 │   │       ├── status.ts           # laoli auth status
 │   │       └── index.ts
 │   ├── sdk/                        # SDK 编程接口
-│   │   ├── imagine.ts
+│   │   ├── image.ts
 │   │   ├── tts.ts
 │   │   ├── video.ts
 │   │   ├── music.ts
@@ -124,7 +123,7 @@ laoli-creative/
 │   ├── cli.ts                      # CLI 定义
 │   └── main.ts                     # 入口文件
 ├── skills/                         # Skills 文档
-│   ├── laoli-imagine/
+│   ├── laoli-image/
 │   ├── laoli-tts/
 │   ├── laoli-video/
 │   ├── laoli-music/
@@ -163,7 +162,7 @@ laoli [command] [subcommand] [options]
 
 ```bash
 # 生成图片
-laoli imagine generate --prompt <text> --output <path> [options]
+laoli image generate --prompt <text> --output <path> [options]
   --provider <name>      Provider: agnes, apimart, tuzi
   --model <id>           模型 ID
   --aspect-ratio <ratio> 宽高比：16:9, 1:1, 4:3
@@ -172,11 +171,8 @@ laoli imagine generate --prompt <text> --output <path> [options]
   --ref <files...>       参考图片
   --n <count>            生成数量
 
-# 编辑图片
-laoli imagine edit --input <path> --prompt <text> --output <path> [options]
-
 # 批量生成
-laoli imagine batch --batchfile <path> [options]
+laoli image batch --batchfile <path> [options]
   --jobs <count>         并发数
 ```
 
@@ -277,7 +273,7 @@ const laoli = new LaoliSDK({
 });
 
 // 图片生成
-const image = await laoli.imagine.generate({
+const image = await laoli.image.generate({
   prompt: 'A cat',
   outputPath: './cat.png',
   aspectRatio: '16:9',
@@ -307,7 +303,7 @@ const video = await laoli.video.generate({
 ```
 laoli-creative/
 ├── skills/                         # Skills 文档
-│   ├── laoli-imagine/              # 图片生成 Skill
+│   ├── laoli-image/              # 图片生成 Skill
 │   │   └── SKILL.md
 │   ├── laoli-tts/                  # TTS Skill
 │   │   └── SKILL.md
@@ -327,8 +323,8 @@ laoli-creative/
 
 ```markdown
 ---
-name: laoli-imagine
-description: 图片生成技能，支持文生图、图生图、批量生成等功能
+name: laoli-image
+description: 图片生成技能，支持文生图、批量生成等功能
 version: 1.0.0
 dependencies:
   cli:
@@ -353,7 +349,7 @@ laoli auth login --api-key sk-xxxxx
 ### 生成图片
 
 ```bash
-laoli imagine generate --prompt <text> --output <path> [options]
+laoli image generate --prompt <text> --output <path> [options]
 ```
 
 | 选项 | 说明 |
@@ -372,16 +368,16 @@ laoli imagine generate --prompt <text> --output <path> [options]
 
 ```bash
 # 基础生成
-laoli imagine generate --prompt "A cat" --output cat.png
+laoli image generate --prompt "A cat" --output cat.png
 
 # 指定宽高比
-laoli imagine generate --prompt "A landscape" --aspect-ratio 16:9 --output landscape.png
+laoli image generate --prompt "A landscape" --aspect-ratio 16:9 --output landscape.png
 
 # 使用参考图
-laoli imagine generate --prompt "Make blue" --ref source.png --output blue.png
+laoli image generate --prompt "Make blue" --ref source.png --output blue.png
 
 # JSON 输出
-laoli imagine generate --prompt "A cat" --output cat.png --json
+laoli image generate --prompt "A cat" --output cat.png --json
 ```
 
 ## 工作流程
@@ -457,7 +453,7 @@ laoli imagine generate --prompt "A cat" --output cat.png --json
     }
   },
   
-  "imagine": {
+  "image": {
     "defaultProvider": "agnes",
     "defaultModel": "agnes-image-2.1-flash",
     "defaultOutputDir": "./images",
@@ -636,7 +632,7 @@ export enum ExitCode {
 
 ### Phase 2：核心功能 (Week 3-4)
 
-- [ ] `laoli imagine` 模块
+- [ ] `laoli image` 模块
 - [ ] `laoli tts` 模块
 - [ ] `laoli video` 模块
 

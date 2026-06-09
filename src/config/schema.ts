@@ -38,7 +38,7 @@ export const DEFAULT_CONFIG: Config = {
     },
   },
   
-  imagine: {
+  image: {
     defaultProvider: 'agnes',
     defaultModel: 'agnes-image-2.1-flash',
     defaultQuality: '2k',

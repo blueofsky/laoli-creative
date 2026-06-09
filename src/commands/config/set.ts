@@ -8,11 +8,11 @@ export const setCommand: Command = {
   description: 'Set configuration value',
   usage: 'laoli config set --key <key> --value <value>',
   options: [
-    { flag: '--key <key>', description: 'Configuration key (e.g., imagine.defaultProvider)', required: true },
+    { flag: '--key <key>', description: 'Configuration key (e.g., image.defaultProvider)', required: true },
     { flag: '--value <value>', description: 'Configuration value', required: true },
   ],
   examples: [
-    'laoli config set --key imagine.defaultProvider --value agnes',
+    'laoli config set --key image.defaultProvider --value agnes',
     'laoli config set --key tts.defaultVoice --value 冰糖',
     'laoli config set --key output.quiet --value true',
   ],
@@ -25,7 +25,7 @@ export const setCommand: Command = {
 
     const parts = key.split('.');
     if (parts.length < 2) {
-      throw new CLIError('Key must be in format: section.key (e.g., imagine.defaultProvider)', ExitCode.INVALID_ARGS);
+      throw new CLIError('Key must be in format: section.key (e.g., image.defaultProvider)', ExitCode.INVALID_ARGS);
     }
 
     const configUpdate: any = {};

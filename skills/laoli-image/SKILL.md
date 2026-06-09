@@ -1,7 +1,7 @@
 ---
-name: laoli-imagine
+name: laoli-image
 description: >
-  AI 图片生成。使用 laoli imagine 命令生成和编辑图片。
+  AI 图片生成。使用 laoli image 命令生成和编辑图片。
   当用户需要生成图片、创建插图、设计素材、图生图修改或批量生成图片时触发。
 license: MIT
 metadata:
@@ -19,8 +19,8 @@ triggers:
   - text to image
   - image to image
 sources:
-  - laoli imagine generate --help
-  - laoli imagine batch --help
+  - laoli image generate --help
+  - laoli image batch --help
 dependencies:
   cli:
     name: laoli-creative
@@ -29,7 +29,7 @@ dependencies:
 
 # 图片生成 Skill
 
-使用 `laoli imagine` 命令生成图片。
+使用 `laoli image` 命令生成图片。
 
 ## 前置条件
 
@@ -44,7 +44,7 @@ dependencies:
 ### 文生图 / 图生图
 
 ```bash
-laoli imagine generate --prompt <text> --output <path> [options]
+laoli image generate --prompt <text> --output <path> [options]
 ```
 
 | 选项 | 说明 |
@@ -64,7 +64,7 @@ laoli imagine generate --prompt <text> --output <path> [options]
 ### 批量生成
 
 ```bash
-laoli imagine batch --batchfile <path> [options]
+laoli image batch --batchfile <path> [options]
 ```
 
 | 选项 | 说明 |
@@ -79,23 +79,23 @@ laoli imagine batch --batchfile <path> [options]
 1. **确认需求**：文生图还是图生图？是否批量？
 2. **构建 prompt**：清晰描述画面内容、风格、构图
 3. **选择参数**：provider、尺寸、宽高比、质量
-4. **调用生成**：`laoli imagine generate --prompt "..." --output output.png`
+4. **调用生成**：`laoli image generate --prompt "..." --output output.png`
 5. **返回结果**：提供文件路径，如需上传图床再用 `laoli picgo upload`
 
 ## 示例
 
 ```bash
 # 文生图
-laoli imagine generate --prompt "A cat in a spacesuit" --output cat.png
+laoli image generate --prompt "A cat in a spacesuit" --output cat.png
 
 # 指定宽高比
-laoli imagine generate --prompt "Landscape" --aspect-ratio 16:9 --output landscape.png
+laoli image generate --prompt "Landscape" --aspect-ratio 16:9 --output landscape.png
 
 # 图生图（参考图片）
-laoli imagine generate --prompt "Add a hat" --ref portrait.png --output portrait-hat.png
+laoli image generate --prompt "Add a hat" --ref portrait.png --output portrait-hat.png
 
 # 批量生成
-laoli imagine batch --batchfile batch.json --jobs 3
+laoli image batch --batchfile batch.json --jobs 3
 ```
 
 ## 注意事项

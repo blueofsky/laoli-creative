@@ -1,8 +1,8 @@
-import { describe, it, expect, mock } from 'bun:test';
-import { generateCommand } from '../../src/commands/imagine/generate';
-import { batchCommand } from '../../src/commands/imagine/batch';
+import { describe, it, expect } from 'bun:test';
+import { generateCommand } from '../../src/commands/image/generate';
+import { batchCommand } from '../../src/commands/image/batch';
 
-describe('imagine commands', () => {
+describe('image commands', () => {
   it('generate should have correct name', () => {
     expect(generateCommand.name).toBe('generate');
   });
@@ -17,10 +17,12 @@ describe('imagine commands', () => {
   });
 
   it('generate should reject missing prompt', async () => {
-    await expect(generateCommand.execute({} as any, { output: 'test.png' })).rejects.toThrow('Missing required argument: --prompt');
+    await expect(generateCommand.execute({} as any, { output: 'test.png' }))
+      .rejects.toThrow('Missing required argument: --prompt');
   });
 
   it('generate should reject missing output', async () => {
-    await expect(generateCommand.execute({} as any, { prompt: 'test' })).rejects.toThrow('Missing required argument: --output');
+    await expect(generateCommand.execute({} as any, { prompt: 'test' }))
+      .rejects.toThrow('Missing required argument: --output');
   });
 });

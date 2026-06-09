@@ -8,12 +8,11 @@ laoli <command> <subcommand> [options]
 
 ## 核心命令
 
-### 图片生成 (imagine)
+### 图片生成 (image)
 
 ```bash
-laoli imagine generate --prompt "描述" --output output.png [--provider agnes] [--aspect-ratio 16:9]
-laoli imagine edit --input input.png --prompt "修改描述" --output output.png
-laoli imagine batch --batchfile batch.json [--jobs 4]
+laoli image generate --prompt "描述" --output output.png [--provider agnes] [--aspect-ratio 16:9]
+laoli image batch --batchfile batch.json [--jobs 4]
 ```
 
 ### TTS 语音 (tts)
@@ -48,8 +47,8 @@ laoli picgo config --repo owner/repo --token xxx [--path assets/images]
 ### 配置管理 (config)
 
 ```bash
-laoli config show [--section imagine]
-laoli config set --key imagine.defaultProvider --value agnes
+laoli config show [--section image]
+laoli config set --key image.defaultProvider --value agnes
 laoli config export-schema [--output schema.json]
 ```
 
@@ -132,7 +131,7 @@ laoli-creative/
 │   ├── errors/        # 错误处理
 │   └── utils/         # 工具函数
 ├── skills/
-│   ├── laoli-imagine/
+│   ├── laoli-image/
 │   ├── laoli-tts/
 │   ├── laoli-video/
 │   ├── laoli-music/

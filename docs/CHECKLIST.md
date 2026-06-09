@@ -40,13 +40,13 @@
 
 ## Phase 2：核心功能
 
-### 图片生成模块 (imagine)
+### 图片生成模块 (image)
 - [x] 实现 `generate` 命令
 - [x] 实现 `edit` 命令
 - [x] 实现 `batch` 命令
-- [x] 实现 SDK 接口：`src/sdk/imagine.ts`
-- [x] 编写基础测试：`test/commands/imagine.test.ts`
-- [x] 编写 Skill：`skills/laoli-imagine/`
+- [x] 实现 SDK 接口：`src/sdk/image.ts`
+- [x] 编写基础测试：`test/commands/image.test.ts`
+- [x] 编写 Skill：`skills/laoli-image/`
 
 ### TTS 语音模块 (tts)
 - [x] 实现 `synthesize` 命令
@@ -100,7 +100,7 @@
 - [x] 基础测试框架搭建
 - [x] 编写 Provider 工具测试：`test/providers/shared.test.ts`
 - [x] 编写配置 Schema 测试：`test/config/schema.test.ts`
-- [x] 编写 imagine 命令测试：`test/commands/imagine.test.ts`
+- [x] 编写 image 命令测试：`test/commands/image.test.ts`
 - [ ] 编写 SDK 测试
 - [ ] 编写 TTS / video / bgm / picgo 命令测试
 

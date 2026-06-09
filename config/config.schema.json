@@ -32,8 +32,8 @@
       },
       "additionalProperties": false
     },
-    "imagine": {
-      "$ref": "#/definitions/imagineConfig",
+    "image": {
+      "$ref": "#/definitions/imageConfig",
       "description": "图片生成模块配置"
     },
     "tts": {
@@ -93,7 +93,7 @@
       },
       "additionalProperties": false
     },
-    "imagineConfig": {
+    "imageConfig": {
       "type": "object",
       "properties": {
         "defaultProvider": {

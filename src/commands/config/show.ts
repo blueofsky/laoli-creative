@@ -11,7 +11,7 @@ export const showCommand: Command = {
   ],
   examples: [
     'laoli config show',
-    'laoli config show --section imagine',
+    'laoli config show --section image',
     'laoli config show --json',
   ],
   execute: async (config: Config, flags: Flags) => {

@@ -40,7 +40,7 @@ export interface Config {
   defaultProvider: string;
   defaultRegion: string;
   providers: Record<string, ProviderConfig>;
-  imagine: ImagineConfig;
+  image: ImageConfig;
   tts: TTSConfig;
   video: VideoConfig;
   music: ModuleConfig;
@@ -62,7 +62,7 @@ export interface ModuleConfig {
   defaultModel?: string;
 }
 
-export interface ImagineConfig extends ModuleConfig {
+export interface ImageConfig extends ModuleConfig {
   defaultQuality?: string;
   defaultAspectRatio?: string;
 }

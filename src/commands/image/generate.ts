@@ -1,12 +1,12 @@
 import type { Command, Config, Flags } from '../../types/cli';
-import { generateImage } from '../../sdk/imagine';
+import { generateImage } from '../../sdk/image';
 import { success, json } from '../../utils/logger';
 import { CLIError, ExitCode } from '../../errors/codes';
 
 export const generateCommand: Command = {
   name: 'generate',
   description: 'Generate images using AI',
-  usage: 'laoli imagine generate --prompt <text> --output <path> [options]',
+  usage: 'laoli image generate --prompt <text> --output <path> [options]',
   options: [
     { flag: '--prompt <text>', description: 'Image description', required: true },
     { flag: '--output <path>', description: 'Output file path', required: true },
@@ -22,10 +22,10 @@ export const generateCommand: Command = {
     { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],
   examples: [
-    'laoli imagine generate --prompt "A cat" --output cat.png',
-    'laoli imagine generate --prompt "A landscape" --aspect-ratio 16:9 --output landscape.png',
-    'laoli imagine generate --prompt "A cat" --provider agnes --output cat.png',
-    'laoli imagine generate --prompt "A cat" --output cat.png --json',
+    'laoli image generate --prompt "A cat" --output cat.png',
+    'laoli image generate --prompt "A landscape" --aspect-ratio 16:9 --output landscape.png',
+    'laoli image generate --prompt "A cat" --provider agnes --output cat.png',
+    'laoli image generate --prompt "A cat" --output cat.png --json',
   ],
   execute: async (config: Config, flags: Flags) => {
     const prompt = flags.prompt as string;

@@ -4,7 +4,7 @@ import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { CLI } from './cli';
-import { imagineCommands } from './commands/imagine';
+import { imageCommands } from './commands/image';
 import { ttsCommands } from './commands/tts';
 import { videoCommands } from './commands/video';
 import { musicCommands } from './commands/music';
@@ -24,7 +24,7 @@ const cli = new CLI({
   description: 'Laoli Recipe - AI Content Creation Toolkit',
   version: pkg.version,
   commands: [
-    imagineCommands,
+    imageCommands,
     ttsCommands,
     videoCommands,
     musicCommands,

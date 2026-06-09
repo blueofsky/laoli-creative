@@ -2,8 +2,8 @@ import type { CommandGroup } from '../../types/cli';
 import { generateCommand } from './generate';
 import { batchCommand } from './batch';
 
-export const imagineCommands: CommandGroup = {
-  name: 'imagine',
+export const imageCommands: CommandGroup = {
+  name: 'image',
   description: 'Image generation and editing',
   commands: [
     generateCommand,

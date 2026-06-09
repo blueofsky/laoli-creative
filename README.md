@@ -17,7 +17,7 @@ npm install -g laoli-creative
 laoli auth login --api-key sk-xxxxx --provider agnes
 
 # Generate image
-laoli imagine generate --prompt "A cat" --output cat.png
+laoli image generate --prompt "A cat" --output cat.png
 
 # Generate TTS
 laoli tts speak --text "Hello" --output hello.mp3
@@ -31,8 +31,8 @@ laoli video generate --prompt "Ocean waves" --output ocean.mp4
 ### Image Generation
 
 ```bash
-laoli imagine generate --prompt <text> --output <path> [options]
-laoli imagine batch --batchfile <path> [options]
+laoli image generate --prompt <text> --output <path> [options]
+laoli image batch --batchfile <path> [options]
 ```
 
 ### TTS
