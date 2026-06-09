@@ -46,9 +46,9 @@ export const DEFAULT_CONFIG: Config = {
   },
 
   tts: {
-    defaultProvider: 'mimo',
-    defaultModel: 'mimo-v2.5-tts',
-    defaultVoice: '冰糖',
+    defaultProvider: 'minimax',
+    defaultModel: 'speech-2.8-hd',
+    defaultVoice: 'female-shaonv',
     defaultFormat: 'mp3',
   },
 

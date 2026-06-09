@@ -137,9 +137,27 @@
         },
         "defaultFormat": {
           "type": "string",
-          "enum": ["mp3", "wav"],
+          "enum": ["mp3", "pcm", "flac", "wav"],
           "default": "mp3",
           "description": "默认音频格式"
+        },
+        "defaultSpeed": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 5.0,
+          "description": "默认语速（0.1~5.0）"
+        },
+        "defaultVol": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10,
+          "description": "默认音量（0~10）"
+        },
+        "defaultPitch": {
+          "type": "number",
+          "minimum": -12,
+          "maximum": 12,
+          "description": "默认音调（-12~12）"
         }
       },
       "additionalProperties": false

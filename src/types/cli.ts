@@ -70,6 +70,9 @@ export interface ImagineConfig extends ModuleConfig {
 export interface TTSConfig extends ModuleConfig {
   defaultVoice?: string;
   defaultFormat?: string;
+  defaultSpeed?: number;
+  defaultVol?: number;
+  defaultPitch?: number;
 }
 
 export interface VideoConfig extends ModuleConfig {

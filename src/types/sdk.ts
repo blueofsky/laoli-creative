@@ -35,8 +35,15 @@ export interface TTSParams {
   model?: string;
   voice?: string;
   speed?: number;
+  vol?: number;
   pitch?: number;
+  emotion?: string;
+  intensity?: number;
   format?: string;
+  sampleRate?: number;
+  bitrate?: number;
+  channel?: number;
+  languageBoost?: string;
 }
 
 export interface TTSResult {

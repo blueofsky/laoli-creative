@@ -55,9 +55,35 @@ export const minimaxProvider: Provider = {
   async synthesizeSpeech(params: TTSParams): Promise<TTSResult> {
     const apiKey = getApiKey('minimax');
     const model = params.model || 'speech-2.8-hd';
-    const requestBody: any = { model, text: params.text, voice_setting: { voice_id: params.voice || '冰糖' } };
-    if (params.speed) requestBody.voice_setting.speed = params.speed;
-    if (params.pitch) requestBody.voice_setting.pitch = params.pitch;
+    const voiceId = params.voice || 'female-shaonv';
+
+    const requestBody: any = {
+      model,
+      text: params.text,
+      stream: false,
+      voice_setting: {
+        voice_id: voiceId,
+        speed: params.speed ?? 1.0,
+        vol: params.vol ?? 3,
+        pitch: params.pitch ?? 0,
+      },
+      audio_setting: {
+        sample_rate: params.sampleRate ?? 32000,
+        bitrate: params.bitrate ?? 128000,
+        format: params.format || 'mp3',
+        channel: params.channel ?? 1,
+      },
+      subtitle_enable: false,
+      language_boost: params.languageBoost || 'Chinese',
+    };
+
+    if (params.emotion) {
+      requestBody.voice_setting.emotion = params.emotion;
+    }
+
+    if (params.intensity !== undefined) {
+      requestBody.voice_modify = { intensity: params.intensity };
+    }
 
     try {
       const response = await apiFetch('minimax', 'POST', `${BASE_URL}/t2a_v2`, { headers: { Authorization: `Bearer ${apiKey}` }, body: JSON.stringify(requestBody), description: 't2a_v2' });
@@ -70,7 +96,7 @@ export const minimaxProvider: Provider = {
       const outputDir = dirname(params.outputPath);
       if (!existsSync(outputDir)) mkdirSync(outputDir, { recursive: true });
       writeFileSync(params.outputPath, audioBuffer);
-      return { outputPath: params.outputPath, duration: data.data.duration, metadata: { provider: 'minimax', model, voice: params.voice || '冰糖' } };
+      return { outputPath: params.outputPath, duration: data.data.duration, metadata: { provider: 'minimax', model, voice: voiceId } };
     } catch (error) {
       if (error instanceof ProviderError) throw error;
       throw new NetworkError(`MiniMax TTS API request failed: ${error instanceof Error ? error.message : String(error)}`);
