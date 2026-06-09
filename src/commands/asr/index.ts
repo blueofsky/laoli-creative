@@ -4,10 +4,10 @@ import { CLIError, ExitCode } from '../../errors/codes';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 
-export const captionCommand: Command = {
-  name: 'caption',
+export const asrCommand: Command = {
+  name: 'asr',
   description: 'Transcribe audio to text (speech recognition)',
-  usage: 'laoli caption --input <path> --output <path> [options]',
+  usage: 'laoli asr --input <path> --output <path> [options]',
   options: [
     { flag: '--input <path>', description: 'Audio file path (wav/mp3)', required: true },
     { flag: '--output <path>', description: 'Output text file path (optional, prints to console if omitted)' },
@@ -16,8 +16,8 @@ export const captionCommand: Command = {
     { flag: '--lang <lang>', description: 'Language hint: auto (default), zh, en' },
   ],
   examples: [
-    'laoli caption --input speech.mp3 --output transcript.txt',
-    'laoli caption --input audio.wav --output sub.txt --lang zh',
+    'laoli asr --input speech.mp3 --output transcript.txt',
+    'laoli asr --input audio.wav --output sub.txt --lang zh',
   ],
   execute: async (_config: Config, flags: Flags) => {
     const input = flags.input as string;
@@ -48,9 +48,9 @@ export const captionCommand: Command = {
   },
 };
 
-export const captionCommands: CommandGroup = {
-  name: 'caption',
+export const asrCommands: CommandGroup = {
+  name: 'asr',
   description: 'Audio transcription / speech recognition (ASR)',
-  defaultCommand: 'caption',
-  commands: [captionCommand],
+  defaultCommand: 'asr',
+  commands: [asrCommand],
 };

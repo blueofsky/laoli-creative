@@ -14,7 +14,7 @@ import { authCommands } from './commands/auth';
 import { handleError } from './errors/handler';
 import { logCommands } from './commands/logs';
 import { visionCommands } from './commands/vision';
-import { captionCommands } from './commands/caption';
+import { asrCommands } from './commands/asr';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -31,7 +31,7 @@ const cli = new CLI({
     videoCommands,
     musicCommands,
     picgoCommands,
-    captionCommands,
+    asrCommands,
     configCommands,
     logCommands,
     visionCommands,

@@ -5,7 +5,7 @@ export { generateVideo, queryVideoTask, downloadVideo, waitForVideoCompletion } 
 export { generateMusic } from './music';
 export { uploadImage, savePicgoConfig, loadPicgoConfig } from './picgo';
 export { understandImage, understandVideo } from './vision';
-export { transcribeAudio } from './caption';
+export { transcribeAudio } from './asr';
 
 export type {
   ImageParams,
