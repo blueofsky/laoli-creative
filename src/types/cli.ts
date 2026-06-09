@@ -45,6 +45,7 @@ export interface Config {
   video: VideoConfig;
   music: ModuleConfig;
   vision: VisionConfig;
+  asr: ASRConfig;
   picgo: PicgoConfig;
   display: DisplayConfig;
   proxy?: string;
@@ -61,6 +62,10 @@ export interface ProviderConfig {
 export interface ModuleConfig {
   defaultProvider?: string;
   defaultModel?: string;
+}
+
+export interface ASRConfig extends ModuleConfig {
+  defaultLanguage?: 'auto' | 'zh' | 'en';
 }
 
 export interface VisionConfig extends ModuleConfig {

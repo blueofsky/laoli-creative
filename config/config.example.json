@@ -68,6 +68,12 @@
     "defaultMode": "base64"
   },
 
+  "asr": {
+    "defaultProvider": "mimo",
+    "defaultModel": "mimo-v2.5-asr",
+    "defaultLanguage": "auto"
+  },
+
   "picgo": {
     "repo": "username/image-host",
     "branch": "main",

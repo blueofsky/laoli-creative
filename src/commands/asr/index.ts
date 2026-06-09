@@ -19,12 +19,12 @@ export const asrCommand: Command = {
     'laoli asr --input speech.mp3 --output transcript.txt',
     'laoli asr --input audio.wav --output sub.txt --lang zh',
   ],
-  execute: async (_config: Config, flags: Flags) => {
+  execute: async (config: Config, flags: Flags) => {
     const input = flags.input as string;
     const output = flags.output as string;
-    const providerName = (flags.provider as string) || 'mimo';
-    const model = flags.model as string;
-    const language = flags.lang as 'auto' | 'zh' | 'en' | undefined;
+    const providerName = (flags.provider as string) || config.asr?.defaultProvider || 'mimo';
+    const model = flags.model as string || config.asr?.defaultModel;
+    const language = (flags.lang as 'auto' | 'zh' | 'en') || config.asr?.defaultLanguage || 'auto';
 
     if (!input) throw new CLIError('Missing required argument: --input', ExitCode.INVALID_ARGS);
 

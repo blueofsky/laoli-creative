@@ -74,6 +74,12 @@ export const DEFAULT_CONFIG: Config = {
     defaultMode: 'base64',
   },
 
+  asr: {
+    defaultProvider: 'mimo',
+    defaultModel: 'mimo-v2.5-asr',
+    defaultLanguage: 'auto',
+  },
+
   picgo: {
     repo: '',
     branch: 'main',
