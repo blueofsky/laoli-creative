@@ -3,7 +3,7 @@ import { showCommand } from './show';
 import { listCommand } from './list';
 
 export const logCommands: CommandGroup = {
-  name: 'log',
+  name: 'logs',
   description: 'View and manage log files',
   commands: [
     showCommand,

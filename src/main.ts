@@ -12,7 +12,7 @@ import { picgoCommands } from './commands/picgo';
 import { configCommands } from './commands/config';
 import { authCommands } from './commands/auth';
 import { handleError } from './errors/handler';
-import { logCommands } from './commands/log';
+import { logCommands } from './commands/logs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
