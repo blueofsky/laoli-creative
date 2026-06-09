@@ -21,14 +21,14 @@ export async function queryVideoTask(taskId: string, providerName?: string): Pro
   return provider.queryVideoTask(taskId);
 }
 
-export async function downloadVideo(taskId: string, outputPath: string, providerName?: string): Promise<string> {
+export async function downloadVideo(taskId: string, outputPath: string, providerName?: string, videoUrl?: string): Promise<string> {
   const provider = getProvider(providerName || 'apimart');
   
   if (!provider.downloadVideo) {
     throw new Error(`Provider "${providerName || 'apimart'}" does not support video download`);
   }
   
-  return provider.downloadVideo(taskId, outputPath);
+  return provider.downloadVideo(taskId, outputPath, videoUrl);
 }
 
 export async function waitForVideoCompletion(

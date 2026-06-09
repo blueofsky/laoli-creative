@@ -90,6 +90,6 @@ export interface Provider {
   synthesizeSpeech?(params: TTSParams): Promise<TTSResult>;
   generateVideo?(params: VideoParams): Promise<VideoResult>;
   queryVideoTask?(taskId: string): Promise<VideoResult>;
-  downloadVideo?(taskId: string, outputPath: string): Promise<string>;
+  downloadVideo?(taskId: string, outputPath: string, videoUrl?: string): Promise<string>;
   generateMusic?(params: MusicParams): Promise<MusicResult>;
 }

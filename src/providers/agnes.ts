@@ -213,11 +213,14 @@ export const agnesProvider: Provider = {
     throw new ProviderError('Agnes Video query failed after retries', 'agnes');
   },
 
-  async downloadVideo(taskId: string, outputPath: string): Promise<string> {
-    const result = await this.queryVideoTask!(taskId);
-    if (result.status !== 'completed' || !result.url) {
-      throw new ProviderError(`Video task ${taskId} not completed. Status: ${result.status}`, 'agnes');
-    }
-    return downloadFile(result.url, outputPath);
+  async downloadVideo(taskId: string, outputPath: string, videoUrl?: string): Promise<string> {
+    const url = videoUrl || (async () => {
+      const result = await this.queryVideoTask!(taskId);
+      if (result.status !== 'completed' || !result.url) {
+        throw new ProviderError(`Video task ${taskId} not completed. Status: ${result.status}`, 'agnes');
+      }
+      return result.url;
+    })();
+    return downloadFile(await url, outputPath);
   },
 };

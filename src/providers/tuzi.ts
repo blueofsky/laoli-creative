@@ -146,11 +146,14 @@ export const tuziProvider: Provider = {
     }
   },
 
-  async downloadVideo(taskId: string, outputPath: string): Promise<string> {
-    const result = await this.queryVideoTask!(taskId);
-    if (result.status !== 'completed' || !result.url) {
-      throw new ProviderError(`Video task ${taskId} not completed. Status: ${result.status}`, 'tuzi');
-    }
-    return downloadFile(result.url, outputPath);
+  async downloadVideo(taskId: string, outputPath: string, videoUrl?: string): Promise<string> {
+    const url = videoUrl || (async () => {
+      const result = await this.queryVideoTask!(taskId);
+      if (result.status !== 'completed' || !result.url) {
+        throw new ProviderError(`Video task ${taskId} not completed. Status: ${result.status}`, 'tuzi');
+      }
+      return result.url;
+    })();
+    return downloadFile(await url, outputPath);
   },
 };

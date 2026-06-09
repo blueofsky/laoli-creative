@@ -178,9 +178,12 @@ export const apimartProvider: Provider = {
     }
   },
 
-  async downloadVideo(taskId: string, outputPath: string): Promise<string> {
-    const result = await this.queryVideoTask!(taskId);
-    if (result.status !== 'completed' || !result.url) throw new ProviderError(`Video task ${taskId} is not completed. Status: ${result.status}`, 'apimart');
-    return downloadFile(result.url!, outputPath);
+  async downloadVideo(taskId: string, outputPath: string, videoUrl?: string): Promise<string> {
+    const url = videoUrl || (async () => {
+      const result = await this.queryVideoTask!(taskId);
+      if (result.status !== 'completed' || !result.url) throw new ProviderError(`Video task ${taskId} is not completed. Status: ${result.status}`, 'apimart');
+      return result.url!;
+    })();
+    return downloadFile(await url, outputPath);
   },
 };

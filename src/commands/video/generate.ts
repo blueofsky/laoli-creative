@@ -105,7 +105,7 @@ export const generateCommand: Command = {
           info('Downloading video...');
         }
         
-        await downloadVideo(result.taskId, output, providerName);
+        await downloadVideo(result.taskId, output, providerName, completedResult.url);
         
         if (isJson) {
           json({ ...completedResult, outputPath: output });
