@@ -97,6 +97,7 @@ export interface Provider {
   generateMusic?(params: MusicParams): Promise<MusicResult>;
   understandImage?(params: VisionImageParams): Promise<VisionResult>;
   understandVideo?(params: VisionVideoParams): Promise<VisionResult>;
+  transcribeAudio?(params: CaptionParams): Promise<CaptionResult>;
 }
 
 export interface VisionImageParams {
@@ -119,5 +120,19 @@ export interface VisionResult {
   content: string;
   reasoningContent?: string;
   usage?: Record<string, any>;
+  metadata: Record<string, any>;
+}
+
+export interface CaptionParams {
+  input: string;        // 音频文件路径或 URL
+  outputPath?: string;  // 输出文件路径（不填则只返回文本）
+  provider?: string;
+  model?: string;
+  language?: 'auto' | 'zh' | 'en';
+}
+
+export interface CaptionResult {
+  text: string;
+  outputPath?: string;
   metadata: Record<string, any>;
 }

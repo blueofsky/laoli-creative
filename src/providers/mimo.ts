@@ -1,4 +1,4 @@
-import type { Provider, TTSParams, TTSResult, VisionImageParams, VisionVideoParams, VisionResult } from '../types/sdk';
+import type { Provider, TTSParams, TTSResult, VisionImageParams, VisionVideoParams, VisionResult, CaptionParams, CaptionResult } from '../types/sdk';
 import { ProviderError, NetworkError } from '../errors/codes';
 import { writeFileSync, existsSync, mkdirSync, readFileSync, statSync } from 'fs';
 import { dirname, extname } from 'path';
@@ -111,6 +111,41 @@ export const mimoProvider: Provider = {
     }];
     return callVisionAPI(apiKey, model, messages);
   },
+
+  /** 语音识别：音频转文字 */
+  async transcribeAudio(params: CaptionParams): Promise<CaptionResult> {
+    const apiKey = getApiKey('mimo');
+    const model = params.model || 'mimo-v2.5-asr';
+    const audioUrl = await resolveMediaUrl(params.input, 'audio');
+    const messages = [{
+      role: 'user',
+      content: [{ type: 'input_audio', input_audio: { data: audioUrl } }],
+    }];
+    const requestBody: any = { model, messages, asr_options: { language: params.language || 'auto' } };
+    try {
+      const response = await apiFetch('mimo', 'POST', `${BASE_URL}/chat/completions`, {
+        headers: { 'Authorization': `Bearer ${apiKey}` },
+        body: JSON.stringify(requestBody),
+        description: 'asr',
+      });
+      if (!response.ok) {
+        const err: any = await response.json().catch(() => ({}));
+        throw new ProviderError(`MiMo ASR error: ${err.error?.message || response.statusText}`, 'mimo', response.status);
+      }
+      const data: any = await response.json();
+      const text = data.choices?.[0]?.message?.content;
+      if (!text) throw new ProviderError('MiMo ASR returned no text', 'mimo');
+      if (params.outputPath) {
+        const outputDir = dirname(params.outputPath);
+        if (!existsSync(outputDir)) mkdirSync(outputDir, { recursive: true });
+        writeFileSync(params.outputPath, text, 'utf-8');
+      }
+      return { text, outputPath: params.outputPath, metadata: { model, provider: 'mimo' } };
+    } catch (error) {
+      if (error instanceof ProviderError) throw error;
+      throw new NetworkError(`MiMo ASR request failed: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  },
 };
 
 // ---------- 辅助函数 ----------
@@ -121,20 +156,26 @@ const MIME_TYPES: Record<string, string> = {
   '.webp': 'image/webp', '.bmp': 'image/bmp',
   '.mp4': 'video/mp4', '.mov': 'video/quicktime',
   '.avi': 'video/x-msvideo', '.wmv': 'video/x-ms-wmv',
+  '.wav': 'audio/wav', '.mp3': 'audio/mpeg',
 };
 
-// Base64 编码字符串大小限制（50 MB）
-const MAX_BASE64_STR_SIZE = 50 * 1024 * 1024;
+// Base64 编码字符串大小限制
+const MAX_BASE64_SIZE: Record<string, number> = {
+  image: 50 * 1024 * 1024,
+  video: 50 * 1024 * 1024,
+  audio: 10 * 1024 * 1024,  // ASR 限制 10MB
+};
 
 /** 将本地文件路径转为 Base64 Data URL，URL 则原样返回 */
-async function resolveMediaUrl(input: string, type: 'image' | 'video'): Promise<string> {
+async function resolveMediaUrl(input: string, type: 'image' | 'video' | 'audio'): Promise<string> {
   if (input.startsWith('http://') || input.startsWith('https://')) return input;
   const ext = extname(input).toLowerCase();
   const mime = MIME_TYPES[ext];
   if (!mime) throw new ProviderError(`Unsupported ${type} format: ${ext}. Supported: ${Object.keys(MIME_TYPES).filter(e => MIME_TYPES[e].startsWith(type)).join(', ')}`, 'mimo');
   const stats = statSync(input);
-  // Base64 编码后约膨胀 1.37 倍，所以原始文件需 ≤ 50MB / 1.37 ≈ 36.5MB
-  const maxFileSize = Math.floor(MAX_BASE64_STR_SIZE / 1.37);
+  const limit = MAX_BASE64_SIZE[type] || MAX_BASE64_SIZE.image;
+  // Base64 编码后约膨胀 1.37 倍
+  const maxFileSize = Math.floor(limit / 1.37);
   if (stats.size > maxFileSize) {
     const mb = (stats.size / (1024 * 1024)).toFixed(1);
     const limitMb = (maxFileSize / (1024 * 1024)).toFixed(1);
