@@ -2,7 +2,9 @@
 
 [![CI](https://github.com/blueofsky/laoli-creative/actions/workflows/ci.yml/badge.svg)](https://github.com/blueofsky/laoli-creative/actions/workflows/ci.yml)
 
-Laoli Creative - AI Content Creation Toolkit with Skills
+Laoli Creative - AI 内容创作 CLI 工具
+
+> Skills 文档请移步 [laoli-recipe](https://github.com/blueofsky/laoli-recipe)
 
 ## Installation
 
