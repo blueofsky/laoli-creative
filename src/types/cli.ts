@@ -73,6 +73,7 @@ export interface TTSConfig extends ModuleConfig {
   defaultSpeed?: number;
   defaultVol?: number;
   defaultPitch?: number;
+  defaultEmotion?: string;
 }
 
 export interface VideoConfig extends ModuleConfig {

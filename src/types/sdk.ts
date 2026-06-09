@@ -34,16 +34,12 @@ export interface TTSParams {
   provider?: string;
   model?: string;
   voice?: string;
+  context?: string;
   speed?: number;
   vol?: number;
   pitch?: number;
   emotion?: string;
-  intensity?: number;
   format?: string;
-  sampleRate?: number;
-  bitrate?: number;
-  channel?: number;
-  languageBoost?: string;
 }
 
 export interface TTSResult {

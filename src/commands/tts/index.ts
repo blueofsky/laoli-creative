@@ -1,7 +1,6 @@
 import type { CommandGroup } from '../../types/cli';
 import { synthesizeCommand } from './synthesize';
 import { voicesCommand } from './voices';
-import { cloneCommand } from './clone';
 
 export const ttsCommands: CommandGroup = {
   name: 'tts',
@@ -9,6 +8,5 @@ export const ttsCommands: CommandGroup = {
   commands: [
     synthesizeCommand,
     voicesCommand,
-    cloneCommand,
   ],
 };

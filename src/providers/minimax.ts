@@ -68,21 +68,17 @@ export const minimaxProvider: Provider = {
         pitch: params.pitch ?? 0,
       },
       audio_setting: {
-        sample_rate: params.sampleRate ?? 32000,
-        bitrate: params.bitrate ?? 128000,
+        sample_rate: 32000,
+        bitrate: 128000,
         format: params.format || 'mp3',
-        channel: params.channel ?? 1,
+        channel: 1,
       },
       subtitle_enable: false,
-      language_boost: params.languageBoost || 'Chinese',
+      language_boost: 'Chinese',
     };
 
     if (params.emotion) {
       requestBody.voice_setting.emotion = params.emotion;
-    }
-
-    if (params.intensity !== undefined) {
-      requestBody.voice_modify = { intensity: params.intensity };
     }
 
     try {
