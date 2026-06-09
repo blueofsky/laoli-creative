@@ -17,11 +17,11 @@ export const visionImageCommand: Command = {
     'laoli vision image --input photo.jpg --prompt "What is in this image?"',
     'laoli vision image --input https://example.com/photo.png --prompt "Describe the scene" --json',
   ],
-  execute: async (_config: Config, flags: Flags) => {
+  execute: async (config: Config, flags: Flags) => {
     const input = flags.input as string;
     const prompt = flags.prompt as string;
-    const providerName = (flags.provider as string) || 'mimo';
-    const model = flags.model as string;
+    const providerName = (flags.provider as string) || config.vision?.defaultProvider || 'mimo';
+    const model = flags.model as string || config.vision?.defaultModel;
     const isJson = flags.json as boolean;
 
     if (!input) throw new CLIError('Missing required argument: --input', ExitCode.INVALID_ARGS);

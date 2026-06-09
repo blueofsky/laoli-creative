@@ -68,6 +68,11 @@ export const DEFAULT_CONFIG: Config = {
     defaultModel: 'music-2.6',
   },
 
+  vision: {
+    defaultProvider: 'mimo',
+    defaultModel: 'mimo-v2.5',
+  },
+
   picgo: {
     repo: '',
     branch: 'main',

@@ -44,6 +44,7 @@ export interface Config {
   tts: TTSConfig;
   video: VideoConfig;
   music: ModuleConfig;
+  vision: ModuleConfig;
   picgo: PicgoConfig;
   display: DisplayConfig;
   proxy?: string;

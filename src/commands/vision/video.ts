@@ -19,11 +19,11 @@ export const visionVideoCommand: Command = {
     'laoli vision video --input video.mp4 --prompt "Describe this video"',
     'laoli vision video --input video.mp4 --prompt "What objects appear?" --fps 1 --json',
   ],
-  execute: async (_config: Config, flags: Flags) => {
+  execute: async (config: Config, flags: Flags) => {
     const input = flags.input as string;
     const prompt = flags.prompt as string;
-    const providerName = (flags.provider as string) || 'mimo';
-    const model = flags.model as string;
+    const providerName = (flags.provider as string) || config.vision?.defaultProvider || 'mimo';
+    const model = flags.model as string || config.vision?.defaultModel;
     const fps = flags.fps ? parseFloat(flags.fps as string) : undefined;
     const mediaResolution = flags['media-resolution'] as 'default' | 'max' | undefined;
     const isJson = flags.json as boolean;

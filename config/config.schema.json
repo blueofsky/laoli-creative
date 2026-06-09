@@ -48,6 +48,10 @@
       "$ref": "#/definitions/musicConfig",
       "description": "音乐模块配置"
     },
+    "vision": {
+      "$ref": "#/definitions/visionConfig",
+      "description": "视觉理解模块配置"
+    },
     "picgo": {
       "$ref": "#/definitions/picgoConfig",
       "description": "图片上传模块配置"
@@ -230,6 +234,22 @@
           "enum": ["mp3", "wav"],
           "default": "mp3",
           "description": "默认音频格式"
+        }
+      },
+      "additionalProperties": false
+    },
+    "visionConfig": {
+      "type": "object",
+      "properties": {
+        "defaultProvider": {
+          "type": "string",
+          "enum": ["mimo"],
+          "description": "默认 provider"
+        },
+        "defaultModel": {
+          "type": "string",
+          "default": "mimo-v2.5",
+          "description": "默认模型"
         }
       },
       "additionalProperties": false
