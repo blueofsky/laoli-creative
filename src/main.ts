@@ -26,15 +26,18 @@ const cli = new CLI({
   description: 'Laoli Recipe - AI Content Creation Toolkit',
   version: pkg.version,
   commands: [
+    // 内容生成
     imageCommands,
-    ttsCommands,
     videoCommands,
     musicCommands,
-    picgoCommands,
+    ttsCommands,
+    // 内容理解
+    visionCommands,
     asrCommands,
+    // 工具
+    picgoCommands,
     configCommands,
     logCommands,
-    visionCommands,
     authCommands,
   ],
 });
