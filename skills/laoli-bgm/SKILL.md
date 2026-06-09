@@ -1,14 +1,32 @@
 ---
 name: laoli-bgm
-description: AI 背景音乐生成
-version: 1.0.0
+description: >
+  背景音乐生成。使用 laoli bgm 命令生成音乐和配乐。
+  当用户需要生成背景音乐、配乐、旋律、纯音乐或带歌词的歌曲时触发。
+license: MIT
+metadata:
+  version: "1.0.0"
+  category: creative
+triggers:
+  - 生成音乐
+  - 背景音乐
+  - 配乐
+  - BGM
+  - 作曲
+  - 旋律
+  - 纯音乐
+  - generate music
+  - background music
+  - soundtrack
+sources:
+  - laoli bgm --help
 dependencies:
   cli:
     name: laoli-creative
     version: ">=1.0.0"
 ---
 
-# Laoli BGM（背景音乐生成）
+# 背景音乐生成 Skill
 
 ## 前置条件
 
@@ -26,23 +44,30 @@ laoli bgm --prompt "<描述>" --output <path> [options]
 
 | 选项 | 说明 |
 |------|------|
-| `--prompt` | 音乐描述（必填） |
-| `--output` | 输出音频文件路径（必填） |
-| `--provider` | Provider：`minimax` |
-| `--model` | 模型 ID |
-| `--lyrics` | 歌词文本（有歌词则自动转为歌曲） |
-| `--instrumental` | 纯音乐模式（不加歌词时自动启用） |
-| `--json` | JSON 格式输出 |
+| `--prompt <text>` | 音乐描述（必填） |
+| `--output <path>` | 输出音频文件路径（必填） |
+| `--provider <name>` | Provider：`minimax` |
+| `--model <id>` | 模型 ID |
+| `--lyrics <text>` | 歌词文本（有歌词则转为歌曲） |
+| `--instrumental` | 纯音乐模式 |
+| `--json` | JSON 输出 |
 
 ## 音乐风格参考
 
 Pop、Rock、Jazz、Classical、Electronic、Hip Hop、R&B、Folk、Ambient、Cinematic
 
+## 工作流程
+
+1. **确认需求**：纯音乐还是带歌词的歌曲？
+2. **构建 prompt**：描述风格、乐器、氛围（如 "calm piano with strings"）
+3. **生成**：`laoli bgm --prompt "..." --output music.mp3`
+4. **返回结果**：提供音频文件路径
+
 ## 示例
 
 ```bash
 # 纯音乐
-laoli bgm --prompt "A calm piano melody with gentle strings, relaxing ambient" --output calm.mp3
+laoli bgm --prompt "A calm piano melody with gentle strings" --output calm.mp3
 
 # 电影配乐
 laoli bgm --prompt "Epic orchestral cinematic, dramatic build-up" --output epic.mp3
@@ -55,3 +80,5 @@ laoli bgm --prompt "Upbeat pop" --lyrics "[verse] La da dee..." --output song.mp
 
 - 输出格式固定为 mp3
 - 支持中英文歌词，歌词可用 `[verse]`、`[chorus]` 等标签分段
+- 日志文件位于 `~/.laoli/logs/`
+- 所有命令支持 `--help` 查看最新参数
