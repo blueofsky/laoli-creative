@@ -1,6 +1,6 @@
 import type { Command, Config, Flags } from '../../types/cli';
 import { uploadImage } from '../../sdk/picgo';
-import { success, json, info } from '../../utils/logger';
+import { json } from '../../utils/logger';
 import { CLIError, ExitCode } from '../../errors/codes';
 
 export const uploadCommand: Command = {
@@ -30,10 +30,6 @@ export const uploadCommand: Command = {
     const isQuiet = flags.quiet as boolean || config.display.quiet;
     
     try {
-      if (!isQuiet) {
-        info('Uploading image(s)...');
-      }
-      
       const results = await uploadImage({
         input,
         batch,
@@ -48,7 +44,7 @@ export const uploadCommand: Command = {
           console.log(`    → ${result.url}`);
           console.log('');
         }
-        success(`Uploaded ${results.length} image(s)`);
+        console.log(`✓ Uploaded ${results.length} image(s)`);
       }
     } catch (error) {
       throw new CLIError(

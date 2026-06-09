@@ -1,6 +1,6 @@
 import type { Command, Config, Flags } from '../../types/cli';
 import { savePicgoConfig, loadPicgoConfig } from '../../sdk/picgo';
-import { success, info, json } from '../../utils/logger';
+import { json } from '../../utils/logger';
 import { CLIError, ExitCode } from '../../errors/codes';
 
 export const configCommand: Command = {
@@ -30,7 +30,8 @@ export const configCommand: Command = {
     if (show) {
       const currentConfig = loadPicgoConfig();
       if (!currentConfig) {
-        info('PicGo not configured');
+        console.log('\nPicGo is not configured.');
+        console.log('Use: laoli picgo config --repo <owner/repo> --token <token>\n');
         return;
       }
       
@@ -82,7 +83,7 @@ export const configCommand: Command = {
     // 保存配置
     savePicgoConfig(newConfig);
     
-    success('PicGo configuration updated');
-    info(`Repository: ${newConfig.repo}`);
+    console.log(`✓ PicGo configuration updated`);
+    console.log(`  Repository: ${newConfig.repo}`);
   },
 };

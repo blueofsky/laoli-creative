@@ -1,5 +1,6 @@
-import { readFileSync, existsSync, readdirSync, statSync } from 'fs';
+import { readFileSync, existsSync, readdirSync, statSync, appendFileSync } from 'fs';
 import { join, extname } from 'path';
+import { homedir } from 'os';
 import { loadConfig, saveConfig } from '../config/loader';
 
 export interface PicgoUploadParams {
@@ -54,7 +55,8 @@ export async function uploadImage(params: PicgoUploadParams): Promise<PicgoUploa
 async function uploadSingleFile(filePath: string, config: PicgoConfig): Promise<PicgoUploadResult> {
   const fileBuffer = readFileSync(filePath);
   const filename = generateFilename(filePath);
-  const path = config.path ? `${config.path}/${filename}` : filename;
+  const basePath = config.path ? config.path.replace(/\/+$/, '') : '';
+  const path = basePath ? `${basePath}/${filename}` : filename;
 
   const url = `https://api.github.com/repos/${config.repo}/contents/${path}`;
   const body = {
@@ -183,9 +185,22 @@ export function savePicgoConfig(config: PicgoConfig): void {
     },
   });
 
-  // Token 仅设置到当前进程的环境变量，不写入配置文件
-  if (config.token) {
-    process.env.PICGO_TOKEN = config.token;
+  // Token/Repo 同时保存到 ~/.laoli/.env
+  process.env.PICGO_REPO = config.repo;
+  process.env.PICGO_TOKEN = config.token;
+  process.env.PICGO_BRANCH = config.branch || 'main';
+  process.env.PICGO_PATH = config.path || 'assets/images';
+  if (config.customUrl) process.env.PICGO_CUSTOM_URL = config.customUrl;
+
+  const envFile = join(homedir(), '.laoli', '.env');
+  const envLines = `\n# PICGO\nPICGO_REPO=${config.repo}\nPICGO_TOKEN=${config.token}\nPICGO_BRANCH=${config.branch || 'main'}\nPICGO_PATH=${config.path || 'assets/images'}\n`;
+  try {
+    const existing = readFileSync(envFile, 'utf-8');
+    if (!existing.includes('PICGO_REPO=')) {
+      appendFileSync(envFile, envLines, 'utf-8');
+    }
+  } catch {
+    appendFileSync(envFile, envLines, 'utf-8');
   }
 }
 
