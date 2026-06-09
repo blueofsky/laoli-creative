@@ -102,9 +102,23 @@ export const minimaxProvider: Provider = {
   async generateMusic(params: MusicParams): Promise<MusicResult> {
     const apiKey = getApiKey('minimax');
     const model = params.model || 'music-2.6';
-    const requestBody: any = { model, prompt: params.prompt };
-    if (params.lyrics) requestBody.lyrics = params.lyrics;
-    if (params.instrumental) requestBody.instrumental = true;
+    const requestBody: any = {
+      model,
+      prompt: params.prompt,
+      is_instrumental: !params.lyrics,
+      lyrics_optimizer: false,
+      output_format: 'hex',
+      stream: false,
+      audio_setting: {
+        sample_rate: 44100,
+        bitrate: 256000,
+        format: 'mp3',
+      },
+    };
+    if (params.lyrics) {
+      requestBody.lyrics = params.lyrics;
+      requestBody.is_instrumental = false;
+    }
 
     try {
       const response = await apiFetch('minimax', 'POST', `${BASE_URL}/music_generation`, { headers: { Authorization: `Bearer ${apiKey}` }, body: JSON.stringify(requestBody), description: 'music_generation' });
@@ -112,12 +126,22 @@ export const minimaxProvider: Provider = {
         const err: any = await response.json().catch(() => ({}));
         throw new ProviderError(`MiniMax Music API error: ${err.error?.message || response.statusText}`, 'minimax', response.status);
       }
-      const data: any = await response.json();
-      const audioBuffer = Buffer.from(data.data.audio, 'hex');
+      const result: any = await response.json();
+      if (result.base_resp?.status_code !== 0) {
+        throw new ProviderError(`MiniMax Music API error: ${result.base_resp?.status_msg || 'unknown'}`, 'minimax');
+      }
+      if (result.data?.status !== 2 || !result.data?.audio) {
+        throw new ProviderError(`Music generation not completed (status: ${result.data?.status})`, 'minimax');
+      }
+      const audioBuffer = Buffer.from(result.data.audio, 'hex');
       const outputDir = dirname(params.outputPath);
       if (!existsSync(outputDir)) mkdirSync(outputDir, { recursive: true });
       writeFileSync(params.outputPath, audioBuffer);
-      return { outputPath: params.outputPath, duration: data.data.duration, metadata: { provider: 'minimax', model } };
+      return {
+        outputPath: params.outputPath,
+        duration: result.extra_info?.music_duration,
+        metadata: { provider: 'minimax', model },
+      };
     } catch (error) {
       if (error instanceof ProviderError) throw error;
       throw new NetworkError(`MiniMax Music API request failed: ${error instanceof Error ? error.message : String(error)}`);

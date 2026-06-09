@@ -7,7 +7,7 @@ import type { MusicParams } from '../../types/sdk';
 export const generateCommand: Command = {
   name: 'generate',
   description: 'Generate background music',
-  usage: 'laoli bgm generate --prompt <text> --output <path> [options]',
+  usage: 'laoli bgm --prompt <text> --output <path> [options]',
   options: [
     { flag: '--prompt <text>', description: 'Music description', required: true },
     { flag: '--output <path>', description: 'Output audio file path', required: true },
@@ -19,9 +19,9 @@ export const generateCommand: Command = {
     { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],
   examples: [
-    'laoli bgm generate --prompt "Upbeat pop" --output song.mp3',
-    'laoli bgm generate --prompt "Cinematic" --instrumental --output bgm.mp3',
-    'laoli bgm generate --prompt "Pop song" --lyrics "[verse] La da dee" --output song.mp3',
+    'laoli bgm --prompt "Upbeat pop" --output song.mp3',
+    'laoli bgm --prompt "Cinematic" --instrumental --output bgm.mp3',
+    'laoli bgm --prompt "Pop song" --lyrics "[verse] La da dee" --output song.mp3',
   ],
   execute: async (config: Config, flags: Flags) => {
     const prompt = flags.prompt as string;
