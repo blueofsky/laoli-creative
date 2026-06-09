@@ -10,7 +10,7 @@
   },
   "plugins": [
     {
-      "name": "laoli",
+      "name": "creative",
       "description": "内容插件",
       "source": "."
     }
