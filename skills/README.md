@@ -22,7 +22,7 @@ npm install -g laoli-creative
 
 # 使用 CLI
 laoli imagine generate --prompt "A cat" --output cat.png
-laoli tts synthesize --text "Hello" --output hello.mp3
+laoli tts speak --text "Hello" --output hello.mp3
 ```
 
 ## 开发

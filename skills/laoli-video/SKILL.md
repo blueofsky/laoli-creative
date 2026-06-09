@@ -1,6 +1,6 @@
 ---
 name: laoli-video
-description: 视频生成技能，支持文生视频、图生视频等功能
+description: AI 视频生成，支持文生视频和图生视频
 version: 1.0.0
 dependencies:
   cli:
@@ -8,109 +8,107 @@ dependencies:
     version: ">=1.0.0"
 ---
 
-# 视频生成 Skill
-
-使用 `laoli video` 命令生成视频。
+# Laoli Video（视频生成）
 
 ## 前置条件
 
-```bash
-# 安装 CLI
-npm install -g laoli-creative
-
-# 配置 API Key
-laoli auth login --api-key sk-xxxxx --provider apimart
-```
+- 安装 CLI：`npm install -g laoli-creative`
+- 配置至少一个视频 Provider 的 API Key：
+  ```bash
+  laoli auth login --api-key sk-xxxxx --provider agnes
+  ```
 
 ## 命令
 
 ### 生成视频
 
 ```bash
-laoli video generate --prompt <text> --output <path> [options]
+laoli video generate --prompt "<描述>" --output <path> [options]
 ```
 
 | 选项 | 说明 |
 |------|------|
-| `--prompt <text>` | 视频描述（必填） |
-| `--output <path>` | 输出视频文件路径（必填） |
-| `--provider <name>` | Provider: apimart, tuzi, agnes |
-| `--model <id>` | 模型 ID |
-| `--seconds <n>` | 视频时长（秒） |
-| `--size <WxH>` | 视频尺寸 |
-| `--resolution <p>` | 分辨率：480p, 720p, 1080p, 4k |
-| `--ref <files...>` | 参考图片 |
-| `--json` | JSON 输出 |
+| `--prompt` | 视频描述（必填） |
+| `--output` | 输出视频文件路径（必填） |
+| `--provider` | Provider：`agnes`（免费）、`tuzi`、`apimart` |
+| `--model` | 模型 ID |
+| `--seconds` | 视频时长（秒） |
+| `--size` | 尺寸（如 `9:16`、`1280x720`） |
+| `--resolution` | 分辨率：480p、720p、1080p、4k |
+| `--ref` | 参考图片路径或 URL（图生视频） |
+| `--poll-interval` | 轮询间隔（毫秒，默认 5000） |
+| `--timeout` | 单任务超时（毫秒，默认 600000） |
+| `--async` | 只提交不等待，返回 taskId |
+| `--json` | JSON 格式输出 |
 
-### 查询任务状态
-
-```bash
-laoli video query --task-id <id> [--json]
-```
-
-### 下载视频
+### 批量生成
 
 ```bash
-laoli video download --task-id <id> --output <path>
+laoli video batch --batchfile <path>
 ```
 
-## Provider 支持
+batchfile JSON 格式：
+```json
+[
+  { "prompt": "...", "output": "a.mp4" },
+  { "prompt": "...", "output": "b.mp4", "provider": "tuzi" }
+]
+```
 
-| Provider | 模型 | 时长 | 分辨率 |
-|----------|------|------|--------|
-| apimart | doubao-seedance-1-0-pro-fast | 5s | 480p-1080p |
-| apimart | veo3.1-lite | 8s | 720p-4k |
-| tuzi | veo3.1 | 8s | 720p-1080p |
-| agnes | agnes-video-v2.0 | 3-15s | 480p-1080p |
+选项：`--async`（仅提交）、`--jobs <n>`（并发数，默认 2）
+
+### 其他命令
+
+```bash
+laoli video list                    # 查看队列中的任务
+laoli video query --task-id <id>    # 查询任务状态
+laoli video download --task-id <id> # 下载已完成视频
+laoli video history                 # 查看历史记录
+```
+
+## Provider 对比
+
+| Provider | 费用 | 提交速度 | 生成速度 | 说明 |
+|----------|:----:|:--------:|:--------:|------|
+| **agnes** | ❌ 免费 | 慢（~60s） | ~3min | 日常主力，不限量 |
+| **tuzi** veo3.1 | $0.7/次 | 快（~3s） | ~2min | 加急用 |
+| **apimart** veo3.1-lite | $0.05/次 | 快 | - | 需充值 |
 
 ## 示例
 
-### 基础生成
-
 ```bash
-# 文生视频
-laoli video generate --prompt "Ocean waves at sunset" --output ocean.mp4
+# 文生视频（agnes 免费）
+laoli video generate --prompt "a cute cat walking in a garden" --output cat.mp4
 
-# 指定时长
-laoli video generate --prompt "A cat walking" --seconds 10 --output cat.mp4
+# 图生视频
+laoli video generate --prompt "cat watching sunset" --ref photo.png --output cat-sunset.mp4
 
-# 指定分辨率
-laoli video generate --prompt "City night view" --resolution 1080p --output city.mp4
-```
+# 指定 Provider 和模型
+laoli video generate --prompt "ocean waves" --provider tuzi --output ocean.mp4
 
-### 图生视频
+# 9:16 竖屏
+laoli video generate --prompt "a person dancing" --size 9:16 --output dance.mp4
 
-```bash
-# 使用参考图片
-laoli video generate --prompt "Animate this scene" --ref photo.jpg --output animated.mp4
-```
+# 异步模式
+laoli video generate --prompt "time lapse city" --async --output city.mp4
+laoli video download --task-id xxx-xxx
 
-### 异步生成
+# 批量生成
+laoli video batch --batchfile tasks.json
 
-```bash
-# 启动异步任务
-laoli video generate --prompt "Ocean waves" --output ocean.mp4 --json
-# 返回: {"taskId": "12345", "status": "pending"}
-
-# 查询状态
-laoli video query --task-id 12345
-
-# 下载完成的视频
-laoli video download --task-id 12345 --output ocean.mp4
+# 图生视频命名规范：{描述}-ref-{provider}.mp4
+# 文生视频命名规范：{描述}-{provider}.mp4
 ```
 
 ## 工作流程
 
-1. 准备视频描述或参考图片
-2. 选择 Provider 和模型
-3. 启动视频生成任务
-4. 等待任务完成（或异步查询）
-5. 下载生成的视频
+1. 确定视频描述 prompt 和参考图（可选）
+2. 选择 Provider（免费用 agnes，加急用 tuzi）
+3. 生成并等待完成
+4. 或使用 `--async` 提交后回头下载
 
 ## 注意事项
 
-- 视频生成通常需要较长时间
-- 使用 `--json` 获取任务 ID 进行异步处理
-- 支持的视频格式：MP4
-- 参考图片支持本地文件和 URL
-- 部分 Provider 支持音频生成
+- agnes 免费但生成较慢，建议 `--poll-interval 8000` 避免限流
+- 视频生成耗时较长，批量任务建议用 `--async` 提交
+- 日志文件位于 `~/.laoli/logs/`，按日滚动

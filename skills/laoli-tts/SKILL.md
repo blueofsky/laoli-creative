@@ -1,6 +1,6 @@
 ---
 name: laoli-tts
-description: TTS 语音合成技能，支持多种音色和风格控制
+description: 文本转语音合成，支持 MiniMax 和 MiMo 双 Provider
 version: 1.0.0
 dependencies:
   cli:
@@ -8,159 +8,91 @@ dependencies:
     version: ">=1.0.0"
 ---
 
-# TTS 语音合成 Skill
-
-使用 `laoli tts` 命令进行语音合成。
+# Laoli TTS（文本转语音）
 
 ## 前置条件
 
-```bash
-# 安装 CLI
-npm install -g laoli-creative
-
-# 配置 API Key（选择一个 provider）
-laoli auth login --api-key sk-xxxxx --provider minimax
-# 或
-laoli auth login --api-key sk-xxxxx --provider mimo
-```
+- 安装 CLI：`npm install -g laoli-creative`
+- 配置 API Key（以 minimax 为例）：
+  ```bash
+  laoli auth login --api-key sk-xxxxx --provider minimax
+  ```
+  或设置环境变量 `MINIMAX_API_KEY` / `MIMO_API_KEY`
 
 ## 命令
 
 ### 合成语音
 
 ```bash
-laoli tts synthesize --text <text> --output <path> [options]
+laoli tts speak --text "<text>" --output <path> [options]
 ```
 
 | 选项 | 说明 |
 |------|------|
-| `--text <text>` | 要合成的文本（必填） |
-| `--output <path>` | 输出音频文件路径（必填） |
-| `--provider <name>` | Provider: minimax, mimo |
-| `--model <id>` | 模型 ID |
-| `--voice <id>` | 音色 ID 或音色描述（mimo voicedesign） |
-| `--context <text>` | 风格控制（mimo only） |
-| `--speed <n>` | 语速 |
-| `--pitch <n>` | 音调 |
-| `--format <fmt>` | 音频格式：mp3, wav |
-| `--json` | JSON 输出 |
+| `--text` | 要合成的文本（必填） |
+| `--output` | 输出音频文件路径（必填） |
+| `--provider` | Provider：`minimax`（默认）、`mimo` |
+| `--model` | 模型 ID |
+| `--voice` | 音色 ID |
+| `--speed` | 语速 0.5~2.0（minimax） |
+| `--vol` | 音量 0~10（minimax） |
+| `--pitch` | 音调 -12~12（minimax） |
+| `--emotion` | 情绪：happy/sad/angry/calm/whisper...（minimax） |
+| `--context` | 自然语言风格描述（mimo 导演模式） |
+| `--format` | 输出格式：mp3、wav |
+| `--json` | JSON 格式输出 |
 
 ### 查看音色
 
 ```bash
-laoli tts voices [--provider <name>] [--json]
+laoli tts voice [--provider minimax|mimo]
 ```
-
-### 音色克隆
-
-```bash
-laoli tts clone --voice-file <path> --text <text> --output <path> [options]
-```
-
-| 选项 | 说明 |
-|------|------|
-| `--voice-file <path>` | 音色样本音频文件（必填） |
-| `--text <text>` | 要合成的文本（必填） |
-| `--output <path>` | 输出音频文件路径（必填） |
 
 ## Provider 对比
 
 | 特性 | MiniMax | MiMo |
 |------|---------|------|
-| 预置音色 | ✅ 8个 | ✅ 8个 |
-| 音色设计 | ❌ | ✅ 文本描述定制 |
-| 音色克隆 | ❌ | ✅ 音频样本复刻 |
-| 自然语言控制 | ❌ | ✅ 导演模式 |
-| 唱歌 | ❌ | ✅ |
-| 情绪标签 | ❌ | ✅ |
-
-## 可用音色（两个 Provider 通用）
-
-| 音色 | 语言 | 性别 | 风格 |
-|------|------|------|------|
-| 冰糖 | 中文 | 女性 | 活泼少女 |
-| 茉莉 | 中文 | 女性 | 知性女声 |
-| 苏打 | 中文 | 男性 | 阳光少年 |
-| 白桦 | 中文 | 男性 | 成熟男声 |
-| Mia | English | Female | Lively girl |
-| Chloe | English | Female | Sweet Dreamy |
-| Milo | English | Male | Sunny boy |
-| Dean | English | Male | Steady Gentle |
-
-## MiMo 模型
-
-| 模型 ID | 用途 | 特殊能力 |
-|---------|------|----------|
-| mimo-v2.5-tts | 预置音色语音合成 | 支持唱歌 |
-| mimo-v2.5-tts-voicedesign | 文本描述定制音色 | 自然语言控制 |
-| mimo-v2.5-tts-voiceclone | 音频样本复刻音色 | 音色克隆 |
+| 预置音色 | 327 个（多语言） | 9 个 |
+| 语速/音量/音调 | ✅ 数值控制 | 通过 context 自然语言控制 |
+| 情绪参数 | ✅ 枚举值 | 文本内标签 |
+| 导演模式 | ❌ | ✅ 自然语言风格描述 |
+| 唱歌 | ❌ | ✅ 文本内 `(唱歌)` 标签 |
+| 音频格式 | mp3/wav/pcm/flac | wav 固定 |
+| 成熟度 | 成熟稳定 | 测试阶段 |
 
 ## 示例
 
-### MiniMax 基础合成
-
 ```bash
-# 中文语音
-laoli tts synthesize --text "你好，今天天气真不错" --provider minimax --voice 冰糖 --output hello.mp3
+# MiniMax 基础合成（默认）
+laoli tts speak --text "你好世界" --output hello.mp3
 
-# 英文语音
-laoli tts synthesize --text "Hello, how are you?" --provider minimax --voice Mia --output hello.mp3
-```
+# MiniMax 指定音色和情绪
+laoli tts speak --text "太棒了" --voice female-shaonv --emotion happy --output happy.mp3
 
-### MiMo 预置音色
+# MiniMax 调整语速和音量
+laoli tts speak --text "慢慢说" --speed 0.8 --vol 5 --output slow.mp3
 
-```bash
-# 中文语音
-laoli tts synthesize --text "你好，今天天气真不错" --provider mimo --voice 冰糖 --output hello.mp3
+# MiMo 预置音色
+laoli tts speak --text "你好" --provider mimo --voice 冰糖 --output hello.wav
 
-# 唱歌
-laoli tts synthesize --text "(唱歌)两只老虎，两只老虎，跑得快" --provider mimo --voice 冰糖 --output sing.mp3
-```
+# MiMo 导演模式（自然语言风格控制）
+laoli tts speak --text "晚安" --provider mimo --context "温柔轻声" --output goodnight.wav
 
-### MiMo 音色设计
-
-```bash
-# 使用文本描述定制音色
-laoli tts synthesize --text "你好" --provider mimo --model mimo-v2.5-tts-voicedesign --voice "磁性低沉男中音" --output hello.mp3
-
-# 使用风格控制
-laoli tts synthesize --text "你好" --provider mimo --voice 冰糖 --context "用温柔的语气，语速稍慢" --output hello.mp3
-```
-
-### MiMo 音色克隆
-
-```bash
-# 使用音频样本克隆音色
-laoli tts synthesize --text "Hello" --provider mimo --model mimo-v2.5-tts-voiceclone --voice ./sample.mp3 --output clone.mp3
-```
-
-### 批量合成
-
-```bash
-# 创建文本列表
-cat > texts.txt << EOF
-你好
-早上好
-晚上好
-EOF
-
-# 批量合成
-while IFS= read -r text; do
-  laoli tts synthesize --text "$text" --provider mimo --voice 冰糖 --output "audio_$(date +%s).mp3"
-done < texts.txt
+# JSON 输出
+laoli tts speak --text "Hello" --json --output hello.mp3
 ```
 
 ## 工作流程
 
-1. 选择合适的音色
-2. 准备要合成的文本
-3. 调用 CLI 合成语音
-4. 返回音频文件路径
+1. 查看可用音色：`laoli tts voice`
+2. 选择 Provider 和音色
+3. 合成语音：`laoli tts speak --text "..." --output output.mp3`
+4. 如需精细控制，使用 MiniMax 的 speed/vol/pitch/emotion
+5. 如需自然语言风格控制，使用 MiMo 的 context 参数
 
 ## 注意事项
 
-- 使用 `--json` 获取结构化输出
-- 使用 `--quiet` 抑制非必要输出
-- 音频格式默认为 mp3
-- 支持中英文混合文本
-- 长文本会自动分段合成
+- minimax 默认音色 female-shaonv（少女音色）
+- mimo 默认音色 冰糖（活泼少女）
+- MiniMax 输出默认 mp3，MiMo 固定 wav 格式
+- 日志文件位于 `~/.laoli/logs/`，按日滚动

@@ -1,6 +1,6 @@
 ---
 name: laoli-picgo
-description: 图片上传技能，支持上传图片到 GitHub 作为图床
+description: 图片上传到 GitHub 图床
 version: 1.0.0
 dependencies:
   cli:
@@ -8,26 +8,32 @@ dependencies:
     version: ">=1.0.0"
 ---
 
-# 图片上传 Skill
-
-使用 `laoli picgo` 命令上传图片到 GitHub。
+# Laoli PicGo（图片上传）
 
 ## 前置条件
 
-```bash
-# 安装 CLI
-npm install -g laoli-creative
-
-# 安装 PicGo
-npm install -g picgo
-
-# 配置 GitHub
-laoli picgo config --repo username/image-host --token your-token
-```
+- 安装 CLI：`npm install -g laoli-creative`
+- 准备 GitHub 公开仓库和 Personal Access Token（权限：repo）
+- 运行配置命令存入凭证
 
 ## 命令
 
-### 上传图片
+### 配置
+
+```bash
+laoli picgo config --repo <owner/repo> --token <token> [options]
+```
+
+| 选项 | 说明 |
+|------|------|
+| `--repo` | GitHub 仓库（如 `username/image-host`） |
+| `--token` | GitHub Personal Access Token |
+| `--path` | 仓库内路径（默认 `img/`） |
+| `--branch` | 分支（默认 `main`） |
+| `--custom-url` | 自定义 CDN 域名 |
+| `--show` | 查看当前配置 |
+
+### 上传
 
 ```bash
 laoli picgo upload --input <path> [options]
@@ -35,111 +41,49 @@ laoli picgo upload --input <path> [options]
 
 | 选项 | 说明 |
 |------|------|
-| `--input <path>` | 图片文件路径（必填） |
-| `--batch` | 批量上传 |
-| `--json` | JSON 输出 |
+| `--input` | 图片文件路径或目录 |
+| `--batch` | 批量上传（input 为目录时必需） |
+| `--json` | JSON 格式输出 |
 
-### 配置 PicGo
-
-```bash
-laoli picgo config [options]
-```
-
-| 选项 | 说明 |
-|------|------|
-| `--repo <owner/repo>` | GitHub 仓库 |
-| `--token <token>` | GitHub Personal Access Token |
-| `--path <path>` | 仓库内路径 |
-| `--branch <branch>` | 分支名 |
-| `--custom-url <url>` | 自定义域名 |
-
-## 示例
-
-### 配置
+### CDN 加速配置
 
 ```bash
-# 基础配置
-laoli picgo config --repo username/image-host --token ghp_xxxxx
-
-# 完整配置
 laoli picgo config \
   --repo username/image-host \
   --token ghp_xxxxx \
-  --path assets/images \
+  --path img/ \
   --branch main \
   --custom-url "https://cdn.jsdmirror.com/gh/username/image-host@main"
 ```
 
-### 上传
+## 示例
 
 ```bash
-# 上传单张图片
-laoli picgo upload --input photo.png
+# 配置
+laoli picgo config --repo blueofsky/laolihub --token ghp_xxxxx
+
+# 查看配置
+laoli picgo config --show
+
+# 上传单张
+laoli picgo upload --input image.png
 
 # 批量上传
-laoli picgo upload --input ./images/*.png --batch
+laoli picgo upload --input ./images/ --batch
 
 # JSON 输出
-laoli picgo upload --input photo.png --json
-```
-
-## 配置说明
-
-### GitHub 仓库
-
-创建一个专门的仓库用于存储图片：
-
-```bash
-# 创建仓库
-# 仓库名：image-host（或任意名称）
-# 设为公开仓库（免费用户）
-```
-
-### Personal Access Token
-
-1. 访问 GitHub Settings > Developer settings > Personal access tokens
-2. 生成新的 Token
-3. 选择权限：`repo`（完整仓库访问）
-
-### 自定义域名
-
-推荐使用 jsDelivr CDN 加速：
-
-```
-https://cdn.jsdelivr.net/gh/username/repo@branch/
-```
-
-国内用户推荐使用 jsMirror：
-
-```
-https://cdn.jsdmirror.com/gh/username/repo@branch/
-```
-
-## 输出格式
-
-上传成功后返回图片 URL：
-
-```
-https://raw.githubusercontent.com/username/image-host/main/assets/images/20260608105400000.png
-```
-
-或使用自定义域名：
-
-```
-https://cdn.jsdmirror.com/gh/username/image-host@main/assets/images/20260608105400000.png
+laoli picgo upload --input image.png --json
 ```
 
 ## 工作流程
 
-1. 配置 GitHub 仓库和 Token
-2. 选择要上传的图片
-3. 调用 CLI 上传图片
-4. 返回图片 URL
+1. 创建 GitHub 公开仓库
+2. 生成 Personal Access Token（Settings > Developer settings > Tokens，勾选 repo）
+3. 运行 `laoli picgo config` 存入配置
+4. 上传图片获得 URL
 
 ## 注意事项
 
-- 图片会自动重命名（时间戳格式）
-- 支持 PNG, JPG, GIF, WebP 格式
-- 使用 `--json` 获取结构化输出
-- Token 请妥善保管，不要泄露
-- 建议使用专门的仓库作为图床
+- 图片自动重命名为时间戳格式
+- 支持格式：PNG、JPG、GIF、WebP
+- Token 仅保存在 `~/.laoli/.env`，不写入配置文件
