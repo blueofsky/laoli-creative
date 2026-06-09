@@ -103,6 +103,78 @@ export const minimaxProvider: Provider = {
   },
 };
 
+/** 从 voice_id 推断语言 */
+function detectLanguage(voiceId: string): string {
+  const langPrefixes: [string, string][] = [
+    ['Chinese (Mandarin)', 'Chinese'],
+    ['Cantonese', 'Cantonese'],
+    ['English', 'English'],
+    ['Japanese', 'Japanese'],
+    ['Korean', 'Korean'],
+    ['Spanish', 'Spanish'],
+    ['Portuguese', 'Portuguese'],
+    ['French', 'French'],
+    ['German', 'German'],
+    ['Russian', 'Russian'],
+    ['Italian', 'Italian'],
+    ['Arabic', 'Arabic'],
+    ['Turkish', 'Turkish'],
+    ['Ukrainian', 'Ukrainian'],
+    ['Dutch', 'Dutch'],
+    ['Vietnamese', 'Vietnamese'],
+    ['Thai', 'Thai'],
+    ['Polish', 'Polish'],
+    ['Romanian', 'Romanian'],
+    ['Greek', 'Greek'],
+    ['Czech', 'Czech'],
+    ['Finnish', 'Finnish'],
+    ['Hindi', 'Hindi'],
+    ['Indonesian', 'Indonesian'],
+  ];
+  for (const [prefix, lang] of langPrefixes) {
+    if (voiceId.startsWith(prefix)) return lang;
+  }
+  // 中文拼音命名的音色
+  if (/^[a-z]+_[a-z]+$/.test(voiceId) && /[a-z]/.test(voiceId)) {
+    const chineseKeywords = [
+      'shaonv', 'yujie', 'chengshu', 'tianmei', 'qingse', 'jingying',
+      'badao', 'daxuesheng', 'bingjiao', 'nanyou', 'xuedi', 'xiongzhang',
+      'shaoye', 'xiaoling', 'mengmei', 'xuemei', 'xuejie', 'didi',
+    ];
+    if (chineseKeywords.some(k => voiceId.includes(k))) return 'Chinese';
+  }
+  return 'Other';
+}
+
+/** 从 voice_id 和 description 推断性别 */
+function detectGender(voiceId: string, desc: string): string {
+  const femaleKeywords = [
+    'female', 'girl', 'lady', 'woman', 'miss', 'heroine', 'queen',
+    'sister', 'mermaid', 'princess', 'bride', 'aunt', 'goddess',
+    'nun', 'witch', 'fairy', 'widow', '母', '女',
+    // 中文拼音女性关键词
+    'shaonv', 'yujie', 'tianmei', 'xiaoling', 'mengmei',
+    'xuemei', 'xuejie', 'mei', 'jie',
+  ];
+  const maleKeywords = [
+    'male', 'boy', 'man', 'gentleman', 'guy', 'daddy', 'hero',
+    'king', 'brother', 'prince', 'uncle', 'sir', 'lord', 'father',
+    'husband', '僧', '父', '男',
+    // 中文拼音男性关键词
+    'qingse', 'jingying', 'badao', 'daxuesheng', 'bingjiao',
+    'nanyou', 'xuedi', 'xiongzhang', 'shaoye', 'didi',
+  ];
+  const lower = voiceId.toLowerCase();
+  const lowerDesc = desc.toLowerCase();
+  for (const kw of femaleKeywords) {
+    if (lower.includes(kw) || lowerDesc.includes(kw)) return 'Female';
+  }
+  for (const kw of maleKeywords) {
+    if (lower.includes(kw) || lowerDesc.includes(kw)) return 'Male';
+  }
+  return 'Unknown';
+}
+
 export async function getVoices(): Promise<any[]> {
   try {
     const apiKey = getApiKey('minimax');
@@ -113,16 +185,16 @@ export async function getVoices(): Promise<any[]> {
     });
     if (!response.ok) throw new Error('Failed to fetch voices');
     const data: any = await response.json();
-    return (data.system_voice || []).map((v: any) => ({
-      id: v.voice_id,
-      name: v.voice_name,
-      language: v.voice_id.startsWith('Chinese') ? 'Chinese' :
-               v.voice_id.startsWith('English') ? 'English' :
-               v.voice_id.startsWith('Japanese') ? 'Japanese' :
-               v.voice_id.startsWith('Korean') ? 'Korean' : 'Other',
-      gender: (v.description?.[0] || '').includes('女') ? 'Female' : 'Male',
-      style: v.description?.[0] || '',
-    }));
+    return (data.system_voice || []).map((v: any) => {
+      const desc = (v.description?.[0] || '');
+      return {
+        id: v.voice_id,
+        name: v.voice_name,
+        language: detectLanguage(v.voice_id),
+        gender: detectGender(v.voice_id, desc),
+        style: desc,
+      };
+    });
   } catch {
     // fallback: 返回常用音色
     return [

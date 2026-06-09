@@ -36,6 +36,7 @@ function loadLog4jsConfig(defaultLevel: string): log4js.Configuration {
   return {
     appenders: {
       out: { type: 'stdout', layout: { type: 'colored' } },
+      outInfo: { type: 'logLevelFilter', appender: 'out', level: 'info' },
       file: {
         type: 'dateFile',
         filename: join(DEFAULT_LOG_DIR, 'laoli.log'),
@@ -46,7 +47,7 @@ function loadLog4jsConfig(defaultLevel: string): log4js.Configuration {
     },
     categories: {
       default: {
-        appenders: ['out', 'file'],
+        appenders: ['outInfo', 'file'],
         level: defaultLevel,
       },
     },
