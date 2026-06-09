@@ -3,6 +3,8 @@ import { generateCommand } from '../../src/commands/video/generate';
 import { queryCommand } from '../../src/commands/video/query';
 import { downloadCommand } from '../../src/commands/video/download';
 
+const mockConfig = { video: {} } as any;
+
 describe('video commands', () => {
   it('generate should have correct name', () => {
     expect(generateCommand.name).toBe('generate');
@@ -22,27 +24,27 @@ describe('video commands', () => {
   });
 
   it('generate should reject missing prompt', async () => {
-    await expect(generateCommand.execute({} as any, { output: 'test.mp4' }))
+    await expect(generateCommand.execute(mockConfig, { output: 'test.mp4' }))
       .rejects.toThrow('Missing required argument: --prompt');
   });
 
   it('generate should reject missing output', async () => {
-    await expect(generateCommand.execute({} as any, { prompt: 'waves' }))
+    await expect(generateCommand.execute(mockConfig, { prompt: 'waves' }))
       .rejects.toThrow('Missing required argument: --output');
   });
 
   it('query should require --task-id', async () => {
-    await expect(queryCommand.execute({} as any, {}))
+    await expect(queryCommand.execute(mockConfig, {}))
       .rejects.toThrow('Missing required argument: --task-id');
   });
 
   it('download should require --task-id', async () => {
-    await expect(downloadCommand.execute({} as any, { output: 'v.mp4' }))
+    await expect(downloadCommand.execute(mockConfig, { output: 'v.mp4' }))
       .rejects.toThrow('Missing required argument: --task-id');
   });
 
   it('download should require --output', async () => {
-    await expect(downloadCommand.execute({} as any, { 'task-id': '123' }))
+    await expect(downloadCommand.execute(mockConfig, { 'task-id': '123' }))
       .rejects.toThrow('Missing required argument: --output');
   });
 });
