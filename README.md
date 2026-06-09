@@ -20,7 +20,7 @@ laoli auth login --api-key sk-xxxxx --provider agnes
 laoli imagine generate --prompt "A cat" --output cat.png
 
 # Generate TTS
-laoli tts synthesize --text "Hello" --output hello.mp3
+laoli tts speak --text "Hello" --output hello.mp3
 
 # Generate video
 laoli video generate --prompt "Ocean waves" --output ocean.mp4
@@ -32,30 +32,31 @@ laoli video generate --prompt "Ocean waves" --output ocean.mp4
 
 ```bash
 laoli imagine generate --prompt <text> --output <path> [options]
-laoli imagine edit --input <path> --prompt <text> --output <path> [options]
 laoli imagine batch --batchfile <path> [options]
 ```
 
 ### TTS
 
 ```bash
-laoli tts synthesize --text <text> --output <path> [options]
-laoli tts voices [--provider <name>]
-laoli tts clone --voice-file <path> --text <text> --output <path> [options]
+laoli tts speak --text <text> --output <path> [options]
+laoli tts voice [--provider minimax|mimo]
 ```
 
 ### Video Generation
 
 ```bash
 laoli video generate --prompt <text> --output <path> [options]
+laoli video batch --batchfile <path> [options]
 laoli video query --task-id <id>
-laoli video download --task-id <id> --output <path>
+laoli video download --task-id <id>
+laoli video list
+laoli video history
 ```
 
 ### Background Music
 
 ```bash
-laoli bgm generate --prompt <text> --output <path> [options]
+laoli bgm --prompt <text> --output <path> [options]
 ```
 
 ### Image Upload
@@ -63,6 +64,14 @@ laoli bgm generate --prompt <text> --output <path> [options]
 ```bash
 laoli picgo upload --input <path> [options]
 laoli picgo config --repo <owner/repo> --token <token> [options]
+```
+
+### Logs
+
+```bash
+laoli logs [options]
+laoli logs --list
+laoli logs --follow
 ```
 
 ### Configuration
@@ -87,7 +96,8 @@ laoli auth status
 | `--region <region>` | Region: global, cn |
 | `--output <format>` | Output format: text, json |
 | `--quiet` | Suppress non-essential output |
-| `--verbose` | Verbose output |
+| `--verbose` | Verbose output (enable DEBUG logs) |
+| `--log-level <level>` | Log level: DEBUG, INFO, WARN, ERROR |
 | `--dry-run` | Dry run mode |
 | `--non-interactive` | Non-interactive mode |
 | `--help, -h` | Show help |
@@ -98,16 +108,9 @@ laoli auth status
 Configuration files are stored in:
 
 - User config: `~/.laoli/config.json`
-- Project config: `.laoli/config.json`
-- Environment variables: `~/.laoli/.env`, `.laoli/.env`
-
-### Configuration Files
-
-| File | Description |
-|------|-------------|
-| `config/config.example.json` | Example configuration file |
-| `config/config.schema.json` | Configuration schema for validation |
-| `config/.env.example` | Example environment variables |
+- Log config: `~/.laoli/log4js.json`
+- Environment variables: `~/.laoli/.env`
+- API Keys: `~/.laoli/.env`
 
 ### Quick Setup
 
@@ -115,23 +118,19 @@ Configuration files are stored in:
 # Copy example config
 cp config/config.example.json ~/.laoli/config.json
 
-# Edit config
-vi ~/.laoli/config.json
-
-# Or set environment variables
-export LAOLI_API_KEY=sk-xxxxx
-export AGNES_API_KEY=xxxxx
+# Set environment variables in ~/.laoli/.env
+echo "AGNES_API_KEY=sk-xxxxx" >> ~/.laoli/.env
 ```
 
 ## Providers
 
-| Provider | Supported Features |
-|----------|-------------------|
-| agnes | Image generation, Image editing |
-| apimart | Image generation, Image editing, Video generation |
-| tuzi | Image generation, Image editing |
-| minimax | Image generation, TTS, Music |
-| mimo | TTS (预置音色、音色设计、音色克隆、唱歌) |
+| Provider | Image | Video | TTS | Music |
+|----------|:-----:|:-----:|:---:|:-----:|
+| agnes | ✅ | ✅ | - | - |
+| apimart | ✅ | ✅ | - | - |
+| tuzi | ✅ | ✅ | - | - |
+| minimax | - | - | ✅ | ✅ |
+| mimo | - | - | ✅ | - |
 
 ## Development
 

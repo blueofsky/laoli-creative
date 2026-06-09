@@ -35,29 +35,38 @@ laoli tts speak --text "Hello" --output hello.mp3
 
 ### Skill 格式
 
-```markdown
+参考现有 Skill，推荐包含以下 YAML 元数据：
+
+```yaml
 ---
 name: skill-name
-description: 技能描述
-version: 1.0.0
+description: > 触发条件描述
+license: MIT
+metadata:
+  version: "1.0.0"
+  category: creative | utility
+triggers:
+  - 触发关键词
+  - trigger keywords
+sources:
+  - laoli xxx --help
+  - 参考文档链接
 dependencies:
   cli:
     name: laoli-creative
     version: ">=1.0.0"
 ---
-
-# 技能名称
-
-## 前置条件
-
-## 命令
-
-## 示例
-
-## 工作流程
-
-## 注意事项
 ```
+
+#### 正文建议内容
+
+| 章节 | 说明 |
+|------|------|
+| `## 前置条件` | 安装、API Key 配置 |
+| `## 命令` | 命令用法 + 参数表格（含默认值标注） |
+| `## 工作流程` | Step 1→2→3 步骤 |
+| `## 示例` | 典型使用场景 |
+| `## 注意事项` | 文件格式、provider 限制等 |
 
 ## 许可证
 
