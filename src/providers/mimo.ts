@@ -1,6 +1,6 @@
 import type { Provider, TTSParams, TTSResult, VisionImageParams, VisionVideoParams, VisionResult } from '../types/sdk';
 import { ProviderError, NetworkError } from '../errors/codes';
-import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
+import { writeFileSync, existsSync, mkdirSync, readFileSync, statSync } from 'fs';
 import { dirname, extname } from 'path';
 import { getApiKey } from './shared';
 import { apiFetch } from '../client/http';
@@ -123,12 +123,23 @@ const MIME_TYPES: Record<string, string> = {
   '.avi': 'video/x-msvideo', '.wmv': 'video/x-ms-wmv',
 };
 
+// Base64 编码字符串大小限制（50 MB）
+const MAX_BASE64_STR_SIZE = 50 * 1024 * 1024;
+
 /** 将本地文件路径转为 Base64 Data URL，URL 则原样返回 */
 async function resolveMediaUrl(input: string, type: 'image' | 'video'): Promise<string> {
   if (input.startsWith('http://') || input.startsWith('https://')) return input;
   const ext = extname(input).toLowerCase();
   const mime = MIME_TYPES[ext];
-  if (!mime) throw new ProviderError(`Unsupported ${type} format: ${ext}`, 'mimo');
+  if (!mime) throw new ProviderError(`Unsupported ${type} format: ${ext}. Supported: ${Object.keys(MIME_TYPES).filter(e => MIME_TYPES[e].startsWith(type)).join(', ')}`, 'mimo');
+  const stats = statSync(input);
+  // Base64 编码后约膨胀 1.37 倍，所以原始文件需 ≤ 50MB / 1.37 ≈ 36.5MB
+  const maxFileSize = Math.floor(MAX_BASE64_STR_SIZE / 1.37);
+  if (stats.size > maxFileSize) {
+    const mb = (stats.size / (1024 * 1024)).toFixed(1);
+    const limitMb = (maxFileSize / (1024 * 1024)).toFixed(1);
+    throw new ProviderError(`File too large: ${mb}MB (max ${limitMb}MB for Base64 encoding). Use a URL instead.`, 'mimo');
+  }
   const data = readFileSync(input);
   const base64 = data.toString('base64');
   return `data:${mime};base64,${base64}`;
