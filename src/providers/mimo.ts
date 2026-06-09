@@ -138,8 +138,8 @@ async function resolveMediaUrl(input: string, type: 'image' | 'video'): Promise<
 async function callVisionAPI(apiKey: string, model: string, messages: any[]): Promise<VisionResult> {
   const requestBody = { model, messages, max_completion_tokens: 2048 };
   try {
-    const response = await apiFetch('mimo', 'POST', 'https://api.xiaomimimo.com/v1/chat/completions', {
-      headers: { 'api-key': apiKey },
+    const response = await apiFetch('mimo', 'POST', `${BASE_URL}/chat/completions`, {
+      headers: { 'Authorization': `Bearer ${apiKey}` },
       body: JSON.stringify(requestBody),
       description: 'vision_chat_completions',
     });
