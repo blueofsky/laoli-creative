@@ -38,11 +38,11 @@ export const generateCommand: Command = {
       throw new CLIError('Missing required argument: --output', ExitCode.INVALID_ARGS);
     }
     
-    const provider = (flags.provider as string) || config.imagine.defaultProvider || config.defaultProvider;
-    const model = (flags.model as string) || config.imagine.defaultModel;
-    const aspectRatio = (flags['aspect-ratio'] as string) || config.imagine.defaultAspectRatio;
+    const provider = (flags.provider as string) || config.image.defaultProvider || config.defaultProvider;
+    const model = (flags.model as string) || config.image.defaultModel;
+    const aspectRatio = (flags['aspect-ratio'] as string) || config.image.defaultAspectRatio;
     const size = flags.size as string;
-    const quality = (flags.quality as string) || config.imagine.defaultQuality || '2k';
+    const quality = (flags.quality as string) || config.image.defaultQuality || '2k';
     const ref = flags.ref as string[] | undefined;
     const n = flags.n ? parseInt(flags.n as string, 10) : undefined;
     const isJson = flags.json as boolean;
