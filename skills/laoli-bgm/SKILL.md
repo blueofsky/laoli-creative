@@ -49,7 +49,7 @@ laoli bgm --prompt "<描述>" --output <path> [options]
 | `--provider <name>` | Provider：`minimax` |
 | `--model <id>` | 模型 ID（默认 `music-2.6`） |
 | `--lyrics <text>` | 歌词文本（有歌词则转为歌曲） |
-| `--instrumental` | 纯音乐模式 |
+| `--instrumental` | 纯音乐模式（不传 --lyrics 时自动启用） |
 | `--json` | JSON 输出 |
 
 ## 音乐风格参考

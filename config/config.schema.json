@@ -167,7 +167,7 @@
       "properties": {
         "defaultProvider": {
           "type": "string",
-          "enum": ["apimart", "tuzi", "agnes"],
+          "enum": ["agnes", "apimart", "tuzi"],
           "description": "默认 provider"
         },
         "defaultModel": {

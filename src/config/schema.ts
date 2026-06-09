@@ -53,8 +53,8 @@ export const DEFAULT_CONFIG: Config = {
   },
 
   video: {
-    defaultProvider: 'apimart',
-    defaultModel: 'doubao-seedance-1-0-pro-fast',
+    defaultProvider: 'agnes',
+    defaultModel: 'agnes-video-v2.0',
     defaultSeconds: 5,
     defaultResolution: '1080p',
     pollInterval: 5000,

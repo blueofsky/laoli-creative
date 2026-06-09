@@ -49,7 +49,6 @@ laoli picgo config --repo <owner/repo> --token <token> [options]
 | `--branch <branch>` | 分支（默认 `main`） |
 | `--custom-url <url>` | 自定义 CDN 域名（可选） |
 | `--show` | 查看当前配置（无需其他参数） |
-| `--show` | 查看当前配置 |
 
 ### 上传
 

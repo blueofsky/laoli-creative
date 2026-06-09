@@ -57,7 +57,7 @@ laoli tts speak --text "<text>" --output <path> [options]
 | `--pitch <n>` | 音调 -12~12（默认 0，minimax） |
 | `--emotion <e>` | 情绪：happy/sad/angry/calm/whisper...（minimax） |
 | `--context <text>` | 自然语言风格描述（mimo 导演模式） |
-| `--format <fmt>` | 输出格式：mp3、wav（默认 mp3） |
+| `--format <fmt>` | 输出格式：mp3（默认）、wav |
 | `--json` | JSON 输出 |
 
 ### 查看音色

@@ -49,8 +49,8 @@ laoli video generate --prompt "<描述>" --output <path> [options]
 |------|------|
 | `--prompt <text>` | 视频描述（必填） |
 | `--output <path>` | 输出视频文件路径（必填） |
-| `--provider <name>` | Provider：`apimart`（默认）、`agnes`（免费）、`tuzi` |
-| `--model <id>` | 模型 ID（默认 doubao-seedance-1-0-pro-fast） |
+| `--provider <name>` | Provider：`agnes`（默认，免费）、`apimart`、`tuzi` |
+| `--model <id>` | 模型 ID（默认 agnes-video-v2.0） |
 | `--seconds <n>` | 视频时长秒数（默认 5） |
 | `--size <WxH>` | 尺寸（如 `9:16`、`1280x720`，可选） |
 | `--resolution <p>` | 分辨率：480p、720p、1080p、4k（默认 1080p） |
@@ -78,7 +78,7 @@ batchfile JSON 格式：
 |------|------|
 | `--batchfile <path>` | JSON 批处理文件路径（必填） |
 | `--async` | 仅提交，不等待下载 |
-| `--jobs <count>` | 并发数，默认 2 |
+| `--jobs <count>` | 并发数（默认 2） |
 
 ### 其他管理命令
 

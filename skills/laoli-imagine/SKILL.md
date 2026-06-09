@@ -55,7 +55,7 @@ laoli imagine generate --prompt <text> --output <path> [options]
 | `--model <id>` | 模型 ID（默认 agnes-image-2.1-flash） |
 | `--aspect-ratio <ratio>` | 宽高比：16:9, 9:16, 1:1, 4:3（默认 1:1） |
 | `--size <WxH>` | 尺寸：1024x1024（可选，不填则由 provider 决定） |
-| `--quality <level>` | 质量：normal, 2k（默认 2k） |
+| `--quality <level>` | 质量：normal、2k（默认） |
 | `--ref <files...>` | 参考图片路径或 URL（图生图） |
 | `--n <count>` | 生成数量（默认 1） |
 | `--json` | JSON 输出 |
@@ -70,7 +70,7 @@ laoli imagine batch --batchfile <path> [options]
 | 选项 | 说明 |
 |------|------|
 | `--batchfile <path>` | JSON 批处理文件路径（必填） |
-| `--jobs <count>` | 并发数，默认 4 |
+| `--jobs <count>` | 并发数（默认 4） |
 | `--json` | JSON 输出 |
 | `--quiet` | 抑制非必要输出 |
 
