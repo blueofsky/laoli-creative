@@ -138,5 +138,5 @@ export function success(message: string): void {
 }
 
 export function json(data: any): void {
-  getLogger().info(JSON.stringify(data, null, 2));
+  console.log(JSON.stringify(data, null, 2));
 }
