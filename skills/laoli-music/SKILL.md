@@ -40,7 +40,7 @@ dependencies:
 ## 命令
 
 ```bash
-laoli bgm --prompt "<描述>" --output <path> [options]
+laoli music --prompt "<描述>" --output <path> [options]
 ```
 
 | 选项 | 说明 |
@@ -61,20 +61,20 @@ Pop、Rock、Jazz、Classical、Electronic、Hip Hop、R&B、Folk、Ambient、Ci
 
 1. **确认需求**：纯音乐还是带歌词的歌曲？
 2. **构建 prompt**：描述风格、乐器、氛围（如 "calm piano with strings"）
-3. **生成**：`laoli bgm --prompt "..." --output music.mp3`
+3. **生成**：`laoli music --prompt "..." --output music.mp3`
 4. **返回结果**：提供音频文件路径
 
 ## 示例
 
 ```bash
 # 纯音乐
-laoli bgm --prompt "A calm piano melody with gentle strings" --output calm.mp3
+laoli music --prompt "A calm piano melody with gentle strings" --output calm.mp3
 
 # 电影配乐
-laoli bgm --prompt "Epic orchestral cinematic, dramatic build-up" --output epic.mp3
+laoli music --prompt "Epic orchestral cinematic, dramatic build-up" --output epic.mp3
 
 # 带歌词的歌曲
-laoli bgm --prompt "Upbeat pop" --lyrics "[verse] La da dee..." --output song.mp3
+laoli music --prompt "Upbeat pop" --lyrics "[verse] La da dee..." --output song.mp3
 ```
 
 ## 注意事项
