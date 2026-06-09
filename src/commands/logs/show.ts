@@ -173,8 +173,9 @@ export const logCommand: Command = {
       process.stdout.write(startContent);
       if (!startContent.endsWith('\n')) process.stdout.write('\n');
 
-      const pos = showAll ? 0 : Math.max(0, statSync(targetFile).size - getTailBytes(targetFile, lines));
-      await followLog(targetFile, showAll ? 0 : pos);
+      // follow 从当前文件末尾开始监听，避免重复输出已显示的内容
+      const pos = statSync(targetFile).size;
+      await followLog(targetFile, pos);
     } else {
       const content = showAll ? readFileSync(targetFile, 'utf-8') : readTail(targetFile, lines);
       if (content) {
@@ -185,11 +186,3 @@ export const logCommand: Command = {
     }
   },
 };
-
-function getTailBytes(filePath: string, lines: number): number {
-  const content = readFileSync(filePath, 'utf-8');
-  const allLines = content.split('\n');
-  while (allLines.length > 0 && allLines[allLines.length - 1] === '') allLines.pop();
-  const tail = allLines.slice(-lines);
-  return tail.join('\n').length + (tail.length > 0 ? 1 : 0);
-}
