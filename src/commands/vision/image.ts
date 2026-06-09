@@ -25,7 +25,7 @@ export const visionImageCommand: Command = {
     const prompt = flags.prompt as string;
     const providerName = (flags.provider as string) || config.vision?.defaultProvider || 'mimo';
     const model = flags.model as string || config.vision?.defaultModel;
-    const mode = (flags.mode as string) || 'base64';
+    const mode = (flags.mode as string) || config.vision?.defaultMode || 'base64';
     const isJson = flags.json as boolean;
 
     if (!input) throw new CLIError('Missing required argument: --input', ExitCode.INVALID_ARGS);

@@ -44,7 +44,7 @@ export interface Config {
   tts: TTSConfig;
   video: VideoConfig;
   music: ModuleConfig;
-  vision: ModuleConfig;
+  vision: VisionConfig;
   picgo: PicgoConfig;
   display: DisplayConfig;
   proxy?: string;
@@ -61,6 +61,10 @@ export interface ProviderConfig {
 export interface ModuleConfig {
   defaultProvider?: string;
   defaultModel?: string;
+}
+
+export interface VisionConfig extends ModuleConfig {
+  defaultMode?: 'base64' | 'url';
 }
 
 export interface ImageConfig extends ModuleConfig {

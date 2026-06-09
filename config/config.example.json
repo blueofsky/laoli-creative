@@ -64,7 +64,8 @@
 
   "vision": {
     "defaultProvider": "mimo",
-    "defaultModel": "mimo-v2.5"
+    "defaultModel": "mimo-v2.5",
+    "defaultMode": "base64"
   },
 
   "picgo": {

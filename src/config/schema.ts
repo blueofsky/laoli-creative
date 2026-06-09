@@ -71,6 +71,7 @@ export const DEFAULT_CONFIG: Config = {
   vision: {
     defaultProvider: 'mimo',
     defaultModel: 'mimo-v2.5',
+    defaultMode: 'base64',
   },
 
   picgo: {

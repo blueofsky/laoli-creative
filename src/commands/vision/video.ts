@@ -29,7 +29,7 @@ export const visionVideoCommand: Command = {
     const model = flags.model as string || config.vision?.defaultModel;
     const fps = flags.fps ? parseFloat(flags.fps as string) : undefined;
     const mediaResolution = flags['media-resolution'] as 'default' | 'max' | undefined;
-    const mode = (flags.mode as string) || 'base64';
+    const mode = (flags.mode as string) || config.vision?.defaultMode || 'base64';
     const isJson = flags.json as boolean;
 
     if (!input) throw new CLIError('Missing required argument: --input', ExitCode.INVALID_ARGS);

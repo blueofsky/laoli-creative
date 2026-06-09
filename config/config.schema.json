@@ -250,6 +250,12 @@
           "type": "string",
           "default": "mimo-v2.5",
           "description": "默认模型"
+        },
+        "defaultMode": {
+          "type": "string",
+          "enum": ["base64", "url"],
+          "default": "base64",
+          "description": "本地文件传输方式：base64（默认，直接编码）或 url（上传到 GitHub 取公网 URL）"
         }
       },
       "additionalProperties": false
