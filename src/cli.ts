@@ -133,8 +133,28 @@ Global Options:
 
   private printGroupHelp(group: CommandGroup): void {
     const cmdPath = `${this.options.name} ${group.name}`;
-    const maxNameLength = Math.max(...group.commands.map(c => c.name.length));
 
+    // 有默认命令 → 直接展开它的选项（扁平化，如 logs）
+    if (group.defaultCommand) {
+      const defaultCmd = group.commands.find(c => c.name === group.defaultCommand);
+      if (defaultCmd) {
+        console.log(`
+${cmdPath} - ${group.description}
+
+Usage:
+  ${cmdPath} [options]
+
+${this.getOptionsTable(defaultCmd.options || [])}
+
+${defaultCmd.examples && defaultCmd.examples.length > 0 ? `Examples:
+${defaultCmd.examples.map(e => `  # ${e}`).join('\n')}
+` : ''}`);
+        return;
+      }
+    }
+
+    // 传统的子命令列表
+    const maxNameLength = Math.max(...group.commands.map(c => c.name.length));
     console.log(`
 ${cmdPath} - ${group.description}
 
