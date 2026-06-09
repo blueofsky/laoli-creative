@@ -13,6 +13,7 @@ import { configCommands } from './commands/config';
 import { authCommands } from './commands/auth';
 import { handleError } from './errors/handler';
 import { logCommands } from './commands/logs';
+import { visionCommands } from './commands/vision';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -31,6 +32,7 @@ const cli = new CLI({
     picgoCommands,
     configCommands,
     logCommands,
+    visionCommands,
     authCommands,
   ],
 });

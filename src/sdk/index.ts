@@ -4,6 +4,7 @@ export { synthesizeSpeech, listVoices } from './tts';
 export { generateVideo, queryVideoTask, downloadVideo, waitForVideoCompletion } from './video';
 export { generateMusic } from './music';
 export { uploadImage, savePicgoConfig, loadPicgoConfig } from './picgo';
+export { understandImage, understandVideo } from './vision';
 
 export type {
   ImageParams,
@@ -16,6 +17,9 @@ export type {
   VideoResult,
   MusicParams,
   MusicResult,
+  VisionImageParams,
+  VisionVideoParams,
+  VisionResult,
   Provider,
 } from '../types/sdk';
 

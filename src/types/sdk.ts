@@ -95,4 +95,29 @@ export interface Provider {
   queryVideoTask?(taskId: string): Promise<VideoResult>;
   downloadVideo?(taskId: string, outputPath: string, videoUrl?: string): Promise<string>;
   generateMusic?(params: MusicParams): Promise<MusicResult>;
+  understandImage?(params: VisionImageParams): Promise<VisionResult>;
+  understandVideo?(params: VisionVideoParams): Promise<VisionResult>;
+}
+
+export interface VisionImageParams {
+  input: string;      // 图片路径或 URL
+  prompt: string;     // 提问
+  provider?: string;
+  model?: string;
+}
+
+export interface VisionVideoParams {
+  input: string;      // 视频路径或 URL
+  prompt: string;     // 提问
+  provider?: string;
+  model?: string;
+  fps?: number;
+  mediaResolution?: 'default' | 'max';
+}
+
+export interface VisionResult {
+  content: string;
+  reasoningContent?: string;
+  usage?: Record<string, any>;
+  metadata: Record<string, any>;
 }
