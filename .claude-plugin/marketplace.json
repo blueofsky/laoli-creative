@@ -5,13 +5,13 @@
     "email": "blueofsky2008@gmail.com"
   },
   "metadata": {
-    "description": "AI 内容生成工具集 Skills",
+    "description": "AI 创意内容生成工具集 Skills",
     "version": "1.0.0"
   },
   "plugins": [
     {
       "name": "creative",
-      "description": "AI 内容生成：图片、视频、TTS、音乐、图片上传",
+      "description": "AI 创意工具：图片生成、视频生成、TTS语音、音乐创作、图片上传",
       "source": "."
     }
   ]
