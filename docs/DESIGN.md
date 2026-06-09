@@ -68,8 +68,8 @@ laoli-creative/
 │   │   │   ├── query.ts            # laoli video query
 │   │   │   ├── download.ts         # laoli video download
 │   │   │   └── index.ts
-│   │   ├── bgm/                    # 背景音乐
-│   │   │   ├── generate.ts         # laoli bgm generate
+│   │   ├── music/                  # 音乐
+│   │   │   ├── generate.ts         # laoli music generate
 │   │   │   └── index.ts
 │   │   ├── picgo/                  # 图片上传
 │   │   │   ├── upload.ts           # laoli picgo upload
@@ -88,7 +88,7 @@ laoli-creative/
 │   │   ├── imagine.ts
 │   │   ├── tts.ts
 │   │   ├── video.ts
-│   │   ├── bgm.ts
+│   │   ├── music.ts
 │   │   ├── picgo.ts
 │   │   └── index.ts
 │   ├── providers/                  # Provider 抽象层
@@ -127,7 +127,7 @@ laoli-creative/
 │   ├── laoli-imagine/
 │   ├── laoli-tts/
 │   ├── laoli-video/
-│   ├── laoli-bgm/
+│   ├── laoli-music/
 │   └── laoli-picgo/
 ├── test/                           # 测试文件
 │   ├── commands/
@@ -220,8 +220,8 @@ laoli video download --task-id <id> --output <path>
 #### 2.2.5 背景音乐
 
 ```bash
-# 生成 BGM
-laoli bgm generate --prompt <text> --output <path> [options]
+# 生成音乐
+laoli music --prompt <text> --output <path> [options]
   --provider <name>      Provider: minimax
   --model <id>           模型 ID
   --instrumental         纯音乐
@@ -313,7 +313,7 @@ laoli-creative/
 │   │   └── SKILL.md
 │   ├── laoli-video/                # 视频生成 Skill
 │   │   └── SKILL.md
-│   ├── laoli-bgm/                  # BGM Skill
+│   ├── laoli-music/                # Music Skill
 │   │   └── SKILL.md
 │   └── laoli-picgo/                # PicGo Skill
 │       └── SKILL.md
@@ -481,10 +481,10 @@ laoli imagine generate --prompt "A cat" --output cat.png --json
     "defaultResolution": "1080p"
   },
   
-  "bgm": {
+  "music": {
     "defaultProvider": "minimax",
     "defaultModel": "music-2.6",
-    "defaultOutputDir": "./bgm",
+    "defaultOutputDir": "./music",
     "defaultFormat": "mp3"
   },
   
@@ -642,7 +642,7 @@ export enum ExitCode {
 
 ### Phase 3：辅助功能 (Week 5-6)
 
-- [x] `laoli bgm` 模块
+- [x] `laoli music` 模块
 - [x] `laoli picgo` 模块
 
 ### Phase 5：Skills 开发 (Week 9-10)

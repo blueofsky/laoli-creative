@@ -53,10 +53,10 @@ laoli video list
 laoli video history
 ```
 
-### Background Music
+### Music
 
 ```bash
-laoli bgm --prompt <text> --output <path> [options]
+laoli music --prompt <text> --output <path> [options]
 ```
 
 ### Image Upload

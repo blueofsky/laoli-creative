@@ -15,7 +15,7 @@ laoli video generate \
 
 echo ""
 echo "=== 2. 生成背景音乐 ==="
-laoli bgm generate \
+laoli music \
   --prompt "舒缓的钢琴曲，自然意境" \
   --instrumental \
   --output "$OUTPUT_DIR/bgm.mp3"

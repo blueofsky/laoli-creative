@@ -32,10 +32,10 @@ laoli video query --task-id 12345
 laoli video download --task-id 12345 --output output.mp4
 ```
 
-### 背景音乐 (bgm)
+### 音乐 (music)
 
 ```bash
-laoli bgm generate --prompt "描述" --output output.mp3 [--instrumental]
+laoli music --prompt "描述" --output output.mp3 [--instrumental]
 ```
 
 ### 图片上传 (picgo)
@@ -135,7 +135,7 @@ laoli-creative/
 │   ├── laoli-imagine/
 │   ├── laoli-tts/
 │   ├── laoli-video/
-│   ├── laoli-bgm/
+│   ├── laoli-music/
 │   └── laoli-picgo/
 ├── test/
 ├── package.json

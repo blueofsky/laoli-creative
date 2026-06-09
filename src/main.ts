@@ -7,7 +7,7 @@ import { CLI } from './cli';
 import { imagineCommands } from './commands/imagine';
 import { ttsCommands } from './commands/tts';
 import { videoCommands } from './commands/video';
-import { bgmCommands } from './commands/bgm';
+import { musicCommands } from './commands/music';
 import { picgoCommands } from './commands/picgo';
 import { configCommands } from './commands/config';
 import { authCommands } from './commands/auth';
@@ -27,7 +27,7 @@ const cli = new CLI({
     imagineCommands,
     ttsCommands,
     videoCommands,
-    bgmCommands,
+    musicCommands,
     picgoCommands,
     configCommands,
     logCommands,

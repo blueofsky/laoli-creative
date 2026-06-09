@@ -11,7 +11,7 @@
 - **TTS parameters**: Expose `--speed`, `--vol`, `--pitch`, `--emotion`, `--context` (mimo)
 - **MiniMax dynamic voices**: `laoli tts voice` now fetches 327 voices via API
 - **Short flags**: `-f`, `-h`, `-v` support in CLI parser
-- **defaultCommand**: Flat command mode (`laoli bgm`, `laoli logs` without subcommand)
+- **defaultCommand**: Flat command mode (`laoli music`, `laoli logs` without subcommand)
 - **Windows .cmd**: `bin/laoli.cmd` for cmd.exe compatibility
 
 ### Fixes
@@ -19,7 +19,7 @@
 - **MiniMax URL**: `minimax.io` → `minimaxi.com` (was causing auth failures)
 - **MiMo TTS**: Rewrote with correct API (`chat/completions`), auth, response parsing
 - **Apimart video**: Fix taskId extraction (`data.data[0].task_id`), status mapping (`completed`), response envelope unwrap, local image upload for image-to-video
-- **BGM**: Fix request body (`output_format`, `audio_setting`), response validation (`base_resp`, `data.status`)
+- **Music**: Fix request body (`output_format`, `audio_setting`), response validation (`base_resp`, `data.status`)
 - **Content-Type**: Don't force `application/json` for FormData requests (fixes tuzi video)
 - **TTS clone**: Removed from CLI (not supported)
 - **Subcommand rename**: `synthesize` → `speak`, `voices` → `voice`
@@ -42,9 +42,10 @@
 
 - **CLI Framework**: Command registry, argument parser, help system with global flags
 - **5 AI Providers**: Agnes (image), APIMart (image+video), Tuzi (image), MiniMax (image+TTS+music), MiMo (TTS)
-- **Commands**: `imagine` (generate/edit/batch), `tts` (synthesize/voices/clone), `video` (generate/query/download), `bgm` (generate), `picgo` (upload/config), `config` (show/set), `auth` (login/status)
+- **Commands**: `imagine` (generate/edit/batch), `tts` (synthesize/voices/clone), `video` (generate/query/download), `music` (generate), `picgo` (upload/config), `config` (show/set), `auth` (login/status)
 - **SDK**: Programmatic API for all capabilities
-- **Skills**: Documentation for 5 skills (laoli-imagine, laoli-tts, laoli-video, laoli-bgm, laoli-picgo)
+- **Rename**: `bgm` → `music` (CLI command, SDK, skill, tests)
+- **Skills**: Documentation for 5 skills (laoli-imagine, laoli-tts, laoli-video, laoli-music, laoli-picgo)
 - **Config System**: 6-layer priority (default → user config → project config → .env → env vars → CLI flags)
 
 ### Build

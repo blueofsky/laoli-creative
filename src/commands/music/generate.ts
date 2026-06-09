@@ -6,8 +6,8 @@ import type { MusicParams } from '../../types/sdk';
 
 export const generateCommand: Command = {
   name: 'generate',
-  description: 'Generate background music',
-  usage: 'laoli bgm --prompt <text> --output <path> [options]',
+  description: 'Generate music (instrumental or with lyrics)',
+  usage: 'laoli music --prompt <text> --output <path> [options]',
   options: [
     { flag: '--prompt <text>', description: 'Music description', required: true },
     { flag: '--output <path>', description: 'Output audio file path', required: true },
@@ -19,9 +19,9 @@ export const generateCommand: Command = {
     { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],
   examples: [
-    'laoli bgm --prompt "Upbeat pop" --output song.mp3',
-    'laoli bgm --prompt "Cinematic" --instrumental --output bgm.mp3',
-    'laoli bgm --prompt "Pop song" --lyrics "[verse] La da dee" --output song.mp3',
+    'laoli music --prompt "Upbeat pop" --output song.mp3',
+    'laoli music --prompt "Cinematic" --instrumental --output music.mp3',
+    'laoli music --prompt "Pop song" --lyrics "[verse] La da dee" --output song.mp3',
   ],
   execute: async (config: Config, flags: Flags) => {
     const prompt = flags.prompt as string;
@@ -34,14 +34,14 @@ export const generateCommand: Command = {
       throw new CLIError('Missing required argument: --output', ExitCode.INVALID_ARGS);
     }
     
-    const providerName = (flags.provider as string) || config.bgm.defaultProvider || 'minimax';
+    const providerName = (flags.provider as string) || config.music.defaultProvider || 'minimax';
     const provider = getProvider(providerName);
     
     if (!provider.generateMusic) {
       throw new CLIError(`Provider "${providerName}" does not support music generation`, ExitCode.PROVIDER_ERROR);
     }
     
-    const model = (flags.model as string) || config.bgm.defaultModel;
+    const model = (flags.model as string) || config.music.defaultModel;
     const lyrics = flags.lyrics as string;
     const instrumental = flags.instrumental as boolean;
     const isJson = flags.json as boolean;

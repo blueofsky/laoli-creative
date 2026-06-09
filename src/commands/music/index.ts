@@ -1,9 +1,9 @@
 import type { CommandGroup } from '../../types/cli';
 import { generateCommand } from './generate';
 
-export const bgmCommands: CommandGroup = {
-  name: 'bgm',
-  description: 'Background music generation',
+export const musicCommands: CommandGroup = {
+  name: 'music',
+  description: 'Music and background music generation',
   defaultCommand: 'generate',
   commands: [
     generateCommand,

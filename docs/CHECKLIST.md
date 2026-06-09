@@ -66,11 +66,11 @@
 
 ## Phase 3：辅助功能
 
-### 背景音乐模块 (bgm)
+### 音乐模块 (music)
 - [x] 实现 `generate` 命令
-- [x] 实现 SDK 接口：`src/sdk/bgm.ts`
-- [ ] 编写测试：`test/commands/bgm/`
-- [x] 编写 Skill：`skills/laoli-bgm/`
+- [x] 实现 SDK 接口：`src/sdk/music.ts`
+- [x] 编写测试：`test/commands/music.test.ts`
+- [x] 编写 Skill：`skills/laoli-music/`
 
 ### 图片上传模块 (picgo)
 - [x] 实现 `upload` 命令（支持批量上传）

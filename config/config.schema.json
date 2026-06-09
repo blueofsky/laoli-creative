@@ -44,9 +44,9 @@
       "$ref": "#/definitions/videoConfig",
       "description": "视频生成模块配置"
     },
-    "bgm": {
-      "$ref": "#/definitions/bgmConfig",
-      "description": "背景音乐模块配置"
+    "music": {
+      "$ref": "#/definitions/musicConfig",
+      "description": "音乐模块配置"
     },
     "picgo": {
       "$ref": "#/definitions/picgoConfig",
@@ -213,7 +213,7 @@
       },
       "additionalProperties": false
     },
-    "bgmConfig": {
+    "musicConfig": {
       "type": "object",
       "properties": {
         "defaultProvider": {

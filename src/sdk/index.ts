@@ -2,7 +2,7 @@ export { generateImage, batchGenerateImages } from './imagine';
 
 export { synthesizeSpeech, listVoices } from './tts';
 export { generateVideo, queryVideoTask, downloadVideo, waitForVideoCompletion } from './video';
-export { generateMusic } from './bgm';
+export { generateMusic } from './music';
 export { uploadImage, savePicgoConfig, loadPicgoConfig } from './picgo';
 
 export type {

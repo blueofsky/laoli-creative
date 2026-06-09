@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'bun:test';
-import { generateCommand } from '../../src/commands/bgm/generate';
+import { generateCommand } from '../../src/commands/music/generate';
 
-describe('bgm commands', () => {
+describe('music commands', () => {
   it('generate should have correct name', () => {
     expect(generateCommand.name).toBe('generate');
-    expect(generateCommand.description).toBe('Generate background music');
+    expect(generateCommand.description).toBe('Generate music (instrumental or with lyrics)');
   });
 
   it('generate should require --prompt and --output', () => {

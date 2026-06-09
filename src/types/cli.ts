@@ -43,7 +43,7 @@ export interface Config {
   imagine: ImagineConfig;
   tts: TTSConfig;
   video: VideoConfig;
-  bgm: ModuleConfig;
+  music: ModuleConfig;
   picgo: PicgoConfig;
   display: DisplayConfig;
   proxy?: string;

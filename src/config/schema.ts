@@ -63,7 +63,7 @@ export const DEFAULT_CONFIG: Config = {
     batchTimeout: 3600000,
   },
 
-  bgm: {
+  music: {
     defaultProvider: 'minimax',
     defaultModel: 'music-2.6',
   },

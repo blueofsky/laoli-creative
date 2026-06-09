@@ -1,8 +1,8 @@
 ---
-name: laoli-bgm
+name: laoli-music
 description: >
-  背景音乐生成。使用 laoli bgm 命令生成音乐和配乐。
-  当用户需要生成背景音乐、配乐、旋律、纯音乐或带歌词的歌曲时触发。
+  音乐生成。使用 laoli music 命令生成音乐和配乐。
+  当用户需要生成音乐、背景音乐、配乐、旋律、纯音乐或带歌词的歌曲时触发。
 license: MIT
 metadata:
   version: "1.0.0"
@@ -11,15 +11,16 @@ triggers:
   - 生成音乐
   - 背景音乐
   - 配乐
-  - BGM
   - 作曲
   - 旋律
   - 纯音乐
+  - 歌曲生成
   - generate music
   - background music
   - soundtrack
+  - compose song
 sources:
-  - laoli bgm --help
+  - laoli music --help
 dependencies:
   cli:
     name: laoli-creative
