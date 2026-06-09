@@ -23,7 +23,10 @@ export interface PicgoConfig {
   customUrl?: string;
 }
 
-const SUPPORTED_FORMATS = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.svg'];
+const SUPPORTED_FORMATS = [
+  '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.svg',
+  '.mp4', '.mov', '.avi', '.wmv',
+];
 
 export async function uploadImage(params: PicgoUploadParams): Promise<PicgoUploadResult[]> {
   const { input, batch = false } = params;
