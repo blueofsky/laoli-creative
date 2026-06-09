@@ -18,9 +18,8 @@ laoli image batch --batchfile batch.json [--jobs 4]
 ### TTS 语音 (tts)
 
 ```bash
-laoli tts synthesize --text "文本" --output output.mp3 [--voice 冰糖] [--provider minimax]
-laoli tts voices [--provider minimax]
-laoli tts clone --voice-file sample.wav --text "文本" --output output.mp3
+laoli tts speak --text "文本" --output output.mp3 [--voice female-shaonv] [--provider minimax]
+laoli tts voice [--provider minimax]
 ```
 
 ### 视频生成 (video)
@@ -44,12 +43,19 @@ laoli picgo upload --input image.png
 laoli picgo config --repo owner/repo --token xxx [--path assets/images]
 ```
 
+### 日志查看 (logs)
+
+```bash
+laoli logs [options]
+laoli logs --list
+laoli logs --follow
+```
+
 ### 配置管理 (config)
 
 ```bash
 laoli config show [--section image]
 laoli config set --key image.defaultProvider --value agnes
-laoli config export-schema [--output schema.json]
 ```
 
 ### 认证管理 (auth)
@@ -130,12 +136,6 @@ laoli-creative/
 │   ├── auth/          # 认证管理
 │   ├── errors/        # 错误处理
 │   └── utils/         # 工具函数
-├── skills/
-│   ├── laoli-image/
-│   ├── laoli-tts/
-│   ├── laoli-video/
-│   ├── laoli-music/
-│   └── laoli-picgo/
 ├── test/
 ├── package.json
 └── tsconfig.json
