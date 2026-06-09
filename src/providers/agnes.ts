@@ -3,6 +3,7 @@ import { ProviderError, NetworkError } from '../errors/codes';
 import { readFileSync, existsSync } from 'fs';
 import { getApiKey, aspectRatioToSize } from './shared';
 import { downloadFile, apiFetch } from '../client/http';
+import { uploadImage } from '../sdk/picgo';
 
 const BASE_URL = 'https://apihub.agnes-ai.com/v1';
 
@@ -135,15 +136,12 @@ export const agnesProvider: Provider = {
 
     const requestBody: any = { model, prompt: params.prompt, width, height, num_frames: numFrames, frame_rate: frameRate };
 
-    // 参考图处理：Video API 不支持 data URL，自动用 picgo CLI 上传到图床
+    // 参考图处理：本地文件直接用内部 picgo 上传
     if (params.refImages && params.refImages.length > 0) {
       let ref = params.refImages[0];
       if (!ref.startsWith('http://') && !ref.startsWith('https://')) {
-        const { execSync } = await import('child_process');
-        const url = execSync(`npx picgo upload "${ref}"`, { encoding: 'utf-8' });
-        // picgo 输出最后一行是 URL
-        const lines = url.trim().split('\n');
-        ref = lines[lines.length - 1].trim();
+        const results = await uploadImage({ input: ref });
+        ref = results[0].url;
       }
       requestBody.image = ref;
     }
