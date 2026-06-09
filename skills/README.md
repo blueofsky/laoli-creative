@@ -53,7 +53,7 @@ sources:
   - 参考文档链接
 dependencies:
   cli:
-    name: laoli-creative
+    name: laoli
     version: ">=1.0.0"
 ---
 ```

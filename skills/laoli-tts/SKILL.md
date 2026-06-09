@@ -23,7 +23,7 @@ sources:
   - https://platform.xiaomimimo.com/docs/zh-CN/usage-guide/speech-synthesis-v2.5
 dependencies:
   cli:
-    name: laoli-creative
+    name: laoli
     version: ">=1.0.0"
 ---
 

@@ -23,7 +23,7 @@ sources:
   - laoli video batch --help
 dependencies:
   cli:
-    name: laoli-creative
+    name: laoli
     version: ">=1.0.0"
 ---
 
