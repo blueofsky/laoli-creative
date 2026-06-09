@@ -12,12 +12,12 @@ export const visionImageCommand: Command = {
     { flag: '--prompt <text>', description: 'Question or instruction about the image', required: true },
     { flag: '--provider <name>', description: 'Vision provider (default: mimo)' },
     { flag: '--model <id>', description: 'Model ID (default: mimo-v2.5)' },
-    { flag: '--upload', description: 'Upload local file to GitHub first for a public URL', type: 'boolean' },
+    { flag: '--mode <mode>', description: 'Local file transfer mode: base64 (default) or url (upload to GitHub)' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
   ],
   examples: [
     'laoli vision image --input photo.jpg --prompt "What is in this image?"',
-    'laoli vision image --input photo.jpg --prompt "描述" --upload',
+    'laoli vision image --input large.jpg --prompt "描述" --mode url',
     'laoli vision image --input https://example.com/photo.png --prompt "Describe" --json',
   ],
   execute: async (config: Config, flags: Flags) => {
@@ -25,18 +25,18 @@ export const visionImageCommand: Command = {
     const prompt = flags.prompt as string;
     const providerName = (flags.provider as string) || config.vision?.defaultProvider || 'mimo';
     const model = flags.model as string || config.vision?.defaultModel;
-    const doUpload = flags.upload as boolean;
+    const mode = (flags.mode as string) || 'base64';
     const isJson = flags.json as boolean;
 
     if (!input) throw new CLIError('Missing required argument: --input', ExitCode.INVALID_ARGS);
     if (!prompt) throw new CLIError('Missing required argument: --prompt', ExitCode.INVALID_ARGS);
 
-    // 上传本地文件到 GitHub 获取公网 URL
-    if (doUpload && !input.startsWith('http://') && !input.startsWith('https://')) {
+    // URL 模式：先将本地文件上传到 GitHub 获取公网 URL
+    if (mode === 'url' && !input.startsWith('http://') && !input.startsWith('https://')) {
       const results = await uploadImage({ input });
       if (results.length === 0) throw new CLIError('Failed to upload image', ExitCode.FILE_ERROR);
+      console.error(`  Uploaded: ${results[0].url}`);
       input = results[0].url;
-      console.error(`  Uploaded: ${input}`);
     }
 
     const provider = getProvider(providerName);

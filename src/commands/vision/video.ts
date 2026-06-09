@@ -14,12 +14,12 @@ export const visionVideoCommand: Command = {
     { flag: '--model <id>', description: 'Model ID (default: mimo-v2.5)' },
     { flag: '--fps <n>', description: 'Frames per second for video sampling (0.1~10, default: 2)', type: 'string' },
     { flag: '--media-resolution <mode>', description: 'Resolution mode: default or max' },
-    { flag: '--upload', description: 'Upload local file to GitHub first for a public URL', type: 'boolean' },
+    { flag: '--mode <mode>', description: 'Local file transfer mode: base64 (default) or url (upload to GitHub)' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
   ],
   examples: [
     'laoli vision video --input video.mp4 --prompt "Describe this video"',
-    'laoli vision video --input video.mp4 --prompt "描述" --upload',
+    'laoli vision video --input large.mp4 --prompt "描述" --mode url',
     'laoli vision video --input video.mp4 --prompt "What objects?" --fps 1 --json',
   ],
   execute: async (config: Config, flags: Flags) => {
@@ -29,18 +29,18 @@ export const visionVideoCommand: Command = {
     const model = flags.model as string || config.vision?.defaultModel;
     const fps = flags.fps ? parseFloat(flags.fps as string) : undefined;
     const mediaResolution = flags['media-resolution'] as 'default' | 'max' | undefined;
-    const doUpload = flags.upload as boolean;
+    const mode = (flags.mode as string) || 'base64';
     const isJson = flags.json as boolean;
 
     if (!input) throw new CLIError('Missing required argument: --input', ExitCode.INVALID_ARGS);
     if (!prompt) throw new CLIError('Missing required argument: --prompt', ExitCode.INVALID_ARGS);
 
-    // 上传本地文件到 GitHub 获取公网 URL
-    if (doUpload && !input.startsWith('http://') && !input.startsWith('https://')) {
+    // URL 模式：先将本地文件上传到 GitHub 获取公网 URL
+    if (mode === 'url' && !input.startsWith('http://') && !input.startsWith('https://')) {
       const results = await uploadImage({ input });
       if (results.length === 0) throw new CLIError('Failed to upload video', ExitCode.FILE_ERROR);
+      console.error(`  Uploaded: ${results[0].url}`);
       input = results[0].url;
-      console.error(`  Uploaded: ${input}`);
     }
 
     const provider = getProvider(providerName);
