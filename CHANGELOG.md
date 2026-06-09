@@ -4,6 +4,7 @@
 
 ### Features
 
+- **Refactor**: `imagine` → `image` (command, SDK, skill, docs)
 - **log4js**: Replace custom logger with log4js (dateFile daily rolling, automatic rotation)
 - **HTTP body logging**: Full request/response body at DEBUG level, Authorization auto-masked
 - **`laoli logs`**: New command to view/follow log files (`laoli logs`, `laoli logs -f`, `laoli logs --list`)
@@ -42,10 +43,10 @@
 
 - **CLI Framework**: Command registry, argument parser, help system with global flags
 - **5 AI Providers**: Agnes (image), APIMart (image+video), Tuzi (image), MiniMax (image+TTS+music), MiMo (TTS)
-- **Commands**: `imagine` (generate/edit/batch), `tts` (synthesize/voices/clone), `video` (generate/query/download), `music` (generate), `picgo` (upload/config), `config` (show/set), `auth` (login/status)
+- **Commands**: `image` (generate/batch), `tts` (speak/voice), `video` (generate/query/download), `music` (generate), `picgo` (upload/config), `config` (show/set), `auth` (login/status)
 - **SDK**: Programmatic API for all capabilities
 - **Rename**: `bgm` → `music` (CLI command, SDK, skill, tests)
-- **Skills**: Documentation for 5 skills (laoli-imagine, laoli-tts, laoli-video, laoli-music, laoli-picgo)
+- **Skills**: Documentation for 5 skills (laoli-image, laoli-tts, laoli-video, laoli-music, laoli-picgo)
 - **Config System**: 6-layer priority (default → user config → project config → .env → env vars → CLI flags)
 
 ### Build

@@ -35,17 +35,6 @@
     "defaultAspectRatio": "1:1"
   },
 
-  "tts": {
-    "defaultProvider": "minimax",
-    "defaultModel": "speech-2.8-hd",
-    "defaultVoice": "female-shaonv",
-    "defaultFormat": "mp3",
-    "defaultSpeed": 1.0,
-    "defaultVol": 3,
-    "defaultPitch": 0,
-    "defaultEmotion": ""
-  },
-
   "video": {
     "defaultProvider": "agnes",
     "defaultModel": "agnes-video-v2.0",
@@ -55,6 +44,17 @@
     "batchPollInterval": 10000,
     "timeout": 600000,
     "batchTimeout": 3600000
+  },
+
+  "tts": {
+    "defaultProvider": "minimax",
+    "defaultModel": "speech-2.8-hd",
+    "defaultVoice": "female-shaonv",
+    "defaultFormat": "mp3",
+    "defaultSpeed": 1.0,
+    "defaultVol": 3,
+    "defaultPitch": 0,
+    "defaultEmotion": ""
   },
 
   "music": {
