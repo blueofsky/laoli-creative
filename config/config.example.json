@@ -42,7 +42,8 @@
     "defaultFormat": "mp3",
     "defaultSpeed": 1.0,
     "defaultVol": 3,
-    "defaultPitch": 0
+    "defaultPitch": 0,
+    "defaultEmotion": ""
   },
 
   "video": {

@@ -5,9 +5,9 @@ import { CLIError, ExitCode } from '../../errors/codes';
 import type { TTSParams } from '../../types/sdk';
 
 export const synthesizeCommand: Command = {
-  name: 'synthesize',
+  name: 'speak',
   description: 'Synthesize speech from text',
-  usage: 'laoli tts synthesize --text <text> --output <path> [options]',
+  usage: 'laoli tts speak --text <text> --output <path> [options]',
   options: [
     { flag: '--text <text>', description: 'Text to synthesize', required: true },
     { flag: '--output <path>', description: 'Output audio file path', required: true },
@@ -24,10 +24,10 @@ export const synthesizeCommand: Command = {
     { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],
   examples: [
-    'laoli tts synthesize --text "你好" --output hello.mp3',
-    'laoli tts synthesize --text "Hello" --voice female-shaonv --output hello.mp3',
-    'laoli tts synthesize --text "你好" --emotion happy --speed 1.2 --output happy.mp3',
-    'laoli tts synthesize --text "晚安" --vol 5 --output goodnight.mp3',
+    'laoli tts speak --text "你好" --output hello.mp3',
+    'laoli tts speak --text "Hello" --voice female-shaonv --output hello.mp3',
+    'laoli tts speak --text "你好" --emotion happy --speed 1.2 --output happy.mp3',
+    'laoli tts speak --text "晚安" --vol 5 --output goodnight.mp3',
   ],
   execute: async (config: Config, flags: Flags) => {
     const text = flags.text as string;
@@ -53,7 +53,7 @@ export const synthesizeCommand: Command = {
       speed: flags.speed ? parseFloat(flags.speed as string) : config.tts.defaultSpeed,
       vol: flags.vol ? parseFloat(flags.vol as string) : config.tts.defaultVol,
       pitch: flags.pitch ? parseFloat(flags.pitch as string) : config.tts.defaultPitch,
-      emotion: flags.emotion as string,
+      emotion: (flags.emotion as string) || config.tts.defaultEmotion || undefined,
       format: (flags.format as string) || config.tts.defaultFormat,
     };
 

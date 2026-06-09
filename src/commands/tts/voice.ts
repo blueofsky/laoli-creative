@@ -4,18 +4,18 @@ import { getVoices as getMinimaxVoices } from '../../providers/minimax';
 import { getVoices as getMimoVoices } from '../../providers/mimo';
 
 export const voicesCommand: Command = {
-  name: 'voices',
+  name: 'voice',
   description: 'List available voices',
-  usage: 'laoli tts voices [--provider <name>]',
+  usage: 'laoli tts voice [--provider <name>]',
   options: [
     { flag: '--provider <name>', description: 'Provider: minimax, mimo' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
   ],
   examples: [
-    'laoli tts voices',
-    'laoli tts voices --provider minimax',
-    'laoli tts voices --provider mimo',
-    'laoli tts voices --json',
+    'laoli tts voice',
+    'laoli tts voice --provider minimax',
+    'laoli tts voice --provider mimo',
+    'laoli tts voice --json',
   ],
   execute: async (config: Config, flags: Flags) => {
     const providerName = (flags.provider as string) || config.tts.defaultProvider || 'minimax';
