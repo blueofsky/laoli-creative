@@ -9,6 +9,8 @@ export interface CommandGroup {
   name: string;
   description: string;
   commands: Command[];
+  /** 无子命令时默认执行的命令名（如 logs 默认走 show） */
+  defaultCommand?: string;
 }
 
 export interface Command {

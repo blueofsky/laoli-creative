@@ -11,8 +11,8 @@ export function parseArgs(argv: string[]): ParsedArgs {
   
   let i = 0;
   
-  // 解析命令路径（直到遇到以 -- 开头的参数）
-  while (i < argv.length && !argv[i].startsWith('--')) {
+  // 解析命令路径（直到遇到以 - 开头的参数）
+  while (i < argv.length && !argv[i].startsWith('-')) {
     commandPath.push(argv[i]);
     i++;
   }
@@ -25,7 +25,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
       const flagName = arg.slice(2);
       
       // 布尔标志
-      if (i + 1 >= argv.length || argv[i + 1].startsWith('--')) {
+      if (i + 1 >= argv.length || argv[i + 1].startsWith('--') || argv[i + 1].startsWith('-')) {
         flags[flagName] = true;
         i++;
       } else {
@@ -36,7 +36,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
         if (flagName === 'ref') {
           const values: string[] = [value];
           i += 2;
-          while (i < argv.length && !argv[i].startsWith('--')) {
+          while (i < argv.length && !argv[i].startsWith('--') && !argv[i].startsWith('-')) {
             values.push(argv[i]);
             i++;
           }
@@ -46,6 +46,11 @@ export function parseArgs(argv: string[]): ParsedArgs {
           i += 2;
         }
       }
+    } else if (arg.startsWith('-') && arg.length > 1) {
+      // 短标志：-f, -h, -v 等
+      const shortFlag = arg.slice(1);
+      flags[shortFlag] = true;
+      i++;
     } else {
       // 位置参数
       positional.push(arg);

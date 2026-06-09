@@ -55,10 +55,14 @@ export class CLI {
         process.exit(1);
       }
 
-      // laoli auth 或 laoli auth --help → 组帮助
+      // 无子命令 → 组帮助（除非有 defaultCommand）
       if (subCmdPath.length === 0) {
-        this.printGroupHelp(group);
-        return;
+        if (group.defaultCommand && !flags.help && !flags.h) {
+          subCmdPath.push(group.defaultCommand);
+        } else {
+          this.printGroupHelp(group);
+          return;
+        }
       }
 
       // 查找子命令
