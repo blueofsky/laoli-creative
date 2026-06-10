@@ -32,7 +32,7 @@ export const getCommand: Command = {
       return;
     }
 
-    let recipes: Record<string, any> = {};
+    let recipes: Record<string, any>;
     try {
       const content = readFileSync(RECIPES_FILE, 'utf-8');
       recipes = JSON.parse(content);
