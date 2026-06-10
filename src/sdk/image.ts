@@ -1,7 +1,23 @@
 import { readFileSync, existsSync } from 'fs';
+import { dirname, resolve } from 'path';
 import { getProvider } from '../providers';
 import type { ImageParams, ImageResult, BatchImageParams, BatchImageResult } from '../types/sdk';
 import { ProviderError } from '../errors/codes';
+
+function resolveItemPrompt(item: any, batchDir: string): string {
+  if (item.prompt) return item.prompt;
+  if (item.prompt_file) {
+    const filePath = resolve(batchDir, item.prompt_file);
+    if (!existsSync(filePath)) {
+      throw new ProviderError(`prompt_file not found: ${filePath}`, 'batch');
+    }
+    return readFileSync(filePath, 'utf-8').trim();
+  }
+  throw new ProviderError(
+    'Batch item missing both "prompt" and "prompt_file" fields',
+    'batch',
+  );
+}
 
 export async function generateImage(params: ImageParams): Promise<ImageResult> {
   const provider = getProvider(params.provider || 'agnes');
@@ -13,6 +29,7 @@ export async function batchGenerateImages(params: BatchImageParams): Promise<Bat
     throw new ProviderError(`Batch file not found: ${params.batchFile}`, 'batch');
   }
 
+  const batchDir = dirname(params.batchFile);
   const batchItems: any[] = JSON.parse(readFileSync(params.batchFile, 'utf-8'));
   if (!Array.isArray(batchItems)) {
     throw new ProviderError('Batch file must contain a JSON array', 'batch');
@@ -25,12 +42,13 @@ export async function batchGenerateImages(params: BatchImageParams): Promise<Bat
     const chunk = batchItems.slice(i, i + concurrency);
     const chunkResults = await Promise.all(
       chunk.map(async (item: any) => {
+        const prompt = resolveItemPrompt(item, batchDir);
         const provider = getProvider(item.provider || params.provider || 'agnes');
         const result = await provider.generateImage({
-          prompt: item.prompt,
+          prompt,
           outputPath: item.output,
           model: item.model,
-          aspectRatio: item.aspectRatio,
+          aspectRatio: item.aspectRatio || item.aspect_ratio,
           size: item.size,
           quality: item.quality,
           provider: item.provider || params.provider,
