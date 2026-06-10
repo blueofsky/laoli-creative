@@ -18,10 +18,14 @@ export const setCommand: Command = {
   ],
   execute: async (_config: Config, flags: Flags) => {
     const key = flags.key as string;
-    const value = flags.value as string;
+
+    const rawValue = flags.value;
+    if (rawValue === undefined || rawValue === null || typeof rawValue !== 'string') {
+      throw new CLIError('Missing required argument: --value', ExitCode.INVALID_ARGS);
+    }
+    const value = rawValue;
 
     if (!key) throw new CLIError('Missing required argument: --key', ExitCode.INVALID_ARGS);
-    if (!value) throw new CLIError('Missing required argument: --value', ExitCode.INVALID_ARGS);
 
     const parts = key.split('.');
     if (parts.length < 2) {

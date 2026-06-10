@@ -87,5 +87,9 @@
     "noColor": false
   },
 
-  "proxy": ""
+  "proxy": "",
+
+  "recipe": {
+    "schema": "D:\\AI\\AIGC\\laoli-kitchen\\laoli-recipe\\config\\recipe.schema.json"
+  }
 }

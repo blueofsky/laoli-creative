@@ -92,4 +92,8 @@ export const DEFAULT_CONFIG: Config = {
     quiet: false,
     noColor: false,
   },
+
+  recipe: {
+    schema: '',
+  },
 };

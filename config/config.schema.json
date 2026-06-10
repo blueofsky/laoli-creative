@@ -67,6 +67,10 @@
     "proxy": {
       "type": "string",
       "description": "HTTP 代理地址"
+    },
+    "recipe": {
+      "$ref": "#/definitions/recipeConfig",
+      "description": "Recipe 配置（laoli-recipe 项目的 Skill 配置管理）"
     }
   },
   "definitions": {
@@ -328,6 +332,16 @@
           "type": "boolean",
           "default": false,
           "description": "禁用颜色"
+        }
+      },
+      "additionalProperties": false
+    },
+    "recipeConfig": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "type": "string",
+          "description": "recipe.schema.json 路径（laoli-recipe 项目配置的 JSON Schema 文件路径）"
         }
       },
       "additionalProperties": false

@@ -48,7 +48,12 @@ export interface Config {
   asr: ASRConfig;
   picgo: PicgoConfig;
   display: DisplayConfig;
+  recipe: RecipeConfig;
   proxy?: string;
+}
+
+export interface RecipeConfig {
+  schema: string;
 }
 
 export interface ProviderConfig {
