@@ -23,8 +23,8 @@ export const showCommand: Command = {
     let displayConfig: any = config;
 
     if (section) {
-      const result = getValueByPath(config, section);
-      if (!result.found) {
+      const value = getValueByPath(config, section);
+      if (value === undefined) {
         console.error(`Section "${section}" not found in configuration`);
         process.exit(1);
       }
