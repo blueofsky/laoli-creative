@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.2.0 (2026-06-10)
+
+### Features
+
+- **`laoli recipe`**: New command group for managing laoli-recipe skill configurations
+  - `laoli recipe init` — Initialize `recipes.json` with default values from schema
+  - `laoli recipe schema` — View full or per-skill schema definition
+  - `laoli recipe get` — Query skill config values (supports `--skill` and `--key`)
+  - `laoli recipe set` — Set skill config values with schema-aware type validation
+- **`laoli config get`**: New command to extract raw config values (bare output, scripting-friendly)
+- **`config show --section`**: Now supports dot notation (e.g. `--section recipe.schema`)
+- **Config schema**: Added `recipe` node with `schema` field for recipe.schema.json path
+- **Schema validation**: `recipe set` validates types (boolean/integer/number/enum/string) against recipe.schema.json
+- **Utilities**: Extracted shared `getValueByPath` and `loadSkillDefs` functions
+- **Tests**: 15 unit tests covering all recipe subcommands
+
+### Fixes
+
+- **Empty string values**: `--value ""` now allowed in `config set` and `recipe set`
+- **Missing value flag**: `--value` without argument properly caught (was silently set to `true`)
+- **Missing required args**: Restored accidentally removed `--skill`/`--key` validation in `set` commands
+- **TypeScript**: Fixed reference error in `config/show.ts` after `getValueByPath` refactor
+
+### Docs
+
+- **README**: Added vision, ASR, recipe commands; updated provider table; added recipe setup guide
+- **CHANGELOG**: This file
+
 ## 1.0.1 (2026-06-09)
 
 ### Features
