@@ -8,7 +8,7 @@
     "node": ">=18"
   },
   "bin": {
-    "laoli": "bin/laoli"
+    "laoli": "dist/main.js"
   },
   "exports": {
     ".": {

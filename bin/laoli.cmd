@@ -1,2 +1,2 @@
 @echo off
-bun "%~dp0laoli" %*
+bun "%~dp0..\dist\main.js" %*
