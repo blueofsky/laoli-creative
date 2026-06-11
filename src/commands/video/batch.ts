@@ -16,7 +16,6 @@ export const batchCommand: Command = {
     { flag: '--poll-interval <ms>', description: 'Poll interval (ms). Default 10000', type: 'number' },
     { flag: '--timeout <ms>', description: 'Per-task timeout (ms). Default 600000', type: 'number' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
-    { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],
   examples: [
     'laoli video batch --batchfile batch.json',

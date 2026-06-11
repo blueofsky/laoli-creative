@@ -11,7 +11,6 @@ export const uploadCommand: Command = {
     { flag: '--input <path>', description: 'Image file path', required: true },
     { flag: '--batch', description: 'Batch upload', type: 'boolean' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
-    { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],
   examples: [
     'laoli picgo upload --input image.png',

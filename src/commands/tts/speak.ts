@@ -21,7 +21,6 @@ export const synthesizeCommand: Command = {
     { flag: '--context <text>', description: 'Style description (mimo only)' },
     { flag: '--format <fmt>', description: 'Audio format: mp3, wav' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
-    { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],
   examples: [
     'laoli tts speak --text "你好" --output hello.mp3',

@@ -16,7 +16,6 @@ export const generateCommand: Command = {
     { flag: '--lyrics <text>', description: 'Lyrics text' },
     { flag: '--instrumental', description: 'Generate instrumental music', type: 'boolean' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
-    { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],
   examples: [
     'laoli music --prompt "Upbeat pop" --output song.mp3',

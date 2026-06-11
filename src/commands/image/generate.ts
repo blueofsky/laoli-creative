@@ -19,7 +19,6 @@ export const generateCommand: Command = {
     { flag: '--ref <files...>', description: 'Reference images' },
     { flag: '--n <count>', description: 'Number of images. Default 1', type: 'number' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
-    { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],
   examples: [
     'laoli image generate --prompt "A cat" --output cat.png',

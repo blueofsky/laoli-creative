@@ -106,19 +106,7 @@ Usage:
 
 Commands:
 ${this.getCommandHelp()}
-
-Global Options:
-  --api-key <key>        API key
-  --region <region>      Region: global, cn
-  --output <format>      Output format: text, json
-  --quiet                Suppress non-essential output
-  --verbose              Verbose output (enable DEBUG logs)
-  --log-level <level>    Log level: DEBUG, INFO, WARN, ERROR
-  --dry-run              Dry run mode
-  --non-interactive      Non-interactive mode
-  --help, -h             Show help
-  --version, -v          Show version
-`);
+${this.getGlobalOptionsText()}`);
   }
 
   private getCommandHelp(): string {
@@ -129,6 +117,16 @@ Global Options:
       const padding = ' '.repeat(maxNameLength - cmd.name.length + 2);
       return `  ${cmd.name}${padding}${cmd.description}`;
     }).join('\n');
+  }
+
+  private getGlobalOptionsText(): string {
+    return `
+Global Options:
+  --quiet                Suppress non-essential output
+  --verbose              Verbose output (enable DEBUG logs)
+  --log-level <level>    Log level: DEBUG, INFO, WARN, ERROR
+  --help, -h             Show help
+  --version, -v          Show version`;
   }
 
   private printGroupHelp(group: CommandGroup): void {
@@ -145,6 +143,7 @@ Usage:
   ${cmdPath} [options]
 
 ${this.getOptionsTable(defaultCmd.options || [])}
+${this.getGlobalOptionsText()}
 
 ${defaultCmd.examples && defaultCmd.examples.length > 0 ? `Examples:
 ${defaultCmd.examples.map(e => `  # ${e}`).join('\n')}
@@ -168,7 +167,7 @@ ${group.commands.map(cmd => {
 }).join('\n')}
 
 Run '${cmdPath} <subcommand> --help' for more details.
-`);
+${this.getGlobalOptionsText()}`);
   }
 
   private printCommandHelp(group: CommandGroup, command: Command): void {
@@ -181,6 +180,7 @@ Usage:
 ${command.usage ? `  ${command.usage}` : `  ${cmdPath} [options]`}
 
 ${this.getOptionsTable(command.options || [])}
+${this.getGlobalOptionsText()}
 
 ${command.examples && command.examples.length > 0 ? `Examples:
 ${command.examples.map(e => `  # ${e}`).join('\n')}

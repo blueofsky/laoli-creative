@@ -11,7 +11,6 @@ export const batchCommand: Command = {
     { flag: '--batchfile <path>', description: 'JSON batch file path', required: true },
     { flag: '--jobs <count>', description: 'Number of concurrent jobs. Default 4', type: 'number' },
     { flag: '--json', description: 'JSON output', type: 'boolean' },
-    { flag: '--quiet', description: 'Suppress non-essential output', type: 'boolean' },
   ],
   examples: [
     'laoli image batch --batchfile batch.json',
