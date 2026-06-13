@@ -38,10 +38,10 @@ export const voicesCommand: Command = {
       json(voices);
     } else {
       console.log(`\nAvailable voices (${providerName}):\n`);
-      console.log('ID       | Language | Gender | Style');
-      console.log('---------|----------|--------|----------');
+      console.log('ID'.padEnd(46) + '| Name'.padEnd(20) + '| Language'.padEnd(11) + '| Gender'.padEnd(8) + '| Style');
+      console.log('-'.repeat(45) + '+' + '-'.repeat(18) + '+' + '-'.repeat(10) + '+' + '-'.repeat(7) + '+' + '-'.repeat(20));
       voices.forEach(voice => {
-        console.log(`${voice.id.padEnd(9)}| ${voice.language.padEnd(9)}| ${voice.gender.padEnd(7)}| ${voice.style}`);
+        console.log(`${voice.id.padEnd(45)}| ${(voice.name || '').padEnd(18)}| ${voice.language.padEnd(10)}| ${voice.gender.padEnd(7)}| ${voice.style}`);
       });
       console.log('');
     }

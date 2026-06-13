@@ -221,6 +221,10 @@ function detectGender(voiceId: string, desc: string): string {
   return 'Unknown';
 }
 
+const CUSTOM_VOICES = [
+  { id: 'ttv-voice-2025121421155125-EvCDaW5m', name: '历史总工程师', language: 'Chinese', gender: 'Male', style: '冷调权威男声，40-50岁，微金属混响，语速平稳断句精准，语气客观如系统报告' },
+] as const;
+
 export async function getVoices(): Promise<any[]> {
   try {
     const apiKey = getApiKey('minimax');
@@ -231,7 +235,7 @@ export async function getVoices(): Promise<any[]> {
     });
     if (!response.ok) throw new Error('Failed to fetch voices');
     const data: any = await response.json();
-    return (data.system_voice || []).map((v: any) => {
+    const systemVoices = (data.system_voice || []).map((v: any) => {
       const desc = (v.description?.[0] || '');
       return {
         id: v.voice_id,
@@ -241,9 +245,11 @@ export async function getVoices(): Promise<any[]> {
         style: desc,
       };
     });
+    return [...CUSTOM_VOICES, ...systemVoices];
   } catch {
-    // fallback: 返回常用音色
+      // fallback: 返回常用音色
     return [
+      ...CUSTOM_VOICES,
       { id: 'female-shaonv', name: '少女音色', language: 'Chinese', gender: 'Female', style: '甜美少女' },
       { id: 'female-yujie', name: '御姐音色', language: 'Chinese', gender: 'Female', style: '成熟御姐' },
       { id: 'female-chengshu', name: '成熟女性', language: 'Chinese', gender: 'Female', style: '沉稳成熟' },
