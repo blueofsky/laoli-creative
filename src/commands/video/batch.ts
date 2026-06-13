@@ -46,7 +46,7 @@ export const batchCommand: Command = {
     if (!isQuiet) info(`Submitting ${batchItems.length} video tasks...`);
     const results: Array<{ taskId: string; outputPath: string; status: string }> = [];
 
-    await Promise.all(batchItems.map(async (item: any) => {
+    for (const item of batchItems) {
       const providerName = item.provider || config.video.defaultProvider || 'apimart';
       const params: any = {
         prompt: item.prompt,
@@ -56,12 +56,17 @@ export const batchCommand: Command = {
         seconds: item.seconds || config.video.defaultSeconds,
         size: item.size,
         resolution: item.resolution || config.video.defaultResolution,
-        refImages: item.ref,
+        refImages: item.ref ? (Array.isArray(item.ref) ? item.ref : [item.ref]) : undefined,
       };
-      const result = await generateVideo(params);
-      push({ taskId: result.taskId, provider: providerName, outputPath: item.output, prompt: item.prompt.slice(0, 50) });
-      results.push({ taskId: result.taskId, outputPath: item.output, status: 'submitted' });
-    }));
+      try {
+        const result = await generateVideo(params);
+        push({ taskId: result.taskId, provider: providerName, outputPath: item.output, prompt: item.prompt.slice(0, 50) });
+        results.push({ taskId: result.taskId, outputPath: item.output, status: 'submitted' });
+      } catch (e: any) {
+        if (!isQuiet) info(`Failed to submit ${item.output}: ${e.message}`);
+        results.push({ taskId: '', outputPath: item.output, status: 'failed' });
+      }
+    }
 
     if (isAsync) {
       // 只提交不轮询

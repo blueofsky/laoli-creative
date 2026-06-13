@@ -52,7 +52,7 @@ export async function batchGenerateImages(params: BatchImageParams): Promise<Bat
           size: item.size,
           quality: item.quality,
           provider: item.provider || params.provider,
-          refImages: item.ref,
+          refImages: item.ref ? (Array.isArray(item.ref) ? item.ref : [item.ref]) : undefined,
           n: item.n,
         });
         return { url: result.url, outputPath: result.outputPath, metadata: result.metadata };
